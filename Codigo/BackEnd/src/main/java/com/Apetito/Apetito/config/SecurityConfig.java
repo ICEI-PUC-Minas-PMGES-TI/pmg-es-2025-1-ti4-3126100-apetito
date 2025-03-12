@@ -27,7 +27,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
+                // Permitir acesso público às rotas de autenticação
                 .requestMatchers("/api/auth/**").permitAll()
+                // Permitir GET para todos em /bebidas e /comidas
+                .requestMatchers("/api/bebidas", "/api/bebidas/**", "/api/comidas", "/api/comidas/**").permitAll()
+                // Restringir POST, PUT e DELETE para ADMIN em /bebidas e /comidas
+                .requestMatchers("/api/bebidas", "/api/bebidas/**").hasRole("ADMIN")
+                .requestMatchers("/api/comidas", "/api/comidas/**").hasRole("ADMIN")
+                // Todas as outras requisições precisam estar autenticadas
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
