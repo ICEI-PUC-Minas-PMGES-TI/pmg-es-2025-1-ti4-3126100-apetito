@@ -4,6 +4,7 @@ import com.Apetito.Apetito.filters.JwtAuthenticationFilter;
 import com.Apetito.Apetito.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,11 +30,25 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 // Permitir acesso público às rotas de autenticação
                 .requestMatchers("/api/auth/**").permitAll()
-                // Permitir GET para todos em /bebidas e /comidas
-                .requestMatchers("/api/bebidas", "/api/bebidas/**", "/api/comidas", "/api/comidas/**").permitAll()
-                // Restringir POST, PUT e DELETE para ADMIN em /bebidas e /comidas
-                .requestMatchers("/api/bebidas", "/api/bebidas/**").hasRole("ADMIN")
-                .requestMatchers("/api/comidas", "/api/comidas/**").hasRole("ADMIN")
+
+                // Configuração de permissões para bebidas
+                .requestMatchers(HttpMethod.GET, "/api/bebidas", "/api/bebidas/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/bebidas", "/api/bebidas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/bebidas", "/api/bebidas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/bebidas", "/api/bebidas/**").hasRole("ADMIN")
+
+                // Configuração de permissões para comidas
+                .requestMatchers(HttpMethod.GET, "/api/comidas", "/api/comidas/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/comidas", "/api/comidas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/comidas", "/api/comidas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/comidas", "/api/comidas/**").hasRole("ADMIN")
+
+                // Configuração de permissões para mesas
+                .requestMatchers(HttpMethod.GET, "/api/mesas", "/api/mesas/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/mesas", "/api/mesas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/mesas", "/api/mesas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/mesas", "/api/mesas/**").hasRole("ADMIN")
+
                 // Todas as outras requisições precisam estar autenticadas
                 .anyRequest().authenticated()
                 .and()
