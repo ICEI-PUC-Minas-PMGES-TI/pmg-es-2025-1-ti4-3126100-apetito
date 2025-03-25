@@ -9,7 +9,7 @@ import com.Apetito.Apetito.models.Avaliacao;
 import com.Apetito.Apetito.repositories.AvaliacaoRepository;
 
 @RestController
-@RequestMapping("/avaliacoes")
+@RequestMapping("/api/avaliacoes")
 @CrossOrigin(origins = "*") // Permitir todos os dominios
 public class AvaliacaoController {
 

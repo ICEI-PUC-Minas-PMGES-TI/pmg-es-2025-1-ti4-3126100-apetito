@@ -12,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
@@ -27,6 +30,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .cors() // Habilita o suporte ao CORS
+                .and()
                 .authorizeHttpRequests()
                 // Permitir acesso público às rotas de autenticação
                 .requestMatchers("/api/auth/**").permitAll()
@@ -49,6 +54,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/mesas", "/api/mesas/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/mesas", "/api/mesas/**").hasRole("ADMIN")
 
+                // Configuração de permissões para avaliações
+                .requestMatchers("/api/avaliacoes", "/api/avaliacoes/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/avaliacoes", "/api/avaliacoes/**").hasRole("ADMIN")
+
                 // Todas as outras requisições precisam estar autenticadas
                 .anyRequest().authenticated()
                 .and()
@@ -69,5 +78,28 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // Permitir todas as origens
+        configuration.addAllowedOriginPattern("*");
+
+        // Permitir todos os métodos HTTP (GET, POST, PUT, DELETE, etc.)
+        configuration.addAllowedMethod("*");
+
+        // Permitir todos os cabeçalhos
+        configuration.addAllowedHeader("*");
+
+        // Permitir credenciais (cookies, headers de autenticação, etc.)
+        configuration.setAllowCredentials(true);
+
+        // Registrar a configuração para todas as rotas da API
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }

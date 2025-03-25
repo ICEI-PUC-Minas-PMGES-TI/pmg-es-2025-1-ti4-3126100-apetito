@@ -10,7 +10,7 @@ document.getElementById("avaliacao-form").addEventListener("submit", function(ev
         comentario: document.getElementById("comentario").value
     };
 
-    fetch('http://localhost:8080/avaliacoes/salvar', {
+    fetch('http://localhost:8080/api/avaliacoes/salvar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
