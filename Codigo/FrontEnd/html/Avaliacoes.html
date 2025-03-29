@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Codigo/FrontEnd/css/Avaliacoes.css">
+    <title>Avaliação</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <img class="logodarkps" src="/Codigo/FrontEnd/img/logo-dark.png" alt="Logo">
+            </div>
+            
+            <div class="navbar-menu">
+                <ul class="navbar-links">
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">Cardápio</a></li>
+                    <li><a href="#">Avaliações</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+                <button class="navbar-toggle">☰</button>
+            </div>
+            <div class="navbar-logo">
+                <img src="/Codigo/FrontEnd/img/img usuario.png" alt="Logo">
+            </div>
+        </div>
+    </nav>
+    <h1>Deixe seu Feedback</h1>
+    <form id="avaliacao-form">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required><br><br>
+
+        <div class="radio-group">
+            <label>Comida:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="comida" value="1" required></label>
+                <label><input type="radio" name="comida" value="2"></label>
+                <label><input type="radio" name="comida" value="3"></label>
+                <label><input type="radio" name="comida" value="4"></label>
+                <label><input type="radio" name="comida" value="5"></label>
+            </div>
+        </div>
+
+        <div class="radio-group">
+            <label>Tempo de Espera:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="tempoEspera" value="1" required></label>
+                <label><input type="radio" name="tempoEspera" value="2"></label>
+                <label><input type="radio" name="tempoEspera" value="3"></label>
+                <label><input type="radio" name="tempoEspera" value="4"></label>
+                <label><input type="radio" name="tempoEspera" value="5"></label>
+            </div>
+        </div>
+
+        <div class="radio-group">
+            <label>Ambiente:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="ambiente" value="1" required></label>
+                <label><input type="radio" name="ambiente" value="2"></label>
+                <label><input type="radio" name="ambiente" value="3"></label>
+                <label><input type="radio" name="ambiente" value="4"></label>
+                <label><input type="radio" name="ambiente" value="5"></label>
+            </div>
+        </div>
+
+        <div class="radio-group">
+            <label>Atendimento:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="atendimento" value="1" required></label>
+                <label><input type="radio" name="atendimento" value="2"></label>
+                <label><input type="radio" name="atendimento" value="3"></label>
+                <label><input type="radio" name="atendimento" value="4"></label>
+                <label><input type="radio" name="atendimento" value="5"></label>
+            </div>
+        </div>
+
+        <label for="comentario">Deixe um comentário:</label>
+        <textarea id="comentario" rows="4" cols="50"></textarea><br><br>
+
+        <button type="submit">Enviar Avaliação</button>
+    </form>
+    <script src="/Codigo/FrontEnd/scripts/Avaliacoes.js"></script>
+</body>
+</html>

@@ -25,3 +25,6 @@ document.getElementById("avaliacao-form").addEventListener("submit", function(ev
         console.error('Erro ao enviar avaliação:', error);
     });
 });
+
+document.querySelector('.navbar-toggle').addEventListener('click', function() {
+    document.querySelector('.navbar-links').classList.toggle('active');});
