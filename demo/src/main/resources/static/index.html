@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apetito Restaurante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/demo/src/main/resources/static/css/index.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/demo/src/main/resources/static/img/logo-white.png" alt="Logo Restaurante">
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="mesas.html"><i class="fas fa-chair"></i> Mesas</a></li>
+            <li><a href="pedido.html"><i class="fas fa-clipboard-list"></i> Pedido</a></li>
+            <li><a href="reserva.html"><i class="fas fa-calendar-check"></i> Reserva</a></li>
+            <li><a href="avaliacao.html"><i class="fas fa-star"></i> Avaliação</a></li>
+        </ul>
+        
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Seção Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Bem-vindo ao Nosso Restaurante</h1>
+                <p>Experiências gastronômicas memoráveis em um ambiente acolhedor</p>
+                <a href="reserva.html" class="btn">Reserve sua Mesa</a>
+            </div>
+        </section>
+        
+        <!-- Destaques -->
+        <section class="highlights">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Culinária Excepcional</h3>
+                    <p>Pratos preparados com ingredientes frescos e selecionados por nossos chefs.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-wine-glass-alt"></i>
+                    <h3>Cardápio Variado</h3>
+                    <p>Opções para todos os gostos, desde pratos tradicionais até criações exclusivas.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-concierge-bell"></i>
+                    <h3>Atendimento Personalizado</h3>
+                    <p>Nossa equipe está pronta para tornar sua experiência inesquecível.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Horário de Funcionamento -->
+        <section class="opening-hours">
+            <h2 class="section-title">Horário de Funcionamento</h2>
+            <div class="hours-container">
+                <div class="hours-card">
+                    <h3><i class="far fa-clock"></i> Horários</h3>
+                    <ul class="hours-list">
+                        <li>Segunda a Sexta <span>11:00 - 22:00</span></li>
+                        <li>Sábado <span>11:00 - 23:00</span></li>
+                        <li>Domingo <span>12:00 - 21:00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> Avenida Amazonas, 123 - Centro</li>
+                    <li><i class="fas fa-phone"></i> (11) 1111-2222</li>
+                    <li><i class="fas fa-envelope"></i> contato@Apetito.com</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Horário de Funcionamento</h3>
+                <ul class="opening-hours">
+                    <li>Segunda a Sexta: 11h - 22h</li>
+                    <li>Sábado: 11h - 23h</li>
+                    <li>Domingo: 12h - 21h</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Restaurante Apetito. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Menu mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

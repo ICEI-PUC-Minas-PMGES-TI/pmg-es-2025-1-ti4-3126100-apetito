@@ -1,0 +1,191 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apetito - Pedidos</title>
+    <link rel="stylesheet" href="/Codigo/FrontEnd/css/stylesPedidos.css">
+    <link rel="stylesheet" href="/Codigo/FrontEnd/css/mesa.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>APETITO</h1>
+        <nav>
+            <div class="nav-center">
+                <a href="/Codigo/FrontEnd/html/index.html">INÍCIO</a>
+                <a href="/Codigo/FrontEnd/html/cardapio.html">CARDÁPIO</a>
+                <a href="#" class="active">PEDIDOS</a>
+                <a href="#">MESAS</a>
+                <a href="#">COMANDA</a>
+                <a href="#">AVALIAÇÃO</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div id="secaoMesas">
+            <h2>Escolha sua mesa</h2>
+            
+            <div class="status-mesas">
+                <div class="status-item">
+                    <i class="fas fa-circle status-disponivel"></i>
+                    <span>Disponível</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-circle status-ocupada"></i>
+                    <span>Ocupada</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-circle status-selecionada"></i>
+                    <span>Selecionada</span>
+                </div>
+            </div>
+            
+            <div class="mesas-container">
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área A</h3>
+                    <div class="mesa-item" data-mesa="A1" data-status="disponivel">
+                        <i class="fas fa-chair"></i> A1
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="A2" data-status="ocupada">
+                        <i class="fas fa-chair"></i> A2
+                    </div>
+                    <div class="mesa-item" data-mesa="A3" data-status="disponivel">
+                        <i class="fas fa-chair"></i> A3
+                    </div>
+                </div>
+                
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área B</h3>
+                    <div class="mesa-item ocupada" data-mesa="B1" data-status="ocupada">
+                        <i class="fas fa-chair"></i> B1
+                    </div>
+                    <div class="mesa-item" data-mesa="B2" data-status="disponivel">
+                        <i class="fas fa-chair"></i> B2
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="B3" data-status="ocupada">
+                        <i class="fas fa-chair"></i> B3
+                    </div>
+                </div>
+                
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área C</h3>
+                    <div class="mesa-item" data-mesa="C1" data-status="disponivel">
+                        <i class="fas fa-chair"></i> C1
+                    </div>
+                    <div class="mesa-item" data-mesa="C2" data-status="disponivel">
+                        <i class="fas fa-chair"></i> C2
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="C3" data-status="ocupada">
+                        <i class="fas fa-chair"></i> C3
+                    </div>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <div class="mesas-container">
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área D</h3>
+                    <div class="mesa-item" data-mesa="D1" data-status="disponivel">
+                        <i class="fas fa-chair"></i> D1
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="D2" data-status="ocupada">
+                        <i class="fas fa-chair"></i> D2
+                    </div>
+                    <div class="mesa-item" data-mesa="D3" data-status="disponivel">
+                        <i class="fas fa-chair"></i> D3
+                    </div>
+                </div>
+                
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área E</h3>
+                    <div class="mesa-item ocupada" data-mesa="E1" data-status="ocupada">
+                        <i class="fas fa-chair"></i> E1
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="E2" data-status="ocupada">
+                        <i class="fas fa-chair"></i> E2
+                    </div>
+                    <div class="mesa-item" data-mesa="E3" data-status="disponivel">
+                        <i class="fas fa-chair"></i> E3
+                    </div>
+                </div>
+                
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área F</h3>
+                    <div class="mesa-item" data-mesa="F1" data-status="disponivel">
+                        <i class="fas fa-chair"></i> F1
+                    </div>
+                    <div class="mesa-item" data-mesa="F2" data-status="disponivel">
+                        <i class="fas fa-chair"></i> F2
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="F3" data-status="ocupada">
+                        <i class="fas fa-chair"></i> F3
+                    </div>
+                </div>
+                
+                <div class="mesa-group">
+                    <h3><i class="fas fa-utensils"></i> Área G</h3>
+                    <div class="mesa-item ocupada" data-mesa="G1" data-status="ocupada">
+                        <i class="fas fa-chair"></i> G1
+                    </div>
+                    <div class="mesa-item" data-mesa="G2" data-status="disponivel">
+                        <i class="fas fa-chair"></i> G2
+                    </div>
+                    <div class="mesa-item ocupada" data-mesa="G3" data-status="ocupada">
+                        <i class="fas fa-chair"></i> G3
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="listaEspera" class="lista-espera-container">
+            <h2><i class="fas fa-clock"></i> Lista de Espera</h2>
+            <div class="posicao-espera" id="posicaoEspera">10</div>
+            <div class="mensagem-espera">
+                Você está na posição: <strong id="numeroPosicao">10</strong><br>
+                Da lista de espera para as mesas!
+            </div>
+            <button class="btn-voltar" id="btnVoltarMesas">
+                <i class="fas fa-arrow-left"></i> Voltar para visualização das mesas
+            </button>
+        </div>
+    </div>
+
+    <div id="reservaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-title">Selecione ou reserve sua mesa:</div>
+            
+            <div id="mesaSelecionada" class="modal-option">
+                <i class="fas fa-chair"></i>
+                <div>
+                    <strong id="numeroMesa"></strong><br>
+                    <small id="statusMesa">Disponível</small>
+                </div>
+            </div>
+            
+            <button id="btnEstouAqui" class="btn-estou-aqui">
+                <i class="fas fa-check"></i> Estou aqui agora
+            </button>
+            
+            <div class="modal-input-group">
+                <label for="dataReserva">Data:</label>
+                <input type="text" id="dataReserva" placeholder="dd/mm/aaaa" maxlength="10">
+            </div>
+            
+            <div class="modal-input-group">
+                <label for="horaReserva">Horário:</label>
+                <input type="text" id="horaReserva" placeholder="hh:mm" maxlength="5">
+            </div>
+            
+            <div class="modal-option" id="btnReservar">
+                <i class="far fa-calendar-alt"></i>
+                <span>Reservar para outra data</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Codigo/FrontEnd/scripts/mesa.js"></script>
+</body>
+</html>
