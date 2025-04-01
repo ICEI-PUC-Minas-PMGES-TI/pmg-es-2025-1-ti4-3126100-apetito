@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio e Pedidos</title>
+    <style>
+        /* O estilo continua o mesmo */
+    </style>
+</head>
+<body>
+    <h1>Cardápio</h1>
+    
+    <div class="filtros">
+        <button onclick="filtrarCardapio('todos')">Todos</button>
+        <button onclick="filtrarCardapio('comida')">Comidas</button>
+        <button onclick="filtrarCardapio('bebida')">Bebidas</button>
+        <button onclick="filtrarCardapio('sobremesa')">Sobremesas</button>
+    </div>
+    
+    <div class="cardapio" id="cardapio">
+        <!-- Itens serão carregados via JavaScript -->
+    </div>
+    
+    <h2>Meu Pedido</h2>
+    <div id="pedidoAtual">
+        <p>Nenhum item adicionado ainda.</p>
+    </div>
+    
+    <button onclick="finalizarPedido()" style="padding: 10px 20px; margin-top: 20px;">Finalizar Pedido</button>
+
+    <!-- Esta div será preenchida pelo JavaScript -->
+    <div id="pedidosLocalStorage"></div>
+
+    <button onclick="simularPagamento()" style="padding: 10px 20px; margin-top: 20px;">Pagar Pedidos</button>
+
+    <script src="js/pedido.js"></script>
+</body>
+</html>

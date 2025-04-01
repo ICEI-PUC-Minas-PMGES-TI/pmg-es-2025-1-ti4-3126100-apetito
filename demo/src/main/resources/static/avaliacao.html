@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            width: 300px;
+            margin: auto;
+        }
+        .input-field {
+            margin: 10px 0;
+        }
+        input[type="number"] {
+            width: 50px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Avaliar Pedido</h1>
+
+    <div class="form-container">
+        <form id="formAvaliacao">
+            <div class="input-field">
+                <label for="notaComida">Nota Comida (1-5):</label>
+                <input type="number" id="notaComida" min="1" max="5" required>
+            </div>
+            <div class="input-field">
+                <label for="notaAtendimento">Nota Atendimento (1-5):</label>
+                <input type="number" id="notaAtendimento" min="1" max="5" required>
+            </div>
+            <div class="input-field">
+                <label for="notaAmbiente">Nota Ambiente (1-5):</label>
+                <input type="number" id="notaAmbiente" min="1" max="5" required>
+            </div>
+            <div class="input-field">
+                <label for="comentario">Comentário (opcional):</label>
+                <textarea id="comentario"></textarea>
+            </div>
+            <button type="submit">Enviar Avaliação</button>
+        </form>
+        <p id="mensagem"></p>
+    </div>
+
+    <script src="js/avaliacao.js"></script>
+
+</body>
+</html>

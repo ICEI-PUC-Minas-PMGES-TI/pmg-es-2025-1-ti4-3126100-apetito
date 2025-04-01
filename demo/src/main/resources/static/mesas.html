@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Mesas</title>
+    <style>
+        :root {
+            --verde: #4CAF50;
+            --vermelho: #F44336;
+            --cinza: #f5f5f5;
+            --sombra: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .mesas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mesa-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--sombra);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .mesa-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .mesa-card.disponivel {
+            border-top: 5px solid var(--verde);
+        }
+
+        .mesa-card.ocupada {
+            border-top: 5px solid var(--vermelho);
+        }
+
+        .mesa-numero {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mesa-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .disponivel .mesa-status {
+            background-color: var(--verde);
+        }
+
+        .ocupada .mesa-status {
+            background-color: var(--vermelho);
+        }
+
+        .mesa-acoes {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-ocupar {
+            background-color: var(--verde);
+            color: white;
+        }
+
+        .btn-ocupar:hover {
+            background-color: #3e8e41;
+        }
+
+        .btn-liberar {
+            background-color: var(--vermelho);
+            color: white;
+        }
+
+        .btn-liberar:hover {
+            background-color: #d32f2f;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: var(--vermelho);
+        }
+
+        .modal p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .modal-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+        }
+
+        .modal-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            background-color: var(--cinza);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerenciamento de Mesas</h1>
+    
+    <div class="mesas-container" id="mesasContainer">
+        <!-- As mesas serão carregadas aqui via JavaScript -->
+    </div>
+
+    <div class="modal" id="listaEsperaModal">
+        <div class="modal-content">
+            <h2>Lista de Espera</h2>
+            <p>Todas as mesas estão ocupadas no momento. Você é o primeiro na fila de espera.</p>
+            <button class="modal-btn" id="fecharModalBtn">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    const baseUrl = 'http://localhost:8080'; // Altere se necessário
+    const mesasContainer = document.getElementById('mesasContainer');
+    const listaEsperaModal = document.getElementById('listaEsperaModal');
+    const fecharModalBtn = document.getElementById('fecharModalBtn');
+    
+    async function carregarMesas() {
+        try {
+            const response = await fetch(`${baseUrl}/api/mesas`, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const mesas = await response.json();
+            
+            // Limpa o container antes de adicionar novas mesas
+            mesasContainer.innerHTML = '';
+            
+            // Verifica se todas as mesas estão ocupadas
+            const todasOcupadas = mesas.every(mesa => mesa.status === 'ocupada');
+            
+            if (todasOcupadas) {
+                listaEsperaModal.style.display = 'flex';
+            }
+            
+            // Cria os cards para cada mesa
+            mesas.forEach(mesa => {
+                const mesaCard = document.createElement('div');
+                mesaCard.className = `mesa-card ${mesa.status === 'disponível' ? 'disponivel' : 'ocupada'}`;
+                
+                mesaCard.innerHTML = `
+                    <div class="mesa-numero">Mesa ${mesa.id}</div>
+                    <div class="mesa-status">${mesa.status === 'disponível' ? 'Disponível' : 'Ocupada'}</div>
+                    <div class="mesa-acoes">
+                        ${mesa.status === 'disponível' ? 
+                            `<button class="btn-ocupar" data-id="${mesa.id}">Ocupar Mesa</button>` : 
+                            `<button class="btn-liberar" data-id="${mesa.id}">Liberar Mesa</button>`}
+                    </div>
+                `;
+                
+                mesasContainer.appendChild(mesaCard);
+            });
+            
+            // Adiciona eventos aos botões de ocupar
+            document.querySelectorAll('.btn-ocupar').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const mesaId = this.getAttribute('data-id');
+                    try {
+                        const response = await fetch(`${baseUrl}/api/mesas/${mesaId}/ocupar`, {
+                            method: 'POST'
+                        });
+                        
+                        if (response.ok) {
+                            carregarMesas();
+                        }
+                    } catch (error) {
+                        console.error('Erro ao ocupar mesa:', error);
+                    }
+                });
+            });
+            
+            // Adiciona eventos aos botões de liberar
+            document.querySelectorAll('.btn-liberar').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const mesaId = this.getAttribute('data-id');
+                    try {
+                        const response = await fetch(`${baseUrl}/api/mesas/${mesaId}/liberar`, {
+                            method: 'POST'
+                        });
+                        
+                        if (response.ok) {
+                            carregarMesas();
+                        }
+                    } catch (error) {
+                        console.error('Erro ao liberar mesa:', error);
+                    }
+                });
+            });
+            
+        } catch (error) {
+            console.error('Erro ao carregar mesas:', error);
+            mesasContainer.innerHTML = `
+                <div class="error-message">
+                    Erro ao carregar dados. Tente recarregar a página.
+                </div>
+            `;
+        }
+    }
+    
+    // Fechar modal
+    fecharModalBtn.addEventListener('click', function() {
+        listaEsperaModal.style.display = 'none';
+    });
+    
+    // Carregar mesas inicialmente
+    carregarMesas();
+    
+    // Atualizar a cada 30 segundos (opcional)
+    setInterval(carregarMesas, 30000);
+});
+    </script>
+</body>
+</html>
