@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Sistema Restaurante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/avalicao.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/demo/src/main/resources/static/img/logo-white.png" alt="Logo Restaurante">
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="mesas.html"><i class="fas fa-chair"></i> Mesas</a></li>
+            <li><a href="pedido.html"><i class="fas fa-clipboard-list"></i> Pedido</a></li>
+            <li><a href="reserva.html"><i class="fas fa-calendar-check"></i> Reserva</a></li>
+            <li><a href="avaliacao.html" class="active"><i class="fas fa-star"></i> Avaliação</a></li>
+        </ul>
+        
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <section class="evaluation-section">
+            <h2 class="section-title"><i class="fas fa-star"></i> Avaliar Pedido</h2>
+            
+            <form id="formAvaliacao" class="evaluation-form">
+                <div id="mensagem" class="message"></div>
+                
+                <div class="form-group">
+                    <label for="notaComida">Nota Comida (1-5)</label>
+                    <div class="rating-input">
+                        <input type="number" id="notaComida" name="notaComida" min="1" max="5" required>
+                        <div class="stars-preview" data-target="notaComida"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notaAtendimento">Nota Atendimento (1-5)</label>
+                    <div class="rating-input">
+                        <input type="number" id="notaAtendimento" name="notaAtendimento" min="1" max="5" required>
+                        <div class="stars-preview" data-target="notaAtendimento"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notaAmbiente">Nota Ambiente (1-5)</label>
+                    <div class="rating-input">
+                        <input type="number" id="notaAmbiente" name="notaAmbiente" min="1" max="5" required>
+                        <div class="stars-preview" data-target="notaAmbiente"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comentario">Comentário (opcional)</label>
+                    <textarea id="comentario" name="comentario" rows="4" placeholder="Deixe seu comentário sobre a experiência..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Enviar Avaliação
+                </button>
+            </form>
+        </section>
+    </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> Avenida Amazonas, 123 - Centro</li>
+                    <li><i class="fas fa-phone"></i> (11) 1111-2222</li>
+                    <li><i class="fas fa-envelope"></i> contato@Apetito.com</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Horário de Funcionamento</h3>
+                <ul class="opening-hours">
+                    <li>Segunda a Sexta: 11h - 22h</li>
+                    <li>Sábado: 11h - 23h</li>
+                    <li>Domingo: 12h - 21h</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Restaurante Apetito. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/demo/src/main/resources/static/js/avaliacao.js"></script>
+    <script>
+        // Menu mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
