@@ -1,167 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Estoque</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-        }
-        .form-section, .list-section {
-            flex: 1;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        input, select, button {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #produtos-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .produto-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .produto-actions {
-            margin-top: 10px;
-        }
-        .produto-actions button {
-            margin-right: 5px;
-            padding: 5px 10px;
-        }
-        .edit-btn {
-            background-color: #2196F3;
-        }
-        .delete-btn {
-            background-color: #f44336;
-        }
-        h2 {
-            color: #333;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 5px;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 5px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover {
-            color: black;
-        }
-        .notification-badge {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #f44336;
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .vencimento-proximo {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-        }
-    </style>
-</head>
-<body>
-    <h1>Gerenciamento de Estoque</h1>
-    
-    <div id="notification-badge" class="notification-badge" style="display: none;" onclick="abrirModal()">0</div>
-    
-    <!-- Modal de Notificações -->
-    <div id="notification-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModal()">&times;</span>
-            <h2>Notificações de Vencimento</h2>
-            <div id="notifications-container"></div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="form-section">
-            <h2>Adicionar/Editar Produto</h2>
-            <form id="produto-form">
-                <input type="hidden" id="produto-id">
-                <input type="text" id="produto-nome" placeholder="Nome do produto" required>
-                <input type="number" id="produto-preco" placeholder="Preço de compra" step="0.01" min="0" required>
-                <input type="date" id="produto-validade">
-                <div>
-                    <label>
-                        <input type="checkbox" id="produto-perecivel"> Produto perecível
-                    </label>
-                </div>
-                <button type="submit" id="submit-btn">Salvar</button>
-                <button type="button" id="cancel-btn" style="background-color: #cccccc; display: none;">Cancelar</button>
-            </form>
-        </div>
-        
-        <div class="list-section">
-            <h2>Lista de Produtos</h2>
-            <button id="refresh-btn">Atualizar Lista</button>
-            <ul id="produtos-list"></ul>
-        </div>
-    </div>
-
-    <script>
         const API_URL = 'http://localhost:8080/api/produtos';
         const NOTIFICATION_API = `${API_URL}/notificacoes`;
         const NOTIFICATION_COUNT_API = `${API_URL}/notificacoes/contagem`;
@@ -178,11 +14,13 @@
         const refreshBtn = document.getElementById('refresh-btn');
         const produtosList = document.getElementById('produtos-list');
         const notificationBadge = document.getElementById('notification-badge');
+        const badgeCount = document.getElementById('badge-count');
         const modal = document.getElementById('notification-modal');
         const notificationsContainer = document.getElementById('notifications-container');
         
         let isEditing = false;
         let notificationCheckInterval;
+        let notificationAlreadyShown = false; // Variável para controlar se o alerta já foi mostrado
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
@@ -246,6 +84,7 @@
         
         function fecharModal() {
             modal.style.display = 'none';
+            notificationAlreadyShown = false; // Resetar quando o usuário fecha o modal
         }
         
         // Fechar modal ao clicar fora
@@ -310,14 +149,16 @@
                 
                 if (count > 0) {
                     notificationBadge.style.display = 'flex';
-                    notificationBadge.textContent = count;
+                    badgeCount.textContent = count;
                     
-                    // Mostrar alerta apenas se for uma nova notificação
-                    if (!modal.style.display || modal.style.display === 'none') {
+                    // Mostrar alerta apenas se for a primeira vez ou se for uma nova notificação
+                    if (!notificationAlreadyShown && (!modal.style.display || modal.style.display === 'none')) {
                         alert(`Você tem ${count} produto(s) próximo(s) do vencimento!`);
+                        notificationAlreadyShown = true;
                     }
                 } else {
                     notificationBadge.style.display = 'none';
+                    notificationAlreadyShown = false; // Resetar quando não há notificações
                 }
             } catch (error) {
                 console.error('Erro ao verificar notificações:', error);
@@ -346,7 +187,7 @@
                     const div = document.createElement('div');
                     div.className = 'notification-item';
                     div.innerHTML = `
-                        <h3>${produto.nome}</h3>
+                        <h3><i class="fas fa-exclamation-triangle"></i> ${produto.nome}</h3>
                         <p><strong>Vencimento:</strong> ${new Date(produto.dataValidade).toLocaleDateString('pt-BR')}</p>
                         <p><strong>Dias restantes:</strong> ${diffDays} dia(s)</p>
                     `;
@@ -364,7 +205,7 @@
             produtosList.innerHTML = '';
             
             if (produtos.length === 0) {
-                produtosList.innerHTML = '<li>Nenhum produto cadastrado</li>';
+                produtosList.innerHTML = '<li class="produto-card">Nenhum produto cadastrado</li>';
                 return;
             }
             
@@ -375,7 +216,7 @@
                 li.className = 'produto-card';
                 
                 // Verificar se o produto está próximo do vencimento
-                let vencimentoProximoClass = '';
+                let vencimentoClass = '';
                 let vencimentoInfo = '';
                 
                 if (produto.perecivel && produto.dataValidade) {
@@ -384,28 +225,32 @@
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                     
                     if (diffDays <= 7 && diffDays >= 0) {
-                        vencimentoProximoClass = 'vencimento-proximo';
+                        vencimentoClass = 'vencimento-proximo';
                         vencimentoInfo = ` (Vence em ${diffDays} dia(s))`;
                     } else if (diffDays < 0) {
-                        vencimentoProximoClass = 'vencimento-proximo';
+                        vencimentoClass = 'vencido';
                         vencimentoInfo = ` (Vencido há ${Math.abs(diffDays)} dia(s))`;
                     }
                 }
                 
                 li.innerHTML = `
-                    <div class="${vencimentoProximoClass}">
-                        <h3>${produto.nome}</h3>
+                    <div class="${vencimentoClass}">
+                        <h3>${produto.nome} ${produto.perecivel ? '<span class="perecivel-tag"><i class="fas fa-clock"></i> Perecível</span>' : ''}</h3>
                         <p><strong>Preço de compra:</strong> R$ ${produto.precoCompra.toFixed(2)}</p>
                         ${produto.perecivel ? `
                             <p><strong>Data de validade:</strong> 
                                 ${new Date(produto.dataValidade).toLocaleDateString('pt-BR')}
                                 ${vencimentoInfo}
                             </p>
-                        ` : '<p><strong>Não perecível</strong></p>'}
+                        ` : ''}
                         
                         <div class="produto-actions">
-                            <button class="edit-btn" data-id="${produto.id}">Editar</button>
-                            <button class="delete-btn" data-id="${produto.id}">Excluir</button>
+                            <button class="btn btn-secondary edit-btn" data-id="${produto.id}">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-danger delete-btn" data-id="${produto.id}">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
                         </div>
                     </div>
                 `;
@@ -442,7 +287,7 @@
                     validadeInput.disabled = true;
                 }
                 
-                submitBtn.textContent = 'Atualizar';
+                submitBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
                 cancelBtn.style.display = 'inline-block';
                 isEditing = true;
                 
@@ -457,10 +302,7 @@
             form.reset();
             idInput.value = '';
             validadeInput.disabled = true;
-            submitBtn.textContent = 'Salvar';
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Salvar';
             cancelBtn.style.display = 'none';
             isEditing = false;
         }
-    </script>
-</body>
-</html>

@@ -2,125 +2,61 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Compras</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #formItem {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        #formItem input {
-            flex: 1;
-            padding: 8px;
-            margin-right: 10px;
-        }
-        #formItem button {
-            padding: 8px 12px;
-        }
-        .item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.3s;
-        }
-        .item.concluido {
-            background-color: #d4edda;
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
-        .botoes button {
-            margin-left: 5px;
-            padding: 5px 8px;
-            font-size: 12px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/const/src/main/resources/static/css/listaDeCompras.css">
 </head>
 <body>
+    <div class="shopping-container">
+        <header class="shopping-header">
+            <h1><i class="fas fa-shopping-cart"></i> Lista de Compras</h1>
+            <p>Organize seus itens para comprar</p>
+        </header>
 
-    <h2>Lista de Compras</h2>
+        <form id="formItem" class="add-item-form">
+            <div class="input-group">
+                <input type="text" id="nomeItem" placeholder="Digite um novo item..." required>
+                <button type="submit" class="btn-add">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+            <div class="category-filter">
+                <span>Filtrar:</span>
+                <button type="button" class="filter-btn active" data-filter="all">Todos</button>
+                <button type="button" class="filter-btn" data-filter="pending">Pendentes</button>
+                <button type="button" class="filter-btn" data-filter="completed">Concluídos</button>
+            </div>
+        </form>
 
-    <form id="formItem">
-        <input type="text" id="nomeItem" placeholder="Novo item..." required>
-        <button type="submit">Adicionar</button>
-    </form>
+        <div class="shopping-stats">
+            <div class="stat-item">
+                <span class="stat-number" id="total-items">0</span>
+                <span class="stat-label">Itens</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="pending-items">0</span>
+                <span class="stat-label">Pendentes</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="completed-items">0</span>
+                <span class="stat-label">Concluídos</span>
+            </div>
+        </div>
 
-    <div id="listaCompras"></div>
+        <div id="listaCompras" class="shopping-list"></div>
 
-    <script>
-        const form = document.getElementById('formItem');
-        const listaCompras = document.getElementById('listaCompras');
+        <div class="shopping-actions">
+            <button id="clear-completed" class="btn-action">
+                <i class="fas fa-trash-alt"></i> Limpar concluídos
+            </button>
+            <button id="save-list" class="btn-action">
+                <i class="fas fa-save"></i> Salvar lista
+            </button>
+        </div>
+    </div>
 
-        let itens = JSON.parse(localStorage.getItem('listaCompras')) || [];
-
-        function salvarLocalStorage() {
-            localStorage.setItem('listaCompras', JSON.stringify(itens));
-        }
-
-        function renderizarLista() {
-            listaCompras.innerHTML = '';
-
-            itens.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'item';
-                if (item.concluido) div.classList.add('concluido');
-
-                div.innerHTML = `
-                    <span>${item.nome}</span>
-                    <div class="botoes">
-                        <button onclick="concluirItem(${index})">✅</button>
-                        <button onclick="fixarItem(${index})">📌</button>
-                        <button onclick="excluirItem(${index})">🗑️</button>
-                    </div>
-                `;
-
-                listaCompras.appendChild(div);
-            });
-        }
-
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const nome = document.getElementById('nomeItem').value.trim();
-            if (nome === '') return;
-
-            itens.push({ nome, concluido: false });
-            salvarLocalStorage();
-            renderizarLista();
-            form.reset();
-        });
-
-        function concluirItem(index) {
-            itens[index].concluido = true;
-            const itemConcluido = itens.splice(index, 1)[0];
-            itens.push(itemConcluido); // Move para o final
-            salvarLocalStorage();
-            renderizarLista();
-        }
-
-        function excluirItem(index) {
-            if (confirm('Deseja excluir este item?')) {
-                itens.splice(index, 1);
-                salvarLocalStorage();
-                renderizarLista();
-            }
-        }
-
-        function fixarItem(index) {
-            const itemFixado = itens.splice(index, 1)[0];
-            itens.unshift(itemFixado); // Move para o topo
-            salvarLocalStorage();
-            renderizarLista();
-        }
-
-        // Inicializa
-        renderizarLista();
-    </script>
-
+    <script src="/const/src/main/resources/static/js/listaDeCompras.js"></script>
 </body>
 </html>

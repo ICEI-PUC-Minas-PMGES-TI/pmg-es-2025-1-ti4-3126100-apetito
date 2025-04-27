@@ -2,114 +2,60 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Criar Reserva</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            width: 300px;
-            margin-bottom: 20px;
-        }
-        input, button {
-            margin-bottom: 10px;
-            padding: 8px;
-        }
-        #mesas {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-        .mesa {
-            border: 2px solid #ccc;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.3s;
-            user-select: none;
-        }
-        .mesa:hover {
-            background-color: #f0f0f0;
-        }
-        .mesa.selecionada {
-            background-color: #4CAF50;
-            color: white;
-            border-color: #4CAF50;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas - Restaurante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/const/src/main/resources/static/css/criarReserva.css">
 </head>
 <body>
+    <div class="reserva-container">
+        <div class="reserva-header">
+            <h1><i class="fas fa-calendar-alt"></i> Fazer Reserva</h1>
+            <p>Garanta seu lugar em nosso restaurante</p>
+        </div>
 
-    <h2>Fazer Reserva</h2>
+        <div class="reserva-content">
+            <form id="formReserva" class="reserva-form">
+                <div class="form-group">
+                    <label for="nome"><i class="fas fa-user"></i> Seu Nome</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefone"><i class="fas fa-phone"></i> Telefone</label>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data"><i class="fas fa-calendar-day"></i> Data</label>
+                        <input type="date" id="data" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hora"><i class="fas fa-clock"></i> Horário</label>
+                        <input type="time" id="hora" required>
+                    </div>
+                </div>
 
-    <form id="formReserva">
-        <input type="text" id="nome" placeholder="Seu Nome" required>
-        <input type="tel" id="telefone" placeholder="Telefone" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="date" id="data" required>
-        <input type="time" id="hora" required>
+                <button type="submit" class="btn-reservar">
+                    <i class="fas fa-check-circle"></i> Confirmar Reserva
+                </button>
+            </form>
 
-        <h3>Selecione a Mesa:</h3>
-        <div id="mesas"></div>
+            <div class="mesas-section">
+                <h3><i class="fas fa-chair"></i> Selecione sua Mesa:</h3>
+                <div id="mesas" class="mesas-grid"></div>
+            </div>
+        </div>
+    </div>
 
-        <button type="submit">Salvar Reserva</button>
-    </form>
-
-    <script>
-        const form = document.getElementById('formReserva');
-        const divMesas = document.getElementById('mesas');
-        let mesaSelecionada = null;
-
-        // Cria mesas visuais
-        function criarMesas(qtd) {
-            for (let i = 1; i <= qtd; i++) {
-                const div = document.createElement('div');
-                div.className = 'mesa';
-                div.textContent = i;
-                div.addEventListener('click', function() {
-                    document.querySelectorAll('.mesa').forEach(m => m.classList.remove('selecionada'));
-                    div.classList.add('selecionada');
-                    mesaSelecionada = i;
-                });
-                divMesas.appendChild(div);
-            }
-        }
-
-        criarMesas(12); // Exemplo: 12 mesas disponíveis
-
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            if (!mesaSelecionada) {
-                alert('Por favor, selecione uma mesa.');
-                return;
-            }
-
-            const nome = document.getElementById('nome').value;
-            const telefone = document.getElementById('telefone').value;
-            const email = document.getElementById('email').value;
-            const data = document.getElementById('data').value;
-            const hora = document.getElementById('hora').value;
-
-            const novaReserva = { nome, telefone, email, data, hora, mesa: mesaSelecionada };
-
-            const reservas = JSON.parse(localStorage.getItem('reservas')) || [];
-            reservas.push(novaReserva);
-
-            localStorage.setItem('reservas', JSON.stringify(reservas));
-
-            alert('Reserva criada com sucesso!');
-            form.reset();
-            document.querySelectorAll('.mesa').forEach(m => m.classList.remove('selecionada'));
-            mesaSelecionada = null;
-        });
-    </script>
-
+    <script src="/const/src/main/resources/static/js/criarReserva.js"></script>
 </body>
 </html>
