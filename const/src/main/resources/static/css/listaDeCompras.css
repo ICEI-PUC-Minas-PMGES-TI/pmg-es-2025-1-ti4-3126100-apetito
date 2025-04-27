@@ -19,7 +19,7 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Open Sans", sans-serif;
     background-color: #f8f9fa;
     color: var(--dark-color);
     line-height: 1.6;
@@ -28,6 +28,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Marcellus", serif;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .shopping-container {

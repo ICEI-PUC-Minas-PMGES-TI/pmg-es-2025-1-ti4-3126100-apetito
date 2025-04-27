@@ -26,6 +26,19 @@ body {
     padding: 20px;
 }
 
+p {
+    color: white;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Marcellus", serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 h1, h2, h3 {
     color: var(--dark-color);
     margin-bottom: 1rem;
@@ -35,7 +48,7 @@ h1 {
     font-size: 2.2rem;
     text-align: center;
     margin: 1.5rem 0;
-    color: #000; /* Preto */
+    color: #ffffff; /* Preto */
 }
 
 h2 {
@@ -111,7 +124,7 @@ input:focus {
 
 .btn-primary {
     background-color: var(--primary-color);
-    color: #000;
+    color: #ffffff;
 }
 
 .btn-primary:hover {
@@ -150,6 +163,79 @@ input:focus {
 .button-group {
     display: flex;
     gap: 0.5rem;
+}
+
+.estoque-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+.estoque-header {
+    background: var(--primary-color);
+    color: #000;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.estoque-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.estoque-header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-price {
+    display: flex;
+    align-items: center;
+}
+
+.input-price span {
+    background: #f5f5f5;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.input-price input {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+#validade-group {
+    display: none; /* Inicialmente escondido */
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
 #produtos-list {
@@ -208,6 +294,8 @@ input:focus {
 .vencido {
     border-left: 4px solid var(--danger-color);
 }
+
+
 
 /* Modal */
 .modal {
@@ -291,19 +379,3 @@ input:focus {
 .notification-badge:hover {
     transform: scale(1.1);
 }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .form-section, .list-section {
-                max-width: 100%;
-            }
-            
-            .modal-content {
-                margin: 10% auto;
-                width: 95%;
-            }
-        }

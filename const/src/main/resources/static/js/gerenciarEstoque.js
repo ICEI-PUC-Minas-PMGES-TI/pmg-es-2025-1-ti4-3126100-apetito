@@ -24,17 +24,18 @@
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            fetchProdutos();
-            checkNotifications();
-            
-            // Verificar notificações a cada 30 segundos
-            notificationCheckInterval = setInterval(checkNotifications, 30000);
-            
             // Mostrar/ocultar campo de validade conforme perecível
-            perecivelInput.addEventListener('change', (e) => {
-                validadeInput.disabled = !e.target.checked;
-                if (!e.target.checked) {
-                    validadeInput.value = '';
+            document.getElementById('produto-perecivel').addEventListener('change', function(e) {
+                const validadeGroup = document.getElementById('validade-group');
+                if(e.target.checked) {
+                    validadeGroup.style.display = 'block';
+                    
+                    // Configurar data mínima como hoje
+                    const hoje = new Date().toISOString().split('T')[0];
+                    document.getElementById('produto-validade').min = hoje;
+                } else {
+                    validadeGroup.style.display = 'none';
+                    document.getElementById('produto-validade').value = '';
                 }
             });
             

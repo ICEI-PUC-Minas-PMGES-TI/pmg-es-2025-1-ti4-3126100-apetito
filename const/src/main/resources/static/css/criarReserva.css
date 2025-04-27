@@ -17,7 +17,7 @@
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     background-color: #f8f9fa;
     color: var(--dark-color);
     line-height: 1.6;
@@ -26,6 +26,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Marcellus", serif;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .reserva-container {
@@ -51,7 +60,7 @@ body {
 
 .reserva-header {
     background: var(--primary-color);
-    color: #000;
+    color: #ffffff;
     padding: 1.5rem;
     text-align: center;
 }
@@ -174,7 +183,7 @@ input:focus {
     width: 100%;
     padding: 1rem;
     background: var(--primary-color);
-    color: #000;
+    color: #ffffff;
     border: none;
     border-radius: var(--border-radius);
     font-family: 'Marcellus', serif;

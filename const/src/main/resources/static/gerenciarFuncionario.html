@@ -3,377 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Funcionários</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-        }
-        .form-section, .list-section {
-            flex: 1;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        input, select, textarea, button {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #funcionarios-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .funcionario-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .funcionario-actions {
-            margin-top: 10px;
-        }
-        .funcionario-actions button {
-            margin-right: 5px;
-            padding: 5px 10px;
-        }
-        .edit-btn {
-            background-color: #2196F3;
-        }
-        .delete-btn {
-            background-color: #f44336;
-        }
-        h2 {
-            color: #333;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 5px;
-        }
-        .placa-container {
-            display: none;
-            margin-top: 10px;
-        }
-    </style>
+    <title>Gerenciar Funcionários</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/const/src/main/resources/static/css/gerenciarFuncionario.css">
 </head>
 <body>
-    <h1>Gerenciamento de Funcionários</h1>
-    
-    <div class="container">
-        <div class="form-section">
-            <h2>Adicionar/Editar Funcionário</h2>
-            <form id="funcionario-form">
-                <input type="hidden" id="funcionario-id">
-                <input type="text" id="funcionario-nome" placeholder="Nome completo" required>
+    <div class="funcionario-container">
+        <header class="funcionario-header">
+            <h1><i class="fas fa-users"></i> Gerenciamento de Funcionários</h1>
+            <p>Cadastro e controle da equipe do restaurante</p>
+        </header>
 
-<input type="text" id="funcionario-cpf" placeholder="000.000.000-00" maxlength="14" required>
-<input type="text" id="funcionario-telefone" placeholder="(00) 00000-0000" maxlength="15" required>
-<input type="email" id="funcionario-email" placeholder="exemplo@dominio.com" required>
-                <input type="number" id="funcionario-salario" placeholder="Salário" step="0.01" min="0" required>
-                
-                <select id="funcionario-cargo" required>
-                    <option value="">Selecione o cargo</option>
-                </select>
-                
-                <div id="placa-container" class="placa-container">
-                    <input type="text" id="funcionario-placa" placeholder="Placa da moto">
+        <div class="container">
+            <section class="form-section">
+                <div class="form-card">
+                    <h2><i class="fas fa-user-plus"></i> Adicionar/Editar Funcionário</h2>
+                    <form id="funcionario-form">
+                        <input type="hidden" id="funcionario-id">
+                        
+                        <div class="form-group">
+                            <label for="funcionario-nome"><i class="fas fa-id-card"></i> Nome Completo</label>
+                            <input type="text" id="funcionario-nome" placeholder="Digite o nome completo" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="funcionario-cpf"><i class="fas fa-id-badge"></i> CPF</label>
+                                <input type="text" id="funcionario-cpf" placeholder="000.000.000-00" maxlength="14" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="funcionario-telefone"><i class="fas fa-phone"></i> Telefone</label>
+                                <input type="text" id="funcionario-telefone" placeholder="(00) 00000-0000" maxlength="15" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="funcionario-email"><i class="fas fa-envelope"></i> E-mail</label>
+                            <input type="email" id="funcionario-email" placeholder="exemplo@dominio.com" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="funcionario-salario"><i class="fas fa-money-bill-wave"></i> Salário</label>
+                                <div class="input-price">
+                                    <span>R$</span>
+                                    <input type="number" id="funcionario-salario" placeholder="0,00" step="0.01" min="0" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="funcionario-cargo"><i class="fas fa-briefcase"></i> Cargo</label>
+                                <select id="funcionario-cargo" required>
+                                    <option value="">Selecione o cargo</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="placa-container" class="form-group placa-container" style="display: none;">
+                            <label for="funcionario-placa"><i class="fas fa-motorcycle"></i> Placa da Moto</label>
+                            <input type="text" id="funcionario-placa" placeholder="AAA-0000">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" id="submit-btn" class="btn-primary">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <button type="button" id="cancel-btn" class="btn-outline">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <section class="list-section">
+                <div class="list-header">
+                    <h2><i class="fas fa-list"></i> Lista de Funcionários</h2>
+                    <button id="refresh-btn" class="btn-refresh">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
                 </div>
                 
-                <button type="submit" id="submit-btn">Salvar</button>
-                <button type="button" id="cancel-btn" style="background-color: #cccccc; display: none;">Cancelar</button>
-            </form>
-        </div>
-        
-        <div class="list-section">
-            <h2>Lista de Funcionários</h2>
-            <button id="refresh-btn">Atualizar Lista</button>
-            <ul id="funcionarios-list"></ul>
+                <div id="funcionarios-list" class="funcionarios-grid"></div>
+            </section>
         </div>
     </div>
 
-    <script>
-       const API_URL = 'http://localhost:8080/api/funcionarios';
-
-// Elementos do DOM
-const form = document.getElementById('funcionario-form');
-const idInput = document.getElementById('funcionario-id');
-const nomeInput = document.getElementById('funcionario-nome');
-const cpfInput = document.getElementById('funcionario-cpf');
-const telefoneInput = document.getElementById('funcionario-telefone');
-const emailInput = document.getElementById('funcionario-email');
-const salarioInput = document.getElementById('funcionario-salario');
-const cargoSelect = document.getElementById('funcionario-cargo');
-const placaContainer = document.getElementById('placa-container');
-const placaInput = document.getElementById('funcionario-placa');
-const submitBtn = document.getElementById('submit-btn');
-const cancelBtn = document.getElementById('cancel-btn');
-const refreshBtn = document.getElementById('refresh-btn');
-const funcionariosList = document.getElementById('funcionarios-list');
-
-let isEditing = false;
-let cargos = [];
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    fetchCargos();
-    fetchFuncionarios();
-
-    cargoSelect.addEventListener('change', (e) => {
-        placaContainer.style.display = e.target.value === 'MOTOBOY' ? 'block' : 'none';
-        if (e.target.value !== 'MOTOBOY') {
-            placaInput.value = '';
-        }
-    });
-
-    // Formatar CPF e Telefone enquanto digita
-    cpfInput.addEventListener('input', (e) => {
-        e.target.value = formatarCPF(e.target.value);
-    });
-
-    telefoneInput.addEventListener('input', (e) => {
-        e.target.value = formatarTelefone(e.target.value);
-    });
-});
-
-// Eventos
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Validação do email
-    if (!validarEmail(emailInput.value)) {
-        alert('Por favor, insira um e-mail válido (com @ e .com/.br/etc)');
-        emailInput.focus();
-        return;
-    }
-
-    // Remove a formatação antes de enviar
-    const cpfSemFormatacao = cpfInput.value.replace(/\D/g, '');
-    const telefoneSemFormatacao = telefoneInput.value.replace(/\D/g, '');
-
-    const funcionarioData = {
-        nome: nomeInput.value,
-        cpf: cpfSemFormatacao,
-        telefone: telefoneSemFormatacao,
-        email: emailInput.value,
-        salario: parseFloat(salarioInput.value),
-        cargo: cargoSelect.value,
-        placaMoto: cargoSelect.value === 'MOTOBOY' ? placaInput.value : null
-    };
-
-    try {
-        if (isEditing) {
-            await updateFuncionario(idInput.value, funcionarioData);
-        } else {
-            await createFuncionario(funcionarioData);
-        }
-        resetForm();
-        fetchFuncionarios();
-    } catch (error) {
-        console.error('Erro:', error);
-        alert('Ocorreu um erro. Verifique o console para mais detalhes.');
-    }
-});
-
-cancelBtn.addEventListener('click', resetForm);
-refreshBtn.addEventListener('click', fetchFuncionarios);
-
-// Funções para cargos
-async function fetchCargos() {
-    try {
-        const response = await fetch(`${API_URL}/cargos`);
-        cargos = await response.json();
-        populateCargoSelect();
-    } catch (error) {
-        console.error('Erro ao buscar cargos:', error);
-    }
-}
-
-function populateCargoSelect() {
-    cargoSelect.innerHTML = '<option value="">Selecione o cargo</option>';
-    cargos.forEach(cargo => {
-        const option = document.createElement('option');
-        option.value = cargo;
-        option.textContent = cargo;
-        cargoSelect.appendChild(option);
-    });
-}
-
-// Funções CRUD
-async function fetchFuncionarios() {
-    try {
-        const response = await fetch(API_URL);
-        const funcionarios = await response.json();
-        displayFuncionarios(funcionarios);
-    } catch (error) {
-        console.error('Erro ao buscar funcionários:', error);
-    }
-}
-
-async function createFuncionario(funcionarioData) {
-    const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(funcionarioData)
-    });
-    return await response.json();
-}
-
-async function updateFuncionario(id, funcionarioData) {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(funcionarioData)
-    });
-    return await response.json();
-}
-
-async function deleteFuncionario(id) {
-    if (confirm('Tem certeza que deseja excluir este funcionário?')) {
-        try {
-            await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE'
-            });
-            fetchFuncionarios();
-        } catch (error) {
-            console.error('Erro ao deletar funcionário:', error);
-        }
-    }
-}
-
-// Exibir funcionários
-function displayFuncionarios(funcionarios) {
-    funcionariosList.innerHTML = '';
-
-    if (funcionarios.length === 0) {
-        funcionariosList.innerHTML = '<li>Nenhum funcionário cadastrado</li>';
-        return;
-    }
-
-    funcionarios.forEach(funcionario => {
-        const li = document.createElement('li');
-        li.className = 'funcionario-card';
-
-        li.innerHTML = `
-            <h3>${funcionario.nome}</h3>
-            <p><strong>CPF:</strong> ${formatarCPF(funcionario.cpf)}</p>
-            <p><strong>Telefone:</strong> ${formatarTelefone(funcionario.telefone)}</p>
-            <p><strong>E-mail:</strong> ${funcionario.email}</p>
-            <p><strong>Cargo:</strong> ${funcionario.cargo}</p>
-            <p><strong>Salário:</strong> R$ ${funcionario.salario.toFixed(2)}</p>
-            ${funcionario.cargo === 'MOTOBOY' ? `<p><strong>Placa da Moto:</strong> ${funcionario.placaMoto}</p>` : ''}
-
-            <div class="funcionario-actions">
-                <button class="edit-btn" data-id="${funcionario.id}">Editar</button>
-                <button class="delete-btn" data-id="${funcionario.id}">Excluir</button>
-            </div>
-        `;
-
-        funcionariosList.appendChild(li);
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => editFuncionario(btn.dataset.id));
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteFuncionario(btn.dataset.id));
-    });
-}
-
-// Editar funcionário
-async function editFuncionario(id) {
-    try {
-        const response = await fetch(`${API_URL}/${id}`);
-        const funcionario = await response.json();
-
-        idInput.value = funcionario.id;
-        nomeInput.value = funcionario.nome;
-        cpfInput.value = formatarCPF(funcionario.cpf);
-        telefoneInput.value = formatarTelefone(funcionario.telefone);
-        emailInput.value = funcionario.email;
-        salarioInput.value = funcionario.salario;
-        cargoSelect.value = funcionario.cargo;
-
-        if (funcionario.cargo === 'MOTOBOY') {
-            placaContainer.style.display = 'block';
-            placaInput.value = funcionario.placaMoto || '';
-        } else {
-            placaContainer.style.display = 'none';
-        }
-
-        submitBtn.textContent = 'Atualizar';
-        cancelBtn.style.display = 'inline-block';
-        isEditing = true;
-
-        document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
-    } catch (error) {
-        console.error('Erro ao buscar funcionário para edição:', error);
-    }
-}
-
-// Resetar formulário
-function resetForm() {
-    form.reset();
-    idInput.value = '';
-    placaContainer.style.display = 'none';
-    submitBtn.textContent = 'Salvar';
-    cancelBtn.style.display = 'none';
-    isEditing = false;
-}
-
-// Funções auxiliares para formatação e validação
-function formatarCPF(cpf) {
-    cpf = cpf.replace(/\D/g, '');
-    cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-    cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-    cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    return cpf;
-}
-
-function formatarTelefone(telefone) {
-    telefone = telefone.replace(/\D/g, '');
-
-    if (telefone.length === 11) {
-        telefone = telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    } else if (telefone.length === 10) {
-        telefone = telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-    } else if (telefone.length > 2) {
-        telefone = telefone.replace(/(\d{2})(\d+)/, '($1) $2');
-    } else if (telefone.length > 0) {
-        telefone = telefone.replace(/^(\d*)/, '($1');
-    }
-
-    return telefone;
-}
-
-function validarEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-        
-    </script>
+    <script src="/const/src/main/resources/static/js/gerenciarFuncionario.js"></script>
 </body>
 </html>
