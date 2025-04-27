@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Compras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #formItem {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #formItem input {
+            flex: 1;
+            padding: 8px;
+            margin-right: 10px;
+        }
+        #formItem button {
+            padding: 8px 12px;
+        }
+        .item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+        .item.concluido {
+            background-color: #d4edda;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        .botoes button {
+            margin-left: 5px;
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Lista de Compras</h2>
+
+    <form id="formItem">
+        <input type="text" id="nomeItem" placeholder="Novo item..." required>
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <div id="listaCompras"></div>
+
+    <script>
+        const form = document.getElementById('formItem');
+        const listaCompras = document.getElementById('listaCompras');
+
+        let itens = JSON.parse(localStorage.getItem('listaCompras')) || [];
+
+        function salvarLocalStorage() {
+            localStorage.setItem('listaCompras', JSON.stringify(itens));
+        }
+
+        function renderizarLista() {
+            listaCompras.innerHTML = '';
+
+            itens.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                if (item.concluido) div.classList.add('concluido');
+
+                div.innerHTML = `
+                    <span>${item.nome}</span>
+                    <div class="botoes">
+                        <button onclick="concluirItem(${index})">✅</button>
+                        <button onclick="fixarItem(${index})">📌</button>
+                        <button onclick="excluirItem(${index})">🗑️</button>
+                    </div>
+                `;
+
+                listaCompras.appendChild(div);
+            });
+        }
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nomeItem').value.trim();
+            if (nome === '') return;
+
+            itens.push({ nome, concluido: false });
+            salvarLocalStorage();
+            renderizarLista();
+            form.reset();
+        });
+
+        function concluirItem(index) {
+            itens[index].concluido = true;
+            const itemConcluido = itens.splice(index, 1)[0];
+            itens.push(itemConcluido); // Move para o final
+            salvarLocalStorage();
+            renderizarLista();
+        }
+
+        function excluirItem(index) {
+            if (confirm('Deseja excluir este item?')) {
+                itens.splice(index, 1);
+                salvarLocalStorage();
+                renderizarLista();
+            }
+        }
+
+        function fixarItem(index) {
+            const itemFixado = itens.splice(index, 1)[0];
+            itens.unshift(itemFixado); // Move para o topo
+            salvarLocalStorage();
+            renderizarLista();
+        }
+
+        // Inicializa
+        renderizarLista();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Estoque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .form-section, .list-section {
+            flex: 1;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input, select, button {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #produtos-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .produto-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .produto-actions {
+            margin-top: 10px;
+        }
+        .produto-actions button {
+            margin-right: 5px;
+            padding: 5px 10px;
+        }
+        .edit-btn {
+            background-color: #2196F3;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .notification-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .vencimento-proximo {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerenciamento de Estoque</h1>
+    
+    <div id="notification-badge" class="notification-badge" style="display: none;" onclick="abrirModal()">0</div>
+    
+    <!-- Modal de Notificações -->
+    <div id="notification-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2>Notificações de Vencimento</h2>
+            <div id="notifications-container"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="form-section">
+            <h2>Adicionar/Editar Produto</h2>
+            <form id="produto-form">
+                <input type="hidden" id="produto-id">
+                <input type="text" id="produto-nome" placeholder="Nome do produto" required>
+                <input type="number" id="produto-preco" placeholder="Preço de compra" step="0.01" min="0" required>
+                <input type="date" id="produto-validade">
+                <div>
+                    <label>
+                        <input type="checkbox" id="produto-perecivel"> Produto perecível
+                    </label>
+                </div>
+                <button type="submit" id="submit-btn">Salvar</button>
+                <button type="button" id="cancel-btn" style="background-color: #cccccc; display: none;">Cancelar</button>
+            </form>
+        </div>
+        
+        <div class="list-section">
+            <h2>Lista de Produtos</h2>
+            <button id="refresh-btn">Atualizar Lista</button>
+            <ul id="produtos-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/produtos';
+        const NOTIFICATION_API = `${API_URL}/notificacoes`;
+        const NOTIFICATION_COUNT_API = `${API_URL}/notificacoes/contagem`;
+        
+        // Elementos do DOM
+        const form = document.getElementById('produto-form');
+        const idInput = document.getElementById('produto-id');
+        const nomeInput = document.getElementById('produto-nome');
+        const precoInput = document.getElementById('produto-preco');
+        const validadeInput = document.getElementById('produto-validade');
+        const perecivelInput = document.getElementById('produto-perecivel');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const produtosList = document.getElementById('produtos-list');
+        const notificationBadge = document.getElementById('notification-badge');
+        const modal = document.getElementById('notification-modal');
+        const notificationsContainer = document.getElementById('notifications-container');
+        
+        let isEditing = false;
+        let notificationCheckInterval;
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProdutos();
+            checkNotifications();
+            
+            // Verificar notificações a cada 30 segundos
+            notificationCheckInterval = setInterval(checkNotifications, 30000);
+            
+            // Mostrar/ocultar campo de validade conforme perecível
+            perecivelInput.addEventListener('change', (e) => {
+                validadeInput.disabled = !e.target.checked;
+                if (!e.target.checked) {
+                    validadeInput.value = '';
+                }
+            });
+            
+            // Configurar data mínima como hoje
+            const hoje = new Date().toISOString().split('T')[0];
+            validadeInput.min = hoje;
+            validadeInput.disabled = true;
+        });
+        
+        // Eventos
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const produtoData = {
+                nome: nomeInput.value,
+                precoCompra: parseFloat(precoInput.value),
+                dataValidade: perecivelInput.checked ? validadeInput.value : null,
+                perecivel: perecivelInput.checked
+            };
+            
+            try {
+                if (isEditing) {
+                    await updateProduto(idInput.value, produtoData);
+                } else {
+                    await createProduto(produtoData);
+                }
+                resetForm();
+                fetchProdutos();
+                checkNotifications(); // Verificar notificações após salvar
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro. Verifique o console para mais detalhes.');
+            }
+        });
+        
+        cancelBtn.addEventListener('click', resetForm);
+        refreshBtn.addEventListener('click', () => {
+            fetchProdutos();
+            checkNotifications();
+        });
+        
+        // Funções do Modal
+        function abrirModal() {
+            modal.style.display = 'block';
+            loadNotifications();
+        }
+        
+        function fecharModal() {
+            modal.style.display = 'none';
+        }
+        
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                fecharModal();
+            }
+        }
+        
+        // Funções CRUD
+        async function fetchProdutos() {
+            try {
+                const response = await fetch(API_URL);
+                const produtos = await response.json();
+                displayProdutos(produtos);
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        }
+        
+        async function createProduto(produtoData) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(produtoData)
+            });
+            return await response.json();
+        }
+        
+        async function updateProduto(id, produtoData) {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(produtoData)
+            });
+            return await response.json();
+        }
+        
+        async function deleteProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                try {
+                    await fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    });
+                    fetchProdutos();
+                    checkNotifications(); // Verificar notificações após deletar
+                } catch (error) {
+                    console.error('Erro ao deletar produto:', error);
+                }
+            }
+        }
+        
+        // Verificar notificações
+        async function checkNotifications() {
+            try {
+                const response = await fetch(NOTIFICATION_COUNT_API);
+                const count = await response.json();
+                
+                if (count > 0) {
+                    notificationBadge.style.display = 'flex';
+                    notificationBadge.textContent = count;
+                    
+                    // Mostrar alerta apenas se for uma nova notificação
+                    if (!modal.style.display || modal.style.display === 'none') {
+                        alert(`Você tem ${count} produto(s) próximo(s) do vencimento!`);
+                    }
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro ao verificar notificações:', error);
+            }
+        }
+        
+        // Carregar notificações no modal
+        async function loadNotifications() {
+            try {
+                const response = await fetch(NOTIFICATION_API);
+                const produtos = await response.json();
+                
+                notificationsContainer.innerHTML = '';
+                
+                if (produtos.length === 0) {
+                    notificationsContainer.innerHTML = '<p>Nenhum produto próximo do vencimento</p>';
+                    return;
+                }
+                
+                produtos.forEach(produto => {
+                    const hoje = new Date();
+                    const validade = new Date(produto.dataValidade);
+                    const diffTime = validade - hoje;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    const div = document.createElement('div');
+                    div.className = 'notification-item';
+                    div.innerHTML = `
+                        <h3>${produto.nome}</h3>
+                        <p><strong>Vencimento:</strong> ${new Date(produto.dataValidade).toLocaleDateString('pt-BR')}</p>
+                        <p><strong>Dias restantes:</strong> ${diffDays} dia(s)</p>
+                    `;
+                    
+                    notificationsContainer.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar notificações:', error);
+                notificationsContainer.innerHTML = '<p>Erro ao carregar notificações</p>';
+            }
+        }
+        
+        // Exibir produtos
+        function displayProdutos(produtos) {
+            produtosList.innerHTML = '';
+            
+            if (produtos.length === 0) {
+                produtosList.innerHTML = '<li>Nenhum produto cadastrado</li>';
+                return;
+            }
+            
+            const hoje = new Date();
+            
+            produtos.forEach(produto => {
+                const li = document.createElement('li');
+                li.className = 'produto-card';
+                
+                // Verificar se o produto está próximo do vencimento
+                let vencimentoProximoClass = '';
+                let vencimentoInfo = '';
+                
+                if (produto.perecivel && produto.dataValidade) {
+                    const validade = new Date(produto.dataValidade);
+                    const diffTime = validade - hoje;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays <= 7 && diffDays >= 0) {
+                        vencimentoProximoClass = 'vencimento-proximo';
+                        vencimentoInfo = ` (Vence em ${diffDays} dia(s))`;
+                    } else if (diffDays < 0) {
+                        vencimentoProximoClass = 'vencimento-proximo';
+                        vencimentoInfo = ` (Vencido há ${Math.abs(diffDays)} dia(s))`;
+                    }
+                }
+                
+                li.innerHTML = `
+                    <div class="${vencimentoProximoClass}">
+                        <h3>${produto.nome}</h3>
+                        <p><strong>Preço de compra:</strong> R$ ${produto.precoCompra.toFixed(2)}</p>
+                        ${produto.perecivel ? `
+                            <p><strong>Data de validade:</strong> 
+                                ${new Date(produto.dataValidade).toLocaleDateString('pt-BR')}
+                                ${vencimentoInfo}
+                            </p>
+                        ` : '<p><strong>Não perecível</strong></p>'}
+                        
+                        <div class="produto-actions">
+                            <button class="edit-btn" data-id="${produto.id}">Editar</button>
+                            <button class="delete-btn" data-id="${produto.id}">Excluir</button>
+                        </div>
+                    </div>
+                `;
+                
+                produtosList.appendChild(li);
+            });
+            
+            // Adicionar eventos
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => editProduto(btn.dataset.id));
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteProduto(btn.dataset.id));
+            });
+        }
+        
+        // Editar produto
+        async function editProduto(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const produto = await response.json();
+                
+                idInput.value = produto.id;
+                nomeInput.value = produto.nome;
+                precoInput.value = produto.precoCompra;
+                perecivelInput.checked = produto.perecivel;
+                
+                if (produto.perecivel && produto.dataValidade) {
+                    validadeInput.value = produto.dataValidade;
+                    validadeInput.disabled = false;
+                } else {
+                    validadeInput.value = '';
+                    validadeInput.disabled = true;
+                }
+                
+                submitBtn.textContent = 'Atualizar';
+                cancelBtn.style.display = 'inline-block';
+                isEditing = true;
+                
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Erro ao buscar produto para edição:', error);
+            }
+        }
+        
+        // Resetar formulário
+        function resetForm() {
+            form.reset();
+            idInput.value = '';
+            validadeInput.disabled = true;
+            submitBtn.textContent = 'Salvar';
+            cancelBtn.style.display = 'none';
+            isEditing = false;
+        }
+    </script>
+</body>
+</html>
