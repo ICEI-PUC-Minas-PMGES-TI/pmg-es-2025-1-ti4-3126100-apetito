@@ -19,13 +19,13 @@ public class AuthController {
 
         if (usuario != null) {
             if (usuario.getTipoConta().equals("Administrador")) {
-                return "redirect:/dashboard.html";
+                return "redirect:/admin.html";
             } else if (usuario.getTipoConta().equals("Cozinha")) {
                 return "redirect:/cozinha.html";
             } else if (usuario.getTipoConta().equals("Motoboy")) {
                 return "redirect:/motoboy.html";
             }else {
-                return "redirect:/pedido.html";
+                return "redirect:/cliente.html";
             }
         }
         return "redirect:/login.html";

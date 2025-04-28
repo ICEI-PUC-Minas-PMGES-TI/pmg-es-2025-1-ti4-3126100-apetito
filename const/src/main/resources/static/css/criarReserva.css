@@ -26,6 +26,7 @@ body {
     url("https://plus.unsplash.com/premium_photo-1676310055316-d73c9d5eeb51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 h1,
@@ -35,6 +36,117 @@ h4 {
   font-family: "Marcellus", serif;
   font-weight: 700;
   line-height: 1.2;
+}
+
+.navbar {
+    background: linear-gradient(135deg, #000000, #1a1a2e);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.navbar-brand {
+    font-family: "Marcellus", serif;
+    font-size: 1.5rem;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-brand i {
+    color: var(--primary-color);
+}
+
+.navbar-menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+}
+
+.navbar-item {
+    margin-left: 1.5rem;
+}
+
+.navbar-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3rem 0;
+    transition: var(--transition);
+    position: relative;
+}
+
+.navbar-link i {
+    margin-right: 8px;
+    font-size: 0.9rem;
+}
+
+.navbar-link:hover {
+    color: var(--primary-color);
+}
+
+.navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: var(--transition);
+}
+
+.navbar-link:hover::after {
+    width: 100%;
+}
+
+.navbar-link.active {
+    color: var(--primary-color);
+}
+
+.navbar-link.active::after {
+    width: 100%;
+}
+
+/* User Profile in Navbar */
+.user-profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 2rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar-nav {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-color);
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.user-name-nav {
+    color: white;
+    font-weight: 500;
+}
+
+.user-avatar-nav:hover {
+    transform: rotate(15deg) scale(1.1);
+    background-color: var(--accent-color);
 }
 
 .reserva-container {
@@ -60,7 +172,7 @@ h4 {
 }
 
 .reserva-header {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #eeaf43, #d48600);
     color: #ffffff;
     padding: 1.5rem;
     text-align: center;

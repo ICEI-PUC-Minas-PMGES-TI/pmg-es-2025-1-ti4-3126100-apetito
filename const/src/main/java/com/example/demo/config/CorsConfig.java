@@ -11,9 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // Permite o acesso de qualquer origem (mude para uma URL específica se necessário)
         registry.addMapping("/**")
-                .allowedOrigins("*")  // URL do seu frontend
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }

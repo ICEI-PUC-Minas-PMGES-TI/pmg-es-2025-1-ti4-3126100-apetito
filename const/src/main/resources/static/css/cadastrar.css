@@ -1,6 +1,6 @@
 :root {
     --primary-color: #FFC107;
-  --secondary-color: #2c3e50;
+  --secondary-color: #FFA000;
     --accent-color: #e74c3c;
     --light-color: #ecf0f1;
     --dark-color: #2c3e50;
@@ -26,6 +26,16 @@ body {
     url("https://plus.unsplash.com/premium_photo-1676310055316-d73c9d5eeb51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Marcellus", serif;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .signup-container {
@@ -41,7 +51,7 @@ body {
 }
 
 .signup-header {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #eeaf43, #d48600);
     color: white;
     padding: 1.5rem;
     text-align: center;
@@ -93,7 +103,7 @@ select.form-control {
 .btn {
     width: 100%;
     padding: 0.8rem;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -104,7 +114,7 @@ select.form-control {
 }
 
 .btn:hover {
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     transform: translateY(-2px);
 }
 
@@ -115,7 +125,7 @@ select.form-control {
 }
 
 .signup-footer a {
-    color: var(--primary-color);
+    color: var(--secondary-color);
     text-decoration: none;
     font-weight: 600;
 }

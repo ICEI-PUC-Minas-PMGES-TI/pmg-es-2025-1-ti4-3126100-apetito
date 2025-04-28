@@ -29,6 +29,7 @@ body {
     url("https://plus.unsplash.com/premium_photo-1676310055316-d73c9d5eeb51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 h1,
@@ -41,7 +42,7 @@ h4 {
 }
 
 .header {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #eeaf43, #d48600);
     color: var(--light-color);
     padding: 20px;
     border-radius: var(--border-radius);
