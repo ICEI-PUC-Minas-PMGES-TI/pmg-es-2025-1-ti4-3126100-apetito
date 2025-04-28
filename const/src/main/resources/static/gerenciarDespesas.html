@@ -7,7 +7,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/gerenciarDespesas.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/navbar.css">
 </head>
+<nav class="navbar">
+    <a href="#" class="navbar-brand">
+        <i class="fas fa-utensils"></i> Apetito
+    </a>
+    
+    <div class="navbar-burger" id="burger">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <ul class="navbar-menu" id="menu">
+        <li class="navbar-item">
+            <a href="#" class="navbar-link active"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="navbar-item">
+            <a href="#" class="navbar-link"><i class="fas fa-calendar-alt"></i> Reservas</a>
+        </li>
+        <li class="navbar-item">
+            <a href="#" class="navbar-link"><i class="fas fa-book"></i> Cardápio</a>
+        </li>
+        <li class="navbar-item">
+            <a href="#" class="navbar-link"><i class="fas fa-users"></i> Clientes</a>
+        </li>
+        <li class="navbar-item">
+            <a href="#" class="navbar-link"><i class="fas fa-cog"></i> Configurações</a>
+        </li>
+        <li class="navbar-item">
+            <a href="#" class="navbar-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </li>
+    </ul>
+</nav>
 <body>
     <div class="main-card">
         <div class="card-header">
@@ -50,7 +82,33 @@
         </div>
     </div>
 
+    <footer class="footer-07">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center">
+                  
+                    <p class="menu">
+                        <a href="">Home</a>
+                        <a href="gerenciarEstoque.html">Estoque</a>
+                        <a href="gerenciarFuncionario.html">Funcionários</a>
+                        <a href="gerenciarDespesas.html">Despesas</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="buscarProdutos.html">Pesquisas</a>
+                    </p>
+                    
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <p class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This softwate is made with <i class="ion-ios-heart" aria-hidden="true"></i> by <a href="" target="_blank">Apetito.restaurante</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 
     <script src="js/gerenciarDespesas.js"></script>
+    <script src="js/menuHamburguer.js"></script>
 </body>
 </html>
