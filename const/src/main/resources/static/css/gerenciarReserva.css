@@ -22,7 +22,6 @@ body {
     background-color: #f8f9fa;
     color: var(--dark-color);
     line-height: 1.6;
-    padding: 20px;
     min-height: 100vh;
 }
 
@@ -34,6 +33,14 @@ h4 {
   font-weight: 700;
   line-height: 1.2;
 }
+
+body{
+    height: 100vh;
+    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(250, 242, 222, 0.7)),
+    url("https://plus.unsplash.com/premium_photo-1676310055316-d73c9d5eeb51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-size: cover;
+    background-position: center;
+  }
 
 .reservas-container {
     width: 100%;
@@ -52,7 +59,7 @@ h4 {
 }
 
 .reservas-header {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #eeaf43, #d48600);
     color: #ffffff;
     padding: 1.5rem;
     text-align: center;

@@ -28,9 +28,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Marcellus", serif;
-  font-weight: 700;
-  line-height: 1.2;
+    font-family: "Marcellus", serif;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .container {
@@ -44,16 +44,15 @@ h4 {
     padding: 20px;
     border-radius: var(--border-radius);
     margin-bottom: 30px;
-    color: var(--light-color); /* Texto branco */
+    color: var(--light-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--dark-color);
     box-shadow: var(--box-shadow);
 }
 
 .header h1 {
-    color: var(--light-color); /* Garante que o h1 fique branco */
+    color: var(--light-color);
     margin: 0;
 }
 
@@ -63,16 +62,7 @@ h4 {
     box-shadow: var(--box-shadow);
     padding: 20px;
     margin-bottom: 20px;
-}
-
-.section:first-of-type {
     position: relative;
-}
-
-.section:first-of-type .btn-primary {
-    position: absolute;
-    right: 20px;
-    top: 20px;
 }
 
 .hidden {
@@ -80,18 +70,54 @@ h4 {
 }
 
 .btn-primary {
-    background-color: rgb(241, 165, 2);;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--dark-color);
     border: none;
     padding: 10px 20px;
     border-radius: var(--border-radius);
     cursor: pointer;
     font-weight: bold;
     transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-primary:hover {
     background-color: var(--secondary-color);
+}
+
+.btn-criarPedido {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-criarPedido:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
 }
 
 .form-group {
@@ -104,6 +130,13 @@ h4 {
     border: 1px solid #ddd;
     border-radius: var(--border-radius);
     font-size: 16px;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
 }
 
 label {
@@ -116,32 +149,6 @@ label {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
-}
-
-/* Estilo para o botão Adicionar nos itens do cardápio */
-.item-cardapio button {
-    background-color: var(--primary-color);
-    color: var(--dark-color);
-    border: none;
-    padding: 8px 15px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-weight: bold;
-    transition: var(--transition);
-    margin-left: 10px;
-}
-
-.item-cardapio button:hover {
-    background-color: var(--secondary-color);
-}
-
-/* Estilo para o input de quantidade */
-.item-cardapio input[type="number"] {
-    width: 60px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    text-align: center;
 }
 
 .item-cardapio {
@@ -164,6 +171,21 @@ label {
     color: var(--gray-color);
     display: block;
     margin: 10px 0;
+}
+
+.item-cardapio .item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.item-cardapio input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    text-align: center;
 }
 
 .carrinho-list {
@@ -200,34 +222,43 @@ label {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    overflow: auto;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
 .modal-content {
     background: white;
     padding: 30px;
     border-radius: var(--border-radius);
-    width: 100%;
+    width: 90%;
     max-width: 500px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    margin: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .avaliacao {
     margin-bottom: 15px;
 }
 
-.estrelas span {
-    font-size: 24px;
-    color: #ddd;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-right: 5px;
+.estrelas {
+    display: flex;
+    gap: 5px;
 }
 
-.estrelas span:hover,
-.estrelas span.active {
+.estrelas span {
+    font-size: 24px;
+    color: #ffe100;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.estrelas span.active,
+.estrelas span:hover {
     color: gold;
 }
 
@@ -238,4 +269,20 @@ textarea {
     border: 1px solid #ddd;
     resize: vertical;
     min-height: 100px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .cardapio-grid {
+        grid-template-columns: 1fr;
+    }
 }

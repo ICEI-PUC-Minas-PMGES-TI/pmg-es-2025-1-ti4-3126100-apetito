@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido - Restaurante</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/pedido.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>Pedido - Restaurante</h1>
-            <button class="btn-primary" onclick="criarPedido()">Criar Novo Pedido</button>
+            <h1><i class="fas fa-utensils"></i> Pedido - Restaurante</h1>
+            <button class="btn-criarPedido" onclick="criarPedido()">
+                <i class="fas fa-plus"></i> Criar Novo Pedido
+            </button>
         </header>
 
         <section class="section">
-            <h2>Escolha o tipo de pedido</h2>
+            <h2><i class="fas fa-list-alt"></i> Escolha o tipo de pedido</h2>
             <div class="form-group">
                 <select id="tipoPedido" class="form-control" onchange="atualizarTipoPedido()">
                     <option value="online">Online</option>
@@ -26,34 +27,36 @@
             </div>
 
             <div id="mesaSelecionada" class="hidden">
-                <h3>Escolha uma Mesa</h3>
+                <h3><i class="fas fa-chair"></i> Escolha uma Mesa</h3>
                 <select id="mesaSelect" class="form-control"></select>
             </div>
 
             <div id="dadosCliente" class="hidden">
-                <h3>Informe seus dados</h3>
+                <h3><i class="fas fa-user"></i> Informe seus dados</h3>
                 <div class="form-group">
                     <label for="nomeCliente">Nome:</label>
-                    <input type="text" id="nomeCliente" class="form-control">
+                    <input type="text" id="nomeCliente" class="form-control" placeholder="Seu nome completo">
                 </div>
                 <div class="form-group">
                     <label for="enderecoCliente">Endereço:</label>
-                    <input type="text" id="enderecoCliente" class="form-control">
+                    <input type="text" id="enderecoCliente" class="form-control" placeholder="Seu endereço completo">
                 </div>
             </div>
         </section>
 
         <section class="section">
-            <h2>Cardápio</h2>
+            <h2><i class="fas fa-book"></i> Cardápio</h2>
             <div id="cardapio" class="cardapio-grid"></div>
         </section>
 
         <section class="section">
-            <h2>Carrinho</h2>
+            <h2><i class="fas fa-shopping-cart"></i> Carrinho</h2>
             <div id="carrinho" class="carrinho-list"></div>
             <div class="total-container">
                 <p id="totalCarrinho" class="total">Total: R$ 0.00</p>
-                <button class="btn-primary" onclick="finalizarPedido()">Finalizar Pedido</button>
+                <button class="btn-primary" onclick="finalizarPedido()">
+                    <i class="fas fa-check"></i> Finalizar Pedido
+                </button>
             </div>
         </section>
     </div>
@@ -61,7 +64,7 @@
     <!-- Modal de Avaliação -->
     <div id="modalAvaliacao" class="modal">
         <div class="modal-content">
-            <h2>Obrigado pelo seu pedido! 🥳</h2>
+            <h2><i class="fas fa-star"></i> Obrigado pelo seu pedido! 🥳</h2>
             <p>Como foi sua experiência?</p>
 
             <div class="avaliacao">
@@ -84,7 +87,9 @@
                 <textarea id="comentario" rows="4" placeholder="Deixe seu feedback..."></textarea>
             </div>
 
-            <button class="btn-primary" onclick="enviarAvaliacao()">Enviar Avaliação</button>
+            <button class="btn-primary" onclick="enviarAvaliacao()">
+                <i class="fas fa-paper-plane"></i> Enviar Avaliação
+            </button>
         </div>
     </div>
 
