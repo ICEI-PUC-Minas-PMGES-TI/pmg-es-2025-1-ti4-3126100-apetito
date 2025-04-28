@@ -1,11 +1,19 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PedidoCozinhaDTO;
+import com.example.demo.dto.PedidoMotoboyDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
@@ -35,7 +43,7 @@ public class PedidoService {
                 throw new IllegalArgumentException("Mesa não encontrada.");
             }
 
-            mesa.setStatus("OCUPADO");  // Alterar status da mesa para "ocupado"
+            mesa.setStatus("ocupado");  // Alterar status da mesa para "ocupado"
             mesaRepository.save(mesa);   // Salvar a mesa com o novo status
 
             pedido.setMesa(mesa);  // Associar a mesa ao pedido
@@ -71,7 +79,7 @@ public class PedidoService {
 
     public Pedido finalizarPedido(Long pedidoId) {
         Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow();
-        pedido.setStatus("FINALIZADO");
+        pedido.setStatus("EM_ANDAMENTO");
         return pedidoRepository.save(pedido);
     }
 
@@ -85,4 +93,67 @@ public class PedidoService {
 
         return total;
     }
+
+    public List<PedidoCozinhaDTO> listarPedidosParaCozinha() {
+    List<Pedido> pedidos = pedidoRepository.findAll();
+    
+    return pedidos.stream()
+        .filter(pedido -> !pedido.getStatus().equals("FINALIZADO")) // Filtra apenas pedidos ativos
+        .map(pedido -> {
+            PedidoCozinhaDTO dto = new PedidoCozinhaDTO();
+            dto.setId(pedido.getId());
+            dto.setStatus(pedido.getStatus());
+            dto.setItens(pedido.getItens());
+            dto.setTotal(calcularTotal(pedido.getId()));
+            
+            // Calcula o total do pedido
+            double total = pedido.getItens().stream()
+                .filter(item -> item.getItemCardapio() != null)
+                .mapToDouble(item -> item.getItemCardapio().getPreco() * item.getQuantidade())
+                .sum();
+            
+            dto.setTotal(total);
+            
+            if (pedido.getMesa() != null) {
+                dto.setMesaId(pedido.getMesa().getId());
+            }
+            
+            return dto;
+        })
+        .collect(Collectors.toList());
+}
+
+public List<PedidoMotoboyDTO> listarPedidosParaMotoboy() {
+    return pedidoRepository.findByMesaIsNullAndStatusNotOrderByStatusAscDataStatusDesc("ENTREGUE").stream()
+        .map(pedido -> {
+            PedidoMotoboyDTO dto = new PedidoMotoboyDTO();
+            dto.setId(pedido.getId());
+            dto.setStatus(pedido.getStatus());
+            dto.setNomeCliente(pedido.getNomeCliente());
+            dto.setEnderecoCliente(pedido.getEnderecoCliente());
+            dto.setTotal(calcularTotal(pedido.getId()));
+            dto.setDataStatus(pedido.getDataStatus()); // Mapeia a data do status
+            return dto;
+        })
+        .collect(Collectors.toList());
+}
+
+   public void marcarComoEmRota(Long pedidoId) {
+    Pedido pedido = pedidoRepository.findById(pedidoId)
+        .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
+    
+    pedido.setStatus("EM ROTA");
+    pedido.setDataStatus(LocalDateTime.now()); // Atualiza a data do status
+    pedidoRepository.save(pedido);
+}
+
+public void marcarComoEntregue(Long pedidoId) {
+    Pedido pedido = pedidoRepository.findById(pedidoId)
+        .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
+    
+    pedido.setStatus("ENTREGUE");
+    pedido.setDataStatus(LocalDateTime.now());
+    pedidoRepository.save(pedido);
+}
+
 }

@@ -15,4 +15,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findProdutosProximosVencimento(
             @Param("hoje") LocalDate hoje,
             @Param("umaSemana") LocalDate umaSemana);
+
+     @Query("SELECT SUM(p.precoCompra) FROM Produto p")
+        Double sumTotalProdutos();       
 }

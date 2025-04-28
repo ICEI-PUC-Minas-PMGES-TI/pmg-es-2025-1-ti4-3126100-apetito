@@ -1,16 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Produto;
+import com.example.demo.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.model.Produto;
-import com.example.demo.repository.ProdutoRepository;
-import com.example.demo.service.ProdutoService;
-
 import java.util.List;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -74,5 +70,3 @@ public class ProdutoController {
         return service.contarProdutosProximosVencimento();
     }
 }
-
-

@@ -1,9 +1,14 @@
 package com.example.demo.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 public class Pedido {
@@ -12,7 +17,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status; // "EM_ANDAMENTO" ou "FINALIZADO"
+    private String status; // "EM_ANDAMENTO", "EM ROTA", "ENTREGUE", etc.
+    private LocalDateTime dataStatus; // Adicione este campo
     
     @ManyToOne
     private Mesa mesa; // Relacionamento com mesa
@@ -26,8 +32,18 @@ public class Pedido {
     public Pedido() {
         this.status = "EM_ANDAMENTO";
     }
+  
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    // Getters e Setters
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,5 +90,48 @@ public class Pedido {
 
     public void setEnderecoCliente(String enderecoCliente) {
         this.enderecoCliente = enderecoCliente;
+    }
+
+    public LocalDateTime getDataStatus() {
+        return dataStatus;
+    }
+
+    public void setDataStatus(LocalDateTime dataStatus) {
+        this.dataStatus = dataStatus;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+
+    @Column(nullable = true)  // Permite valores nulos no banco
+    private Double total;  // Note o "D" maiúsculo - isso é crucial
+
+    @PrePersist
+    @PreUpdate
+    public void calcularTotal() {
+        try {
+            double calculatedTotal = 0.0;
+            
+            if (this.itens != null) {
+                calculatedTotal = this.itens.stream()
+                    .filter(Objects::nonNull)
+                    .filter(item -> item.getItemCardapio() != null)
+                    .filter(item -> item.getItemCardapio().getPreco() != null)
+                    .mapToDouble(item -> item.getItemCardapio().getPreco() * item.getQuantidade())
+                    .sum();
+            }
+            
+            this.total = calculatedTotal;
+        } catch (Exception e) {
+            this.total = 0.0;
+            System.err.println("Erro ao calcular total do pedido ID: " + this.id);  // Alternativa simples
+            e.printStackTrace();
+        }
     }
 }

@@ -54,4 +54,13 @@ public class ItemPedido {
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
+
+    public double getPrecoTotal() {
+        if (itemCardapio != null) {
+            return itemCardapio.getPreco() * quantidade;
+        } else {
+            return 0.0;
+        }
+    }
+    
 }

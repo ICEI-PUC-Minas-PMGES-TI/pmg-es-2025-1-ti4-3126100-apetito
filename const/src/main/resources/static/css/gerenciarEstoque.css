@@ -291,11 +291,6 @@ input:focus {
     font-weight: 500;
 }
 
-.vencido {
-    border-left: 4px solid var(--danger-color);
-}
-
-
 
 /* Modal */
 .modal {

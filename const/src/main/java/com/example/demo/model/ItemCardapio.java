@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +17,7 @@ public class ItemCardapio {
     
     private String nome;
     private String descricao;
-    private double preco;
+
     
     public ItemCardapio() {
     }
@@ -27,6 +28,14 @@ public class ItemCardapio {
         this.preco = preco;
     }
     
+    @Column(nullable = true)  // Permite valores nulos no banco
+    private Double preco;  // Mude de 'double' para 'Double' (objeto)
+    
+    // Atualize o getter
+    public Double getPreco() {
+        return this.preco;
+    }
+
     // Getters e Setters
     public Long getId() {
         return id;
@@ -52,10 +61,7 @@ public class ItemCardapio {
         this.descricao = descricao;
     }
     
-    public double getPreco() {
-        return preco;
-    }
-    
+   
     public void setPreco(double preco) {
         this.preco = preco;
     }
