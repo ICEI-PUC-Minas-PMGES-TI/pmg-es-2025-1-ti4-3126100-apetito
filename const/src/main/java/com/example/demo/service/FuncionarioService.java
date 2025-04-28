@@ -10,26 +10,25 @@ import java.util.Optional;
 
 @Service
 public class FuncionarioService {
-    
+
     @Autowired
     private FuncionarioRepository repository;
-    
+
     public List<Funcionario> listarTodos() {
         return repository.findAll();
     }
-    
+
     public Optional<Funcionario> buscarPorId(Long id) {
         return repository.findById(id);
     }
-    
+
     public Funcionario salvar(Funcionario funcionario) {
-        // Se não for motoboy, remove a placa da moto
         if (funcionario.getCargo() != Funcionario.Cargo.MOTOBOY) {
             funcionario.setPlacaMoto(null);
         }
         return repository.save(funcionario);
     }
-    
+
     public void deletar(Long id) {
         repository.deleteById(id);
     }

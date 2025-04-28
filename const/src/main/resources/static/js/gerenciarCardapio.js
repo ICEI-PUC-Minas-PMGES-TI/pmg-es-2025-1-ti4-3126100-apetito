@@ -1,6 +1,5 @@
 const API_URL = "http://localhost:8080/api/cardapio";
 
-// Elementos do DOM
 const form = document.getElementById("item-form");
 const itemIdInput = document.getElementById("item-id");
 const nomeInput = document.getElementById("item-nome");
@@ -11,107 +10,97 @@ const cancelBtn = document.getElementById("cancel-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const itemsList = document.getElementById("items-list");
 
-// Variável para controlar se estamos editando
 let isEditing = false;
 
-// Carregar itens ao carregar a página
 document.addEventListener("DOMContentLoaded", fetchItems);
 
-// Evento de submit do formulário
 form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const itemData = {
-        nome: nomeInput.value,
-        descricao: descricaoInput.value,
-        preco: parseFloat(precoInput.value),
-    };
+  const itemData = {
+    nome: nomeInput.value,
+    descricao: descricaoInput.value,
+    preco: parseFloat(precoInput.value),
+  };
 
-    try {
-        if (isEditing) {
-            await updateItem(itemIdInput.value, itemData);
-        } else {
-            await createItem(itemData);
-        }
-        resetForm();
-        fetchItems();
-    } catch (error) {
-        console.error("Erro:", error);
-        alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+  try {
+    if (isEditing) {
+      await updateItem(itemIdInput.value, itemData);
+    } else {
+      await createItem(itemData);
     }
-});
-
-// Evento do botão cancelar
-cancelBtn.addEventListener("click", () => {
     resetForm();
+    fetchItems();
+  } catch (error) {
+    console.error("Erro:", error);
+    alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+  }
 });
 
-// Evento do botão atualizar
+cancelBtn.addEventListener("click", () => {
+  resetForm();
+});
+
 refreshBtn.addEventListener("click", fetchItems);
 
-// Função para buscar todos os itens
 async function fetchItems() {
-    try {
-        const response = await fetch(API_URL);
-        const items = await response.json();
-        displayItems(items);
-    } catch (error) {
-        console.error("Erro ao buscar itens:", error);
-    }
+  try {
+    const response = await fetch(API_URL);
+    const items = await response.json();
+    displayItems(items);
+  } catch (error) {
+    console.error("Erro ao buscar itens:", error);
+  }
 }
 
-// Função para criar um novo item
 async function createItem(itemData) {
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itemData),
-    });
-    return await response.json();
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(itemData),
+  });
+  return await response.json();
 }
 
-// Função para atualizar um item
 async function updateItem(id, itemData) {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itemData),
-    });
-    return await response.json();
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(itemData),
+  });
+  return await response.json();
 }
 
-// Função para deletar um item
 async function deleteItem(id) {
-    if (confirm("Tem certeza que deseja excluir este item?")) {
-        try {
-            await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-            });
-            fetchItems();
-        } catch (error) {
-            console.error("Erro ao deletar item:", error);
-        }
+  if (confirm("Tem certeza que deseja excluir este item?")) {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      fetchItems();
+    } catch (error) {
+      console.error("Erro ao deletar item:", error);
     }
+  }
 }
 
-// Função para exibir os itens na lista
 function displayItems(items) {
-    itemsList.innerHTML = "";
+  itemsList.innerHTML = "";
 
-    if (items.length === 0) {
-        itemsList.innerHTML = '<div class="no-items">Nenhum item no cardápio</div>';
-        return;
-    }
+  if (items.length === 0) {
+    itemsList.innerHTML = '<div class="no-items">Nenhum item no cardápio</div>';
+    return;
+  }
 
-    items.forEach((item) => {
-        const itemCard = document.createElement("div");
-        itemCard.className = "item-card";
+  items.forEach((item) => {
+    const itemCard = document.createElement("div");
+    itemCard.className = "item-card";
 
-        itemCard.innerHTML = `
+    itemCard.innerHTML = `
             <h3>${item.nome}</h3>
             <p>${item.descricao}</p>
             <p class="price">R$ ${item.preco.toFixed(2)}</p>
@@ -125,49 +114,45 @@ function displayItems(items) {
             </div>
         `;
 
-        itemsList.appendChild(itemCard);
-    });
+    itemsList.appendChild(itemCard);
+  });
 
-    // Adicionar eventos aos botões de edição e exclusão
-    document.querySelectorAll(".edit-btn").forEach((btn) => {
-        btn.addEventListener("click", () => editItem(btn.dataset.id));
-    });
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => editItem(btn.dataset.id));
+  });
 
-    document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.addEventListener("click", () => deleteItem(btn.dataset.id));
-    });
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteItem(btn.dataset.id));
+  });
 }
 
-// Função para editar um item
 async function editItem(id) {
-    try {
-        const response = await fetch(`${API_URL}/${id}`);
-        const item = await response.json();
+  try {
+    const response = await fetch(`${API_URL}/${id}`);
+    const item = await response.json();
 
-        itemIdInput.value = item.id;
-        nomeInput.value = item.nome;
-        descricaoInput.value = item.descricao;
-        precoInput.value = item.preco;
+    itemIdInput.value = item.id;
+    nomeInput.value = item.nome;
+    descricaoInput.value = item.descricao;
+    precoInput.value = item.preco;
 
-        submitBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
-        cancelBtn.style.display = "flex";
-        isEditing = true;
+    submitBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+    cancelBtn.style.display = "flex";
+    isEditing = true;
 
-        // Rolando para o formulário
-        document.querySelector(".form-section").scrollIntoView({ 
-            behavior: "smooth",
-            block: "start"
-        });
-    } catch (error) {
-        console.error("Erro ao buscar item para edição:", error);
-    }
+    document.querySelector(".form-section").scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  } catch (error) {
+    console.error("Erro ao buscar item para edição:", error);
+  }
 }
 
-// Função para resetar o formulário
 function resetForm() {
-    form.reset();
-    itemIdInput.value = "";
-    submitBtn.innerHTML = '<i class="fas fa-save"></i> Salvar';
-    cancelBtn.style.display = "none";
-    isEditing = false;
+  form.reset();
+  itemIdInput.value = "";
+  submitBtn.innerHTML = '<i class="fas fa-save"></i> Salvar';
+  cancelBtn.style.display = "none";
+  isEditing = false;
 }

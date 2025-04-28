@@ -16,37 +16,36 @@ import com.example.demo.service.RelatorioService;
 @CrossOrigin(origins = "*")
 public class RelatorioController {
 
-    
     @Autowired
     private RelatorioService relatorioService;
-    
+
     @GetMapping("/despesas-totais")
     public Map<String, Double> getDespesasTotais() {
         return relatorioService.getDespesasTotais();
     }
-    
+
     @GetMapping("/despesas-operacionais")
     public Map<String, Double> getDespesasOperacionais() {
         return relatorioService.getDespesasOperacionais();
     }
-    
+
     @GetMapping("/itens-mais-pedidos")
     public Map<String, Long> getItensMaisPedidos() {
         return relatorioService.calcularItensMaisPedidos();
     }
-    
+
     @GetMapping("/tipo-pedidos")
     public Map<String, Long> getQuantidadePorTipoPedido() {
         return relatorioService.contarPedidosPorTipo();
     }
 
     @GetMapping("/vendas-totais")
-public ResponseEntity<Double> getVendasTotais() {
-    try {
-        Double total = relatorioService.calcularVendasTotais();
-        return ResponseEntity.ok(total);
-    } catch (Exception e) {
-        return ResponseEntity.ok(0.0);
+    public ResponseEntity<Double> getVendasTotais() {
+        try {
+            Double total = relatorioService.calcularVendasTotais();
+            return ResponseEntity.ok(total);
+        } catch (Exception e) {
+            return ResponseEntity.ok(0.0);
+        }
     }
-}
 }

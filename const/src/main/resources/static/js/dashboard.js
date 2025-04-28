@@ -1,9 +1,7 @@
-// Função para formatar valores monetários
 function formatarMoeda(valor) {
   return "R$ " + valor.toFixed(2).replace(".", ",");
 }
 
-// Função para criar gráfico genérico
 function criarGrafico(elementId, apiUrl, tipo = "bar", isCurrency = false) {
   fetch(apiUrl)
     .then((response) => response.json())
@@ -82,23 +80,19 @@ function criarGrafico(elementId, apiUrl, tipo = "bar", isCurrency = false) {
     .catch((error) => console.error("Erro ao carregar dados:", error));
 }
 
-// Função para criar o gráfico de Lucro (Vendas - Despesas)
 async function criarGraficoLucro() {
   try {
-    // Busca vendas totais
     const responseVendas = await fetch(
       "http://localhost:8080/api/relatorios/vendas-totais"
     );
     const vendas = await responseVendas.json();
 
-    // Busca despesas totais
     const responseDespesas = await fetch(
       "http://localhost:8080/api/relatorios/despesas-totais"
     );
     const despesasData = await responseDespesas.json();
     const despesas = Object.values(despesasData).reduce((a, b) => a + b, 0);
 
-    // Calcula lucro
     const lucro = vendas - despesas;
 
     const ctx = document.getElementById("graficoLucro").getContext("2d");
@@ -111,11 +105,7 @@ async function criarGraficoLucro() {
           {
             label: "Valor (R$)",
             data: [vendas, despesas, lucro],
-            backgroundColor: [
-              "#4CAF50", // Verde para vendas
-              "#F44336", // Vermelho para despesas
-              "#FFC107", // Amarelo para lucro
-            ],
+            backgroundColor: ["#4CAF50", "#F44336", "#FFC107"],
             borderWidth: 1,
           },
         ],
@@ -138,7 +128,7 @@ async function criarGraficoLucro() {
         },
         scales: {
           y: {
-            beginAtZero: false, // Para melhor visualização de valores negativos
+            beginAtZero: false,
             ticks: {
               callback: function (value) {
                 return formatarMoeda(value);
@@ -159,9 +149,7 @@ async function criarGraficoLucro() {
   }
 }
 
-// Criar todos os gráficos quando a página carregar
 document.addEventListener("DOMContentLoaded", function () {
-  // Gráficos principais (topo da página)
   criarGrafico(
     "graficoDespesasTotais",
     "http://localhost:8080/api/relatorios/despesas-totais",
@@ -170,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   criarGraficoLucro();
 
-  // Gráficos secundários
   criarGrafico(
     "graficoDespesasOperacionais",
     "http://localhost:8080/api/relatorios/despesas-operacionais",

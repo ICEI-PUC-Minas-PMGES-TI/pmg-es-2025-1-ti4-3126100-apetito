@@ -25,8 +25,7 @@ public class PedidoController {
             @RequestParam(required = false) Long mesaId,
             @RequestParam(required = false) String nomeCliente,
             @RequestParam(required = false) String enderecoCliente) {
-        
-        // Verificação para pedidos online
+
         if ("online".equals(tipoPedido)) {
             if (nomeCliente == null || nomeCliente.trim().isEmpty()) {
                 throw new IllegalArgumentException("Nome do cliente é obrigatório para pedidos online");
@@ -35,7 +34,7 @@ public class PedidoController {
                 throw new IllegalArgumentException("Endereço do cliente é obrigatório para pedidos online");
             }
         }
-        
+
         return pedidoService.criarPedido(tipoPedido, mesaId, nomeCliente, enderecoCliente);
     }
 
@@ -45,7 +44,8 @@ public class PedidoController {
     }
 
     @PostMapping("/{pedidoId}/itens/{itemCardapioId}")
-    public Pedido adicionarItem(@PathVariable Long pedidoId, @PathVariable Long itemCardapioId, @RequestParam int quantidade) {
+    public Pedido adicionarItem(@PathVariable Long pedidoId, @PathVariable Long itemCardapioId,
+            @RequestParam int quantidade) {
         return pedidoService.adicionarItem(pedidoId, itemCardapioId, quantidade);
     }
 
@@ -65,11 +65,11 @@ public class PedidoController {
     }
 
     @GetMapping("/cozinha")
-public List<PedidoCozinhaDTO> listarPedidosParaCozinha() {
-    return pedidoService.listarPedidosParaCozinha();
-}
+    public List<PedidoCozinhaDTO> listarPedidosParaCozinha() {
+        return pedidoService.listarPedidosParaCozinha();
+    }
 
-     @GetMapping("/motoboy")
+    @GetMapping("/motoboy")
     public List<PedidoMotoboyDTO> listarPedidosParaMotoboy() {
         return pedidoService.listarPedidosParaMotoboy();
     }
@@ -86,5 +86,4 @@ public List<PedidoCozinhaDTO> listarPedidosParaCozinha() {
         return ResponseEntity.ok().build();
     }
 
-    
 }

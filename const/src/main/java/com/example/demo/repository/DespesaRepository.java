@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DespesaRepository extends JpaRepository<Despesa, Long> {
     @Query("SELECT SUM(d.preco) FROM Despesa d")
-Double sumTotalDespesas();
+    Double sumTotalDespesas();
 }

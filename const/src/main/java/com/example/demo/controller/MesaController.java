@@ -20,13 +20,11 @@ public class MesaController {
     @Autowired
     private MesaService mesaService;
 
-    // Endpoint para listar as mesas
     @GetMapping
     public List<Mesa> listarMesas() {
         return mesaService.listarMesas();
     }
 
-    // Endpoint para alterar o status de uma mesa
     @PutMapping("/{id}")
     public ResponseEntity<Void> alterarStatus(@PathVariable Long id) {
         mesaService.alterarStatus(id);

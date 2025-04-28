@@ -1,9 +1,9 @@
 :root {
-  --primary-color: #ffc107; /* Amarelo */
-  --secondary-color: #ffa000; /* Amarelo escuro */
-  --success-color: #4caf50; /* Verde */
-  --danger-color: #f44336; /* Vermelho */
-  --info-color: #2196f3; /* Azul */
+  --primary-color: #ffc107;
+  --secondary-color: #ffa000;
+  --success-color: #4caf50;
+  --danger-color: #f44336;
+  --info-color: #2196f3;
   --light-color: #ffffff;
   --dark-color: #212529;
   --gray-color: #6c757d;
@@ -201,14 +201,4 @@ h4 {
 .empty-state h3 {
   color: var(--secondary-color);
   margin-bottom: 10px;
-}
-
-@media (max-width: 768px) {
-  .pedido-container {
-    grid-template-columns: 1fr;
-  }
-
-  .header h1 {
-    font-size: 20px;
-  }
 }

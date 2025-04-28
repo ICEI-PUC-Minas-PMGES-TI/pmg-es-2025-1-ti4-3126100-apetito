@@ -12,9 +12,8 @@ public class Mesa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status; // 'livre' ou 'ocupado'
+    private String status;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -31,4 +30,3 @@ public class Mesa {
         this.status = status;
     }
 }
-

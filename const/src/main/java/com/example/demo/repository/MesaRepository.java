@@ -10,5 +10,6 @@ import com.example.demo.model.Mesa;
 @Repository
 public interface MesaRepository extends JpaRepository<Mesa, Long> {
     List<Mesa> findAll();
+
     List<Mesa> findByStatus(String status);
 }

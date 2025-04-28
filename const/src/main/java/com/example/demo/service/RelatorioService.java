@@ -19,87 +19,80 @@ import com.example.demo.repository.ProdutoRepository;
 
 @Service
 public class RelatorioService {
-    
+
     @Autowired
     private FuncionarioRepository funcionarioRepository;
-    
+
     @Autowired
     private ProdutoRepository produtoRepository;
-    
+
     @Autowired
     private DespesaRepository despesaRepository;
-    
+
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    // Métodos existentes para despesas
     public Map<String, Double> getDespesasTotais() {
         Map<String, Double> totais = new HashMap<>();
-        
-        totais.put("Salários", funcionarioRepository.sumTotalSalarios() != null ? 
-            funcionarioRepository.sumTotalSalarios() : 0.0);
-        totais.put("Produtos", produtoRepository.sumTotalProdutos() != null ? 
-            produtoRepository.sumTotalProdutos() : 0.0);
-        totais.put("Despesas", despesaRepository.sumTotalDespesas() != null ? 
-            despesaRepository.sumTotalDespesas() : 0.0);
-        
-        return totais;
-    }
-    
-    public Map<String, Double> getDespesasOperacionais() {
-        Map<String, Double> totais = new HashMap<>();
-        
-        totais.put("Produtos", produtoRepository.sumTotalProdutos() != null ? 
-            produtoRepository.sumTotalProdutos() : 0.0);
-        totais.put("Despesas", despesaRepository.sumTotalDespesas() != null ? 
-            despesaRepository.sumTotalDespesas() : 0.0);
-        
+
+        totais.put("Salários",
+                funcionarioRepository.sumTotalSalarios() != null ? funcionarioRepository.sumTotalSalarios() : 0.0);
+        totais.put("Produtos",
+                produtoRepository.sumTotalProdutos() != null ? produtoRepository.sumTotalProdutos() : 0.0);
+        totais.put("Despesas",
+                despesaRepository.sumTotalDespesas() != null ? despesaRepository.sumTotalDespesas() : 0.0);
+
         return totais;
     }
 
-    // Métodos para os novos gráficos
+    public Map<String, Double> getDespesasOperacionais() {
+        Map<String, Double> totais = new HashMap<>();
+
+        totais.put("Produtos",
+                produtoRepository.sumTotalProdutos() != null ? produtoRepository.sumTotalProdutos() : 0.0);
+        totais.put("Despesas",
+                despesaRepository.sumTotalDespesas() != null ? despesaRepository.sumTotalDespesas() : 0.0);
+
+        return totais;
+    }
+
     public Map<String, Long> calcularItensMaisPedidos() {
         List<Pedido> todosPedidos = pedidoRepository.findAllWithItens();
-        
+
         Map<String, Long> itensCount = todosPedidos.stream()
-            .flatMap(pedido -> pedido.getItens().stream())
-            .collect(Collectors.groupingBy(
-                item -> item.getItemCardapio().getNome(),
-                Collectors.counting()
-            ));
-        
+                .flatMap(pedido -> pedido.getItens().stream())
+                .collect(Collectors.groupingBy(
+                        item -> item.getItemCardapio().getNome(),
+                        Collectors.counting()));
+
         return itensCount.entrySet().stream()
-            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-            .limit(10)
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (e1, e2) -> e1,
-                LinkedHashMap::new
-            ));
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(10)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
     }
 
     public Map<String, Long> contarPedidosPorTipo() {
         long pedidosPresenciais = pedidoRepository.countPedidosPresenciais();
         long pedidosOnline = pedidoRepository.countPedidosOnline();
-        
+
         Map<String, Long> resultado = new HashMap<>();
         resultado.put("Presencial", pedidosPresenciais);
         resultado.put("Online", pedidosOnline);
         return resultado;
     }
 
-    
     @Autowired
     private PedidoService pedidoService;
-    
+
     public Double calcularVendasTotais() {
         List<PedidoCozinhaDTO> pedidos = pedidoService.listarPedidosParaCozinha();
-        
-        // Soma os totais de todos os pedidos (incluindo finalizados)
+
         return pedidos.stream()
-            .mapToDouble(PedidoCozinhaDTO::getTotal)
-            .sum();
+                .mapToDouble(PedidoCozinhaDTO::getTotal)
+                .sum();
     }
 }
-    

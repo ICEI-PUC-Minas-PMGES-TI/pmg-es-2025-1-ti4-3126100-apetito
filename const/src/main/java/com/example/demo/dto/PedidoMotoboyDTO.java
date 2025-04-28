@@ -8,9 +8,8 @@ public class PedidoMotoboyDTO {
     private String nomeCliente;
     private String enderecoCliente;
     private Double total;
-    private LocalDateTime dataStatus; // Adicione este campo
+    private LocalDateTime dataStatus;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

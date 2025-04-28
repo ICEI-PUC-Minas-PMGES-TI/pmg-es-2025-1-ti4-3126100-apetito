@@ -13,22 +13,21 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "despesas")
 public class Despesa {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nome;
     private int parcelas;
     private double preco;
-    
+
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
-    
+
     public Despesa() {
     }
-    
-    // Getters e Setters
+
     public Long getId() {
         return id;
     }

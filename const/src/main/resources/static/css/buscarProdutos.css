@@ -1,194 +1,178 @@
 :root {
-    --primary-color: #FFC107; /* Amarelo */
-    --secondary-color: #FFA000; /* Amarelo escuro */
-    --light-color: #ffffff;
-    --dark-color: #212529;
-    --gray-color: #6c757d;
-    --light-gray: #f8f9fa;
-    --border-radius: 8px;
-    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
+  --primary-color: #ffc107;
+  --secondary-color: #ffa000;
+  --light-color: #ffffff;
+  --dark-color: #212529;
+  --gray-color: #6c757d;
+  --light-gray: #f8f9fa;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: "Open Sans", sans-serif;
-    background-color: #f8f9fa;
-    color: var(--dark-color);
-    line-height: 1.6;
-    height: 100vh;
-    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(250, 242, 222, 0.7)),
+  font-family: "Open Sans", sans-serif;
+  background-color: #f8f9fa;
+  color: var(--dark-color);
+  line-height: 1.6;
+  height: 100vh;
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.7),
+      rgba(250, 242, 222, 0.7)
+    ),
     url("https://plus.unsplash.com/premium_photo-1676310055316-d73c9d5eeb51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .header {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .header h1 {
-    color: var(--secondary-color);
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  margin-bottom: 10px;
 }
 
 .search-container {
-    display: flex;
-    gap: 10px;
-    max-width: 800px;
-    margin: 0 auto 30px;
+  display: flex;
+  gap: 10px;
+  max-width: 800px;
+  margin: 0 auto 30px;
 }
 
 #product-input {
-    flex: 1;
-    padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    transition: var(--transition);
+  flex: 1;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  transition: var(--transition);
 }
 
 #product-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
 }
 
 #search-button {
-    background-color: var(--primary-color);
-    color: var(--dark-color);
-    border: none;
-    padding: 0 25px;
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+  border: none;
+  padding: 0 25px;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #search-button:hover {
-    background-color: var(--secondary-color);
+  background-color: var(--secondary-color);
 }
 
 .results-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
 }
 
 .product-card {
-    background-color: var(--light-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
-    transition: var(--transition);
-    display: flex;
-    flex-direction: column;
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 .product-image {
-    width: auto;
-    height: 200px;
-    object-fit: contain;
-    border-bottom: 1px solid #eee;
+  width: auto;
+  height: 200px;
+  object-fit: contain;
+  border-bottom: 1px solid #eee;
 }
 
 .product-content {
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--dark-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--dark-color);
 }
 
 .product-info {
-    color: var(--gray-color);
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  color: var(--gray-color);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .product-info i {
-    color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 .loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--gray-color);
-    font-size: 1.2rem;
+  text-align: center;
+  padding: 40px;
+  color: var(--gray-color);
+  font-size: 1.2rem;
 }
 
 .empty-state {
-    text-align: center;
-    padding: 40px;
-    grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  grid-column: 1 / -1;
 }
 
 .empty-state i {
-    font-size: 3rem;
-    color: var(--gray-color);
-    margin-bottom: 15px;
+  font-size: 3rem;
+  color: var(--gray-color);
+  margin-bottom: 15px;
 }
 
 .empty-state h3 {
-    color: var(--secondary-color);
-    margin-bottom: 10px;
+  color: var(--secondary-color);
+  margin-bottom: 10px;
 }
 
 .error-state {
-    text-align: center;
-    padding: 40px;
-    grid-column: 1 / -1;
-    color: #d32f2f;
-}
-
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
-    }
-    
-    .search-container {
-        flex-direction: column;
-    }
-    
-    #search-button {
-        padding: 15px;
-        justify-content: center;
-    }
-    
-    .results-container {
-        grid-template-columns: 1fr;
-    }
+  text-align: center;
+  padding: 40px;
+  grid-column: 1 / -1;
+  color: #d32f2f;
 }

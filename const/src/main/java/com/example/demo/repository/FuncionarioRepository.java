@@ -7,5 +7,5 @@ import com.example.demo.model.Funcionario;
 
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
     @Query("SELECT SUM(f.salario) FROM Funcionario f")
-Double sumTotalSalarios();
+    Double sumTotalSalarios();
 }

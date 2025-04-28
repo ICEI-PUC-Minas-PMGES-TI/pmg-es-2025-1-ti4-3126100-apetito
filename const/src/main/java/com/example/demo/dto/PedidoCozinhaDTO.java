@@ -10,7 +10,6 @@ public class PedidoCozinhaDTO {
     private List<ItemPedido> itens;
     private Double total;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

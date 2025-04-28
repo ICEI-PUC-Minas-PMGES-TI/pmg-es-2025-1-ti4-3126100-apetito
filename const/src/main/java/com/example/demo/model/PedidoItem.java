@@ -7,13 +7,12 @@ public class PedidoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     private ItemCardapio item;
-    
+
     private int quantidade;
-    
-    // Getters e Setters
+
     public Long getId() {
         return id;
     }

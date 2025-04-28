@@ -17,14 +17,14 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status; // "EM_ANDAMENTO", "EM ROTA", "ENTREGUE", etc.
-    private LocalDateTime dataStatus; // Adicione este campo
-    
-    @ManyToOne
-    private Mesa mesa; // Relacionamento com mesa
+    private String status;
+    private LocalDateTime dataStatus;
 
-    private String nomeCliente; // Nome do cliente, para pedido online
-    private String enderecoCliente; // Endereço do cliente, para pedido online
+    @ManyToOne
+    private Mesa mesa;
+
+    private String nomeCliente;
+    private String enderecoCliente;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Pedido {
     public Pedido() {
         this.status = "EM_ANDAMENTO";
     }
-  
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
@@ -108,29 +108,28 @@ public class Pedido {
         this.total = total;
     }
 
-
-    @Column(nullable = true)  // Permite valores nulos no banco
-    private Double total;  // Note o "D" maiúsculo - isso é crucial
+    @Column(nullable = true)
+    private Double total;
 
     @PrePersist
     @PreUpdate
     public void calcularTotal() {
         try {
             double calculatedTotal = 0.0;
-            
+
             if (this.itens != null) {
                 calculatedTotal = this.itens.stream()
-                    .filter(Objects::nonNull)
-                    .filter(item -> item.getItemCardapio() != null)
-                    .filter(item -> item.getItemCardapio().getPreco() != null)
-                    .mapToDouble(item -> item.getItemCardapio().getPreco() * item.getQuantidade())
-                    .sum();
+                        .filter(Objects::nonNull)
+                        .filter(item -> item.getItemCardapio() != null)
+                        .filter(item -> item.getItemCardapio().getPreco() != null)
+                        .mapToDouble(item -> item.getItemCardapio().getPreco() * item.getQuantidade())
+                        .sum();
             }
-            
+
             this.total = calculatedTotal;
         } catch (Exception e) {
             this.total = 0.0;
-            System.err.println("Erro ao calcular total do pedido ID: " + this.id);  // Alternativa simples
+            System.err.println("Erro ao calcular total do pedido ID: " + this.id);
             e.printStackTrace();
         }
     }

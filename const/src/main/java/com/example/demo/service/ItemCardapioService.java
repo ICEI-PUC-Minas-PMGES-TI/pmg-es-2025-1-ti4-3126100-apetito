@@ -10,24 +10,24 @@ import java.util.Optional;
 
 @Service
 public class ItemCardapioService {
-    
+
     @Autowired
     private ItemCardapioRepository repository;
-    
+
     public List<ItemCardapio> listarTodos() {
         return repository.findAll();
     }
-    
+
     public Optional<ItemCardapio> buscarPorId(Long id) {
         return repository.findById(id);
     }
-    
+
     public ItemCardapio salvar(ItemCardapio item) {
         return repository.save(item);
     }
-    
+
     public void deletar(Long id) {
         repository.deleteById(id);
     }
-    
+
 }

@@ -3,7 +3,7 @@ const divMesas = document.getElementById("mesas");
 let mesaSelecionada = null;
 
 function criarMesas(qtd) {
-  divMesas.innerHTML = ''; // Limpa mesas existentes
+  divMesas.innerHTML = "";
   for (let i = 1; i <= qtd; i++) {
     const div = document.createElement("div");
     div.className = "mesa";
@@ -19,7 +19,6 @@ function criarMesas(qtd) {
   }
 }
 
-// Criar 25 mesas (5x5)
 criarMesas(25);
 
 form.addEventListener("submit", function (event) {

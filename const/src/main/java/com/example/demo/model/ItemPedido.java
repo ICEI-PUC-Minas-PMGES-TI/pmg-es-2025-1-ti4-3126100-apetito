@@ -11,18 +11,17 @@ public class ItemPedido {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference // 🔥 Diz que aqui é o "filho" e não deve tentar serializar de novo o Pedido
+    @JsonBackReference
     private Pedido pedido;
 
     @ManyToOne
-    private ItemCardapio itemCardapio; // Aqui ainda não sabemos se precisa de ajuste. Se precisar, te aviso!
+    private ItemCardapio itemCardapio;
 
     private int quantidade;
 
     public ItemPedido() {
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -62,5 +61,5 @@ public class ItemPedido {
             return 0.0;
         }
     }
-    
+
 }

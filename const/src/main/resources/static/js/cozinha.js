@@ -1,86 +1,98 @@
-// Função para carregar os pedidos
 async function carregarPedidosCozinha() {
-    try {
-        const response = await fetch('http://localhost:8080/api/pedidos/cozinha');
-        const pedidos = await response.json();
-        
-        const container = document.getElementById('pedidos-container');
-        
-        // Mostrar estado de carregamento
-        container.innerHTML = `
+  try {
+    const response = await fetch("http://localhost:8080/api/pedidos/cozinha");
+    const pedidos = await response.json();
+
+    const container = document.getElementById("pedidos-container");
+
+    container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-spinner fa-spin"></i>
                 <h3>Carregando pedidos...</h3>
                 <p>Aguarde enquanto buscamos os pedidos ativos</p>
             </div>
         `;
-        
-        // Pequeno delay para evitar piscar de tela com respostas rápidas
-        setTimeout(() => {
-            if (pedidos.length === 0) {
-                container.innerHTML = `
+
+    setTimeout(() => {
+      if (pedidos.length === 0) {
+        container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-box-open"></i>
                         <h3>Nenhum pedido ativo</h3>
                         <p>Quando houver novos pedidos, eles aparecerão aqui automaticamente</p>
                     </div>
                 `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            pedidos.forEach(pedido => {
-                const pedidoDiv = document.createElement('div');
-                pedidoDiv.className = 'pedido-card';
-                
-                // Determina o tipo do pedido
-                const tipoPedido = pedido.mesaId ? `Mesa ${pedido.mesaId}` : 'Online';
-                const tipoClass = pedido.mesaId ? '' : 'online';
-                
-                // Determina o status
-                const statusClass = pedido.status === 'FINALIZADO' ? 'status-finalizado' : 'status-andamento';
-                const statusText = pedido.status === 'FINALIZADO' ? 'PRONTO' : 'EM PREPARO';
-                const statusIcon = pedido.status === 'FINALIZADO' ? 'fa-check-circle' : 'fa-clock';
-                
-                pedidoDiv.innerHTML = `
+        return;
+      }
+
+      container.innerHTML = "";
+
+      pedidos.forEach((pedido) => {
+        const pedidoDiv = document.createElement("div");
+        pedidoDiv.className = "pedido-card";
+
+        const tipoPedido = pedido.mesaId ? `Mesa ${pedido.mesaId}` : "Online";
+        const tipoClass = pedido.mesaId ? "" : "online";
+
+        const statusClass =
+          pedido.status === "FINALIZADO"
+            ? "status-finalizado"
+            : "status-andamento";
+        const statusText =
+          pedido.status === "FINALIZADO" ? "PRONTO" : "EM PREPARO";
+        const statusIcon =
+          pedido.status === "FINALIZADO" ? "fa-check-circle" : "fa-clock";
+
+        pedidoDiv.innerHTML = `
                     <div class="pedido-header">
-                        <span class="pedido-id"><i class="fas fa-receipt"></i> Pedido #${pedido.id}</span>
+                        <span class="pedido-id"><i class="fas fa-receipt"></i> Pedido #${
+                          pedido.id
+                        }</span>
                         <span class="pedido-tipo ${tipoClass}">
-                            <i class="fas ${pedido.mesaId ? 'fa-chair' : 'fa-mobile-alt'}"></i> ${tipoPedido}
+                            <i class="fas ${
+                              pedido.mesaId ? "fa-chair" : "fa-mobile-alt"
+                            }"></i> ${tipoPedido}
                         </span>
                     </div>
                     
                     <div class="item-list">
-                        ${pedido.itens.map(item => `
+                        ${pedido.itens
+                          .map(
+                            (item) => `
                             <div class="item">
                                 <span>
-                                    <span class="item-quantidade">${item.quantidade}x</span>
+                                    <span class="item-quantidade">${
+                                      item.quantidade
+                                    }x</span>
                                     ${item.itemCardapio.nome}
                                 </span>
-                                <span>R$ ${(item.itemCardapio.preco * item.quantidade).toFixed(2)}</span>
+                                <span>R$ ${(
+                                  item.itemCardapio.preco * item.quantidade
+                                ).toFixed(2)}</span>
                             </div>
-                        `).join('')}
+                        `
+                          )
+                          .join("")}
                     </div>
                     
                     <div class="pedido-footer">
                         <span class="pedido-status ${statusClass}">
                             <i class="fas ${statusIcon}"></i> ${statusText}
                         </span>
-                        <span><strong>Total:</strong> R$ ${pedido.total.toFixed(2)}</span>
+                        <span><strong>Total:</strong> R$ ${pedido.total.toFixed(
+                          2
+                        )}</span>
                     </div>
                 `;
-                
-                container.appendChild(pedidoDiv);
-            });
-        }, 300);
-        
-        // Atualiza automaticamente a cada 30 segundos
-        setTimeout(carregarPedidosCozinha, 30000);
-        
-    } catch (error) {
-        console.error("Erro ao carregar pedidos:", error);
-        document.getElementById('pedidos-container').innerHTML = `
+
+        container.appendChild(pedidoDiv);
+      });
+    }, 300);
+
+    setTimeout(carregarPedidosCozinha, 30000);
+  } catch (error) {
+    console.error("Erro ao carregar pedidos:", error);
+    document.getElementById("pedidos-container").innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Erro ao carregar pedidos</h3>
@@ -97,16 +109,14 @@ async function carregarPedidosCozinha() {
                 </button>
             </div>
         `;
-    }
+  }
 }
 
-// Carrega os pedidos quando a página é aberta
-document.addEventListener('DOMContentLoaded', carregarPedidosCozinha);
+document.addEventListener("DOMContentLoaded", carregarPedidosCozinha);
 
-// Atalho de teclado F5 para atualizar
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'F5') {
-        e.preventDefault();
-        carregarPedidosCozinha();
-    }
+document.addEventListener("keydown", (e) => {
+  if (e.key === "F5") {
+    e.preventDefault();
+    carregarPedidosCozinha();
+  }
 });

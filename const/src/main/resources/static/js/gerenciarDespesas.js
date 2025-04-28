@@ -1,6 +1,5 @@
 const API_URL = "http://localhost:8080/api/despesas";
 
-// Elementos do DOM
 const form = document.getElementById("despesa-form");
 const idInput = document.getElementById("despesa-id");
 const nomeInput = document.getElementById("despesa-nome");
@@ -14,16 +13,13 @@ const despesasList = document.getElementById("despesas-list");
 
 let isEditing = false;
 
-// Inicialização
 document.addEventListener("DOMContentLoaded", () => {
   fetchDespesas();
 
-  // Configurar data mínima como hoje
   const hoje = new Date().toISOString().split("T")[0];
   vencimentoInput.min = hoje;
 });
 
-// Eventos
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -51,7 +47,6 @@ form.addEventListener("submit", async (e) => {
 cancelBtn.addEventListener("click", resetForm);
 refreshBtn.addEventListener("click", fetchDespesas);
 
-// Funções CRUD
 async function fetchDespesas() {
   try {
     const response = await fetch(API_URL);
@@ -97,25 +92,24 @@ async function deleteDespesa(id) {
   }
 }
 
-// Exibir despesas
 function displayDespesas(despesas) {
-    const despesasList = document.getElementById('despesas-list');
-    despesasList.innerHTML = '';
-  
-    if (despesas.length === 0) {
-      despesasList.innerHTML = '<li class="empty-message">Nenhuma despesa cadastrada</li>';
-      return;
-    }
-  
-    despesas.forEach(despesa => {
-      const li = document.createElement('li');
-      li.className = 'despesa-item';
-      
-      // Formatar data
-      const dataVencimento = new Date(despesa.dataVencimento);
-      const dataFormatada = dataVencimento.toLocaleDateString('pt-BR');
-      
-      li.innerHTML = `
+  const despesasList = document.getElementById("despesas-list");
+  despesasList.innerHTML = "";
+
+  if (despesas.length === 0) {
+    despesasList.innerHTML =
+      '<li class="empty-message">Nenhuma despesa cadastrada</li>';
+    return;
+  }
+
+  despesas.forEach((despesa) => {
+    const li = document.createElement("li");
+    li.className = "despesa-item";
+
+    const dataVencimento = new Date(despesa.dataVencimento);
+    const dataFormatada = dataVencimento.toLocaleDateString("pt-BR");
+
+    li.innerHTML = `
         <div class="despesa-info">
           <h3>${despesa.nome}</h3>
           <p>${despesa.parcelas} parcela(s) · Vence em ${dataFormatada}</p>
@@ -132,21 +126,19 @@ function displayDespesas(despesas) {
           </button>
         </div>
       `;
-      
-      despesasList.appendChild(li);
-    });
-  
-    // Adicionar eventos aos botões
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => editDespesa(btn.dataset.id));
-    });
-  
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', () => deleteDespesa(btn.dataset.id));
-    });
-  }
 
-// Editar despesa
+    despesasList.appendChild(li);
+  });
+
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => editDespesa(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteDespesa(btn.dataset.id));
+  });
+}
+
 async function editDespesa(id) {
   try {
     const response = await fetch(`${API_URL}/${id}`);
@@ -170,7 +162,6 @@ async function editDespesa(id) {
   }
 }
 
-// Resetar formulário
 function resetForm() {
   form.reset();
   idInput.value = "";
@@ -178,7 +169,6 @@ function resetForm() {
   cancelBtn.style.display = "none";
   isEditing = false;
 
-  // Resetar data para hoje
   const hoje = new Date().toISOString().split("T")[0];
   vencimentoInput.value = hoje;
 }

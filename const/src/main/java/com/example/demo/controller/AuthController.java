@@ -24,7 +24,7 @@ public class AuthController {
                 return "redirect:/cozinha.html";
             } else if (usuario.getTipoConta().equals("Motoboy")) {
                 return "redirect:/motoboy.html";
-            }else {
+            } else {
                 return "redirect:/cliente.html";
             }
         }
@@ -32,20 +32,19 @@ public class AuthController {
     }
 
     @PostMapping("/cadastrar")
-public String cadastrar(@RequestParam String nome, 
-                        @RequestParam String email, 
-                        @RequestParam String senha, 
-                        @RequestParam String tipoConta) {
-    
-    Usuario usuario = new Usuario();
-    usuario.setNome(nome);
-    usuario.setEmail(email);
-    usuario.setSenha(senha);
-    usuario.setTipoConta(tipoConta);
+    public String cadastrar(@RequestParam String nome,
+            @RequestParam String email,
+            @RequestParam String senha,
+            @RequestParam String tipoConta) {
 
-    usuarioService.cadastrar(usuario);
-    return "redirect:/login.html";
+        Usuario usuario = new Usuario();
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+        usuario.setSenha(senha);
+        usuario.setTipoConta(tipoConta);
+
+        usuarioService.cadastrar(usuario);
+        return "redirect:/login.html";
+    }
+
 }
-
-}
-

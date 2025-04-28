@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    
-    @Query("SELECT p FROM Produto p WHERE p.perecivel = true AND p.dataValidade BETWEEN :hoje AND :umaSemana")
-    List<Produto> findProdutosProximosVencimento(
-            @Param("hoje") LocalDate hoje,
-            @Param("umaSemana") LocalDate umaSemana);
 
-     @Query("SELECT SUM(p.precoCompra) FROM Produto p")
-        Double sumTotalProdutos();       
+        @Query("SELECT p FROM Produto p WHERE p.perecivel = true AND p.dataValidade BETWEEN :hoje AND :umaSemana")
+        List<Produto> findProdutosProximosVencimento(
+                        @Param("hoje") LocalDate hoje,
+                        @Param("umaSemana") LocalDate umaSemana);
+
+        @Query("SELECT SUM(p.precoCompra) FROM Produto p")
+        Double sumTotalProdutos();
 }

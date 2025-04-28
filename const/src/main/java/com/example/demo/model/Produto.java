@@ -7,23 +7,22 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "produtos")
 public class Produto {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nome;
     private double precoCompra;
-    
+
     @Column(name = "data_validade")
     private LocalDate dataValidade;
-    
+
     private boolean perecivel;
-    
+
     public Produto() {
     }
-    
-    // Getters e Setters
+
     public Long getId() {
         return id;
     }
