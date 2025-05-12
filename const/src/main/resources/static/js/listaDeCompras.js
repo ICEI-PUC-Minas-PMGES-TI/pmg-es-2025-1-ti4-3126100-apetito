@@ -11,34 +11,34 @@ let itens = JSON.parse(localStorage.getItem("listaCompras")) || [];
 let currentFilter = "all";
 
 function salvarLocalStorage() {
-  localStorage.setItem("listaCompras", JSON.stringify(itens));
-  updateStats();
+    localStorage.setItem("listaCompras", JSON.stringify(itens));
+    updateStats();
 }
 
 function updateStats() {
-  totalItemsEl.textContent = itens.length;
-  pendingItemsEl.textContent = itens.filter((item) => !item.concluido).length;
-  completedItemsEl.textContent = itens.filter((item) => item.concluido).length;
+    totalItemsEl.textContent = itens.length;
+    pendingItemsEl.textContent = itens.filter((item) => !item.concluido).length;
+    completedItemsEl.textContent = itens.filter((item) => item.concluido).length;
 }
 
 function renderizarLista() {
-  listaCompras.innerHTML = "";
+    listaCompras.innerHTML = "";
 
-  let filteredItems = itens;
+    let filteredItems = itens;
 
-  if (currentFilter === "pending") {
-    filteredItems = itens.filter((item) => !item.concluido);
-  } else if (currentFilter === "completed") {
-    filteredItems = itens.filter((item) => item.concluido);
-  }
+    if (currentFilter === "pending") {
+        filteredItems = itens.filter((item) => !item.concluido);
+    } else if (currentFilter === "completed") {
+        filteredItems = itens.filter((item) => item.concluido);
+    }
 
-  filteredItems.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "item";
-    if (item.concluido) div.classList.add("concluido");
-    if (item.fixado) div.classList.add("fixado");
+    filteredItems.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        if (item.concluido) div.classList.add("concluido");
+        if (item.fixado) div.classList.add("fixado");
 
-    div.innerHTML = `
+        div.innerHTML = `
             <span class="item-name">${item.nome}</span>
             <div class="item-actions">
                 <button class="item-btn btn-complete" onclick="concluirItem(${index})">
@@ -53,62 +53,135 @@ function renderizarLista() {
             </div>
         `;
 
-    listaCompras.appendChild(div);
-  });
+        listaCompras.appendChild(div);
+    });
 
-  updateStats();
+    updateStats();
 }
 
 form.addEventListener("submit", function (event) {
-  event.preventDefault();
-  const nome = document.getElementById("nomeItem").value.trim();
-  if (nome === "") return;
+    event.preventDefault();
+    const nome = document.getElementById("nomeItem").value.trim();
+    if (nome === "") return;
 
-  itens.unshift({ nome, concluido: false, fixado: false });
-  salvarLocalStorage();
-  renderizarLista();
-  form.reset();
+    itens.unshift({ nome, concluido: false, fixado: false });
+    salvarLocalStorage();
+    renderizarLista();
+    form.reset();
 });
 
 function concluirItem(index) {
-  itens[index].concluido = !itens[index].concluido;
-  salvarLocalStorage();
-  renderizarLista();
+    itens[index].concluido = !itens[index].concluido;
+    salvarLocalStorage();
+    renderizarLista();
 }
 
 function excluirItem(index) {
-  if (confirm("Deseja excluir este item?")) {
-    itens.splice(index, 1);
-    salvarLocalStorage();
-    renderizarLista();
-  }
+    if (confirm("Deseja excluir este item?")) {
+        itens.splice(index, 1);
+        salvarLocalStorage();
+        renderizarLista();
+    }
 }
 
 function fixarItem(index) {
-  itens[index].fixado = !itens[index].fixado;
-  salvarLocalStorage();
-  renderizarLista();
+    itens[index].fixado = !itens[index].fixado;
+    salvarLocalStorage();
+    renderizarLista();
 }
 
 clearCompletedBtn.addEventListener("click", function () {
-  if (confirm("Deseja limpar todos os itens concluídos?")) {
-    itens = itens.filter((item) => !item.concluido);
-    salvarLocalStorage();
-    renderizarLista();
-  }
+    if (confirm("Deseja limpar todos os itens concluídos?")) {
+        itens = itens.filter((item) => !item.concluido);
+        salvarLocalStorage();
+        renderizarLista();
+    }
 });
 
 saveListBtn.addEventListener("click", function () {
-  alert("Lista salva com sucesso!");
+    gerarRelatorioPDF();
 });
 
 filterBtns.forEach((btn) => {
-  btn.addEventListener("click", function () {
-    filterBtns.forEach((b) => b.classList.remove("active"));
-    this.classList.add("active");
-    currentFilter = this.dataset.filter;
-    renderizarLista();
-  });
+    btn.addEventListener("click", function () {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+        currentFilter = this.dataset.filter;
+        renderizarLista();
+    });
 });
+
+function gerarRelatorioPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurações do relatório
+    const colunas = {
+        item: 20,
+        status: 180
+    };
+
+    // Cabeçalho do relatório
+    doc.setFontSize(18);
+    doc.text("Lista de Compras", 105, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    const dataEmissao = new Date().toLocaleDateString('pt-BR');
+    doc.text(`Data de emissão: ${dataEmissao}`, 105, 23, { align: 'center' });
+
+    // Estatísticas
+    doc.setFontSize(12);
+    doc.text(`Total de itens: ${itens.length}`, 14, 35);
+    doc.text(`Pendentes: ${itens.filter(item => !item.concluido).length}`, 14, 40);
+    doc.text(`Concluídos: ${itens.filter(item => item.concluido).length}`, 14, 45);
+
+    // Cabeçalho da lista
+    doc.setFontSize(12);
+    doc.setDrawColor(0);
+    doc.setFillColor(200, 200, 200);
+    doc.rect(10, 50, 190, 10, 'F');
+    doc.setTextColor(0, 0, 0);
+    doc.text("Itens", colunas.item, 57);
+    doc.text("Status", colunas.status, 57, { align: 'right' });
+
+    let y = 65;
+    const itensFixados = itens.filter(item => item.fixado);
+    const itensNormais = itens.filter(item => !item.fixado);
+    const itensOrdenados = [...itensFixados, ...itensNormais];
+
+    itensOrdenados.forEach((item) => {
+        if (y > 270) {
+            doc.addPage();
+            y = 20;
+            doc.setFontSize(12);
+            doc.setDrawColor(0);
+            doc.setFillColor(200, 200, 200);
+            doc.rect(10, 10, 190, 10, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.text("Itens", colunas.item, 17);
+            doc.text("Status", colunas.status, 17, { align: 'right' });
+            y = 25;
+        }
+
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(item.nome, colunas.item, y);
+        
+        if (item.concluido) {
+            doc.setTextColor(0, 128, 0); // Verde para concluído
+            doc.text("CONCLUÍDO", colunas.status, y, { align: 'right' });
+        } else {
+            doc.setTextColor(255, 165, 0); // Laranja para pendente
+            doc.text("PENDENTE", colunas.status, y, { align: 'right' });
+        }
+
+        doc.setDrawColor(200, 200, 200);
+        doc.line(10, y + 5, 200, y + 5);
+        
+        y += 10;
+    });
+
+    doc.save(`Lista_Compras_${dataEmissao.replace(/\//g, '-')}.pdf`);
+}
 
 renderizarLista();

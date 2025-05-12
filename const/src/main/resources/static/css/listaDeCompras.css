@@ -273,21 +273,33 @@ h4 {
 }
 
 .btn-action {
-  padding: 0.5rem 1rem;
   background: transparent;
-  border: 1px solid #ddd;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
-  font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
   cursor: pointer;
   transition: var(--transition);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .btn-action:hover {
   background: rgba(0, 0, 0, 0.05);
+}
+
+.btn-refresh {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 #clear-completed:hover {
