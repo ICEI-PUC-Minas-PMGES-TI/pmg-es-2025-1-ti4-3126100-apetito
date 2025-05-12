@@ -156,3 +156,63 @@ function resetForm() {
   cancelBtn.style.display = "none";
   isEditing = false;
 }
+
+
+const searchInput = document.getElementById("search-input");
+
+searchInput.addEventListener("input", () => {
+  const searchTerm = searchInput.value.toLowerCase();
+  filterItems(searchTerm);
+});
+
+let allItems = []; // Armazena os itens para filtrar localmente
+
+function displayItems(items) {
+  allItems = items; // Atualiza todos os itens
+  renderItems(items);
+}
+
+function renderItems(items) {
+  itemsList.innerHTML = "";
+
+  if (items.length === 0) {
+    itemsList.innerHTML = '<div class="no-items">Nenhum item no cardápio</div>';
+    return;
+  }
+
+  items.forEach((item) => {
+    const itemCard = document.createElement("div");
+    itemCard.className = "item-card";
+
+    itemCard.innerHTML = `
+      <h3>${item.nome}</h3>
+      <p>${item.descricao}</p>
+      <p class="price">R$ ${item.preco.toFixed(2)}</p>
+      <div class="item-actions">
+          <button class="btn edit-btn" data-id="${item.id}">
+              <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn delete-btn" data-id="${item.id}">
+              <i class="fas fa-trash-alt"></i> Excluir
+          </button>
+      </div>
+    `;
+
+    itemsList.appendChild(itemCard);
+  });
+
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => editItem(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteItem(btn.dataset.id));
+  });
+}
+
+function filterItems(term) {
+  const filtered = allItems.filter(item =>
+    item.nome.toLowerCase().includes(term)
+  );
+  renderItems(filtered);
+}
