@@ -36,6 +36,7 @@ h4 {
 
 .container {
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
 }
@@ -75,7 +76,7 @@ h4 {
   transition: var(--transition);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centraliza todo o conteúdo */
+  align-items: center;
 }
 
 .card:hover {
@@ -90,6 +91,7 @@ h4 {
   margin-bottom: 15px;
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .card-header h2 {
@@ -174,3 +176,11 @@ h4 {
   padding: 20px;
   font-weight: bold;
 }
+
+@media (max-width: 768px) {
+  .half-width,
+  .full-width {
+    grid-column: span 12;
+  }
+}
+

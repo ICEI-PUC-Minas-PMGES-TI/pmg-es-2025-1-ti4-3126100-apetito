@@ -356,3 +356,124 @@ a {
 .sidebar-menu a.active::after {
   width: 100%;
 }
+
+/* RESPONSIVIDADE GERAL */
+
+/* Tablets e menores */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 20px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .quick-stats {
+    justify-content: center;
+  }
+}
+
+/* Mobile - Sidebar vira menu recolhível futuramente */
+@media (max-width: 768px) {
+  .admin-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .sidebar-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  .sidebar-menu li {
+    margin: 5px 0;
+    flex: 1 0 45%;
+    text-align: center;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-stats {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-card {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Celulares pequenos (até 480px) */
+@media (max-width: 480px) {
+  .navbar-brand {
+    font-size: 1.5rem;
+    justify-content: center;
+  }
+
+  .sidebar-menu li {
+    flex: 1 0 100%;
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-card i {
+    font-size: 30px;
+  }
+
+  .dashboard-card h3 {
+    font-size: 16px;
+  }
+
+  .dashboard-card p {
+    font-size: 13px;
+  }
+
+  .feature-card h3 {
+    font-size: 16px;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+  }
+
+  .welcome-text h2 {
+    font-size: 20px;
+  }
+
+  .welcome-text p {
+    font-size: 14px;
+  }
+}
+

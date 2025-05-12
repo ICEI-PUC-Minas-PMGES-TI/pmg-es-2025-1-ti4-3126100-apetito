@@ -1417,3 +1417,404 @@ footer {
   margin-top: 50px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* ==================== RESPONSIVIDADE ==================== */
+
+@media (max-width: 1200px) {
+  .hero h1 {
+    font-size: 4.5rem;
+  }
+  
+  .about-content {
+    max-width: 1000px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero h1 {
+    font-size: 3.8rem;
+  }
+  
+  .hero p {
+    font-size: 1.3rem;
+  }
+  
+  .about-content {
+    flex-direction: column;
+    padding: 0 40px;
+  }
+  
+  .about-text {
+    padding-right: 0;
+    margin-bottom: 50px;
+  }
+  
+  .about-image {
+    margin-top: 30px;
+  }
+  
+  .floating-badge {
+    right: 0;
+    bottom: -50px;
+  }
+  
+  .reservation-container {
+    flex-direction: column;
+  }
+  
+  .reservation-image {
+    height: 300px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .reservation-form {
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .delivery-card {
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 30px;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .auth-buttons {
+    display: none;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2.5rem;
+  }
+  
+  .menu-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+  
+  .reservation-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .reservation-card {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .contact-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .chatbot-container {
+    width: 300px;
+    max-height: 400px;
+    left: 20px;
+    bottom: 90px;
+  }
+  
+  .chatbot-trigger {
+    left: 20px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 15px 20px;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2rem;
+  }
+  
+  .about-content {
+    padding: 0 20px;
+  }
+  
+  .floating-badge {
+    width: 120px;
+    height: 120px;
+    padding: 15px;
+  bottom: -40px;
+  right: 0;
+  }
+  
+  .floating-badge h4 {
+    font-size: 2rem;
+  }
+  
+  .delivery-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .delivery-card {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  .footer-links {
+    padding-left: 0;
+  }
+  
+  .footer-links li {
+    text-align: center;
+  }
+  
+  .map-overlay {
+    width: 90%;
+    padding: 10px 15px;
+  }
+  
+  .map-overlay h3 {
+    font-size: 1rem;
+  }
+  
+  .map-overlay p {
+    font-size: 0.8rem;
+  }
+  
+  .chatbot-container {
+    width: calc(100% - 40px);
+    left: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .menu-item-img {
+    height: 200px;
+  }
+  
+  .testimonial-text {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+  
+  .testimonial-text::before {
+    left: -15px;
+  }
+  
+  .testimonial-text::after {
+    right: -15px;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(26, 26, 26, 0.95);
+    padding: 20px 0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .nav-links.active li {
+    margin: 10px 0;
+    text-align: center;
+  }
+  
+  .auth-buttons.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 30px;
+    background-color: rgba(26, 26, 26, 0.95);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .auth-buttons.active .btn {
+    margin: 5px 0;
+  }
+}
+
+@media (max-width: 350px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .section-title h2 {
+    font-size: 1.8rem;
+  }
+  
+  .about-text h3 {
+    font-size: 1.5rem;
+  }
+  
+  .menu-item-title, .menu-item-price {
+    font-size: 1.3rem;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+  color: var(--secondary);
+}
+
+.navbar.mobile-menu-open .nav-links {
+  display: flex !important;
+  flex-direction: column;
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(26, 26, 26, 0.95);
+  padding: 20px 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.navbar.mobile-menu-open .nav-links li {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.navbar.mobile-menu-open .auth-buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 70px;
+  right: 30px;
+  background-color: rgba(26, 26, 26, 0.95);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.navbar.mobile-menu-open .auth-buttons .btn {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .nav-links, .auth-buttons {
+    display: none;
+  }
+}
+
+.navbar.mobile-menu-open .auth-buttons {
+  right: 20px;
+  padding: 15px;
+  width: auto;
+  min-width: 180px;
+}
+
+.navbar.mobile-menu-open .auth-buttons .btn {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  margin: 3px 0;
+}
+
+.navbar.mobile-menu-open .auth-buttons .btn-outline {
+  padding: 6px 15px;
+}
+
+@media (max-width: 400px) {
+  .navbar.mobile-menu-open .auth-buttons {
+    right: 10px;
+    min-width: 160px;
+  }
+  
+  .navbar.mobile-menu-open .auth-buttons .btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
