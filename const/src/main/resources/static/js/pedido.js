@@ -401,3 +401,31 @@ function limparSessao() {
   localStorage.removeItem('current_session_id');
   window.location.href = 'cliente.html';
 }
+
+// Verifica e aplica cupons da roleta automaticamente
+function aplicarCuponsAutomaticos() {
+    const cupomRoleta = verificarCuponsRoleta();
+    if (cupomRoleta) {
+        cupomAplicado = {
+            codigo: cupomRoleta.codigo,
+            desconto: cupomRoleta.desconto / 100
+        };
+        
+        // Marca como usado
+        const cupons = JSON.parse(localStorage.getItem(ROULETTE_STORAGE_KEY)) || [];
+        const cupomIndex = cupons.findIndex(c => c.codigo === cupomRoleta.codigo);
+        if (cupomIndex !== -1) {
+            cupons[cupomIndex].usado = true;
+            localStorage.setItem(ROULETTE_STORAGE_KEY, JSON.stringify(cupons));
+        }
+        
+        // Atualiza a exibição
+        const cupomDiv = document.getElementById("cupomAplicado");
+        cupomDiv.innerHTML = `
+            Cupom da Roleta: ${cupomRoleta.codigo} (${cupomRoleta.desconto}% off)
+        `;
+        cupomDiv.classList.remove("hidden");
+        
+        calcularDesconto();
+    }
+}
