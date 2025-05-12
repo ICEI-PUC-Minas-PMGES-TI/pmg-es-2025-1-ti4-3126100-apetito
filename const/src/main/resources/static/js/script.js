@@ -1,5 +1,35 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const mobileMenuBtn = document.createElement("button");
+  mobileMenuBtn.className = "mobile-menu-btn";
+  mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+  
   const navbar = document.querySelector(".navbar");
+  navbar.appendChild(mobileMenuBtn);
+
+  mobileMenuBtn.addEventListener("click", function() {
+    navbar.classList.toggle("mobile-menu-open");
+    
+    const icon = this.querySelector("i");
+    if (navbar.classList.contains("mobile-menu-open")) {
+      icon.classList.remove("fa-bars");
+      icon.classList.add("fa-times");
+    } else {
+      icon.classList.remove("fa-times");
+      icon.classList.add("fa-bars");
+    }
+  });
+
+  document.querySelectorAll(".nav-links a").forEach(link => {
+    link.addEventListener("click", () => {
+      if (navbar.classList.contains("mobile-menu-open")) {
+        navbar.classList.remove("mobile-menu-open");
+        const icon = mobileMenuBtn.querySelector("i");
+        icon.classList.remove("fa-times");
+        icon.classList.add("fa-bars");
+      }
+    });
+  });
+
   navbar.classList.remove("navbar-hidden");
 
   let lastScroll = 0;
