@@ -24,24 +24,27 @@ let notificationCheckInterval;
 let notificationAlreadyShown = false;
 
 document.addEventListener("DOMContentLoaded", () => {
+  const hoje = new Date().toISOString().split("T")[0];
+  validadeInput.min = hoje;
+
   document
     .getElementById("produto-perecivel")
     .addEventListener("change", function (e) {
       const validadeGroup = document.getElementById("validade-group");
       if (e.target.checked) {
         validadeGroup.style.display = "block";
-
-        const hoje = new Date().toISOString().split("T")[0];
-        document.getElementById("produto-validade").min = hoje;
+        validadeInput.disabled = false;
+        validadeInput.min = hoje;
       } else {
         validadeGroup.style.display = "none";
-        document.getElementById("produto-validade").value = "";
+        validadeInput.value = "";
+        validadeInput.disabled = true;
       }
     });
 
-  const hoje = new Date().toISOString().split("T")[0];
-  validadeInput.min = hoje;
-  validadeInput.disabled = true;
+  // Configura estado inicial
+  validadeInput.disabled = !perecivelInput.checked;
+  document.getElementById("validade-group").style.display = perecivelInput.checked ? "block" : "none";
 });
 
 form.addEventListener("submit", async (e) => {
@@ -184,12 +187,11 @@ async function loadNotifications() {
       const div = document.createElement("div");
       div.className = "notification-item";
       div.innerHTML = `
-                        <h3><i class="fas fa-exclamation-triangle"></i> ${
-                          produto.nome
-                        }</h3>
+                        <h3><i class="fas fa-exclamation-triangle"></i> ${produto.nome
+        }</h3>
                         <p><strong>Vencimento:</strong> ${new Date(
-                          produto.dataValidade
-                        ).toLocaleDateString("pt-BR")}</p>
+          produto.dataValidade
+        ).toLocaleDateString("pt-BR")}</p>
                         <p><strong>Dias restantes:</strong> ${diffDays} dia(s)</p>
                     `;
 
@@ -235,36 +237,32 @@ function displayProdutos(produtos) {
 
     li.innerHTML = `
                     <div class="${vencimentoClass}">
-                        <h3>${produto.nome} ${
-      produto.perecivel
+                        <h3>${produto.nome} ${produto.perecivel
         ? '<span class="perecivel-tag"><i class="fas fa-clock"></i> Perecível</span>'
         : ""
-    }</h3>
+      }</h3>
                         <p><strong>Preço de compra:</strong> R$ ${produto.precoCompra.toFixed(
-                          2
-                        )}</p>
-                        ${
-                          produto.perecivel
-                            ? `
+        2
+      )}</p>
+                        ${produto.perecivel
+        ? `
                             <p><strong>Data de validade:</strong> 
                                 ${new Date(
-                                  produto.dataValidade
-                                ).toLocaleDateString("pt-BR")}
+          produto.dataValidade
+        ).toLocaleDateString("pt-BR")}
                                 ${vencimentoInfo}
                             </p>
                         `
-                            : ""
-                        }
+        : ""
+      }
                         
                         <div class="produto-actions">
-                            <button class="btn btn-secondary edit-btn" data-id="${
-                              produto.id
-                            }">
+                            <button class="btn btn-secondary edit-btn" data-id="${produto.id
+      }">
                                 <i class="fas fa-edit"></i> Editar
                             </button>
-                            <button class="btn btn-danger delete-btn" data-id="${
-                              produto.id
-                            }">
+                            <button class="btn btn-danger delete-btn" data-id="${produto.id
+      }">
                                 <i class="fas fa-trash-alt"></i> Excluir
                             </button>
                         </div>
@@ -296,9 +294,11 @@ async function editProduto(id) {
     if (produto.perecivel && produto.dataValidade) {
       validadeInput.value = produto.dataValidade;
       validadeInput.disabled = false;
+      document.getElementById("validade-group").style.display = "block";
     } else {
       validadeInput.value = "";
       validadeInput.disabled = true;
+      document.getElementById("validade-group").style.display = "none";
     }
 
     submitBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
@@ -316,8 +316,135 @@ async function editProduto(id) {
 function resetForm() {
   form.reset();
   idInput.value = "";
-  validadeInput.disabled = true;
+  validadeInput.disabled = !perecivelInput.checked;
+  document.getElementById("validade-group").style.display = perecivelInput.checked ? "block" : "none";
   submitBtn.innerHTML = '<i class="fas fa-save"></i> Salvar';
   cancelBtn.style.display = "none";
   isEditing = false;
+}
+
+fetchProdutos();
+checkNotifications();
+
+notificationCheckInterval = setInterval(checkNotifications, 5 * 60 * 1000);
+
+
+const pdfBtn = document.getElementById("pdf-btn");
+
+pdfBtn.addEventListener("click", gerarRelatorioPDF);
+
+
+async function gerarRelatorioPDF() {
+    try {
+        // Busca os produtos da API
+        const response = await fetch(API_URL);
+        const produtos = await response.json();
+        
+        // Cria o documento PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Adiciona título
+        doc.setFontSize(18);
+        doc.text("Relatório de Produtos em Estoque", 105, 15, { align: 'center' });
+        
+        // Adiciona data de emissão
+        doc.setFontSize(10);
+        const dataEmissao = new Date().toLocaleDateString('pt-BR');
+        doc.text(`Data de emissão: ${dataEmissao}`, 105, 23, { align: 'center' });
+        
+        // Adiciona linhas de cabeçalho
+        doc.setFontSize(12);
+        doc.setDrawColor(0);
+        doc.setFillColor(200, 200, 200);
+        doc.rect(10, 30, 190, 10, 'F');
+        doc.setTextColor(0, 0, 0); // Preto
+        doc.text("Nome", 15, 37);
+        doc.text("Preço", 80, 37);
+        doc.text("Perecível", 120, 37);
+        doc.text("Validade", 160, 37);
+        doc.text("Status", 190, 37, { align: 'right' });
+        
+        // Adiciona os produtos
+        let y = 45;
+        const hoje = new Date();
+        
+        produtos.forEach((produto, index) => {
+            if (y > 270) { // Verifica se precisa de nova página
+                doc.addPage();
+                y = 20;
+                
+                // Repete o cabeçalho em novas páginas
+                doc.setFontSize(12);
+                doc.setDrawColor(0);
+                doc.setFillColor(200, 200, 200);
+                doc.rect(10, 10, 190, 10, 'F');
+                doc.setTextColor(0, 0, 0);
+                doc.text("Nome", 15, 17);
+                doc.text("Preço", 80, 17);
+                doc.text("Perecível", 120, 17);
+                doc.text("Validade", 160, 17);
+                doc.text("Status", 190, 17, { align: 'right' });
+                
+                y = 25;
+            }
+            
+            // Calcula status de validade
+            let status = "";
+            let statusColor = [0, 0, 0]; // Preto
+            
+            if (produto.perecivel && produto.dataValidade) {
+                const validade = new Date(produto.dataValidade);
+                const diffTime = validade - hoje;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays < 0) {
+                    status = "VENCIDO";
+                    statusColor = [255, 0, 0]; // Vermelho
+                } else if (diffDays <= 7) {
+                    status = `Vence em ${diffDays} dias`;
+                    statusColor = [255, 165, 0]; // Laranja
+                } else {
+                    status = "OK";
+                    statusColor = [0, 128, 0]; // Verde
+                }
+            }
+            
+            // Adiciona linha do produto
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0); // Preto para os dados normais
+            doc.text(produto.nome, 15, y);
+            doc.text(`R$ ${produto.precoCompra.toFixed(2)}`, 80, y);
+            doc.text(produto.perecivel ? "Sim" : "Não", 120, y);
+            
+            if (produto.perecivel && produto.dataValidade) {
+                const dataValidade = new Date(produto.dataValidade).toLocaleDateString('pt-BR');
+                doc.text(dataValidade, 160, y);
+            } else {
+                doc.text("N/A", 160, y);
+            }
+            
+            // Adiciona status com cor - usando RGB separado
+            doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+            doc.text(status, 190, y, { align: 'right' });
+            
+            // Adiciona linha divisória
+            doc.setDrawColor(200, 200, 200);
+            doc.line(10, y + 5, 200, y + 5);
+            
+            y += 10;
+        });
+        
+        // Adiciona rodapé com total de produtos
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Total de produtos: ${produtos.length}`, 14, 285);
+        
+        // Salva o PDF
+        doc.save(`Relatorio_Estoque_${dataEmissao.replace(/\//g, '-')}.pdf`);
+        
+    } catch (error) {
+        console.error("Erro ao gerar relatório PDF:", error);
+        alert("Erro ao gerar relatório. Verifique o console para mais detalhes.");
+    }
 }

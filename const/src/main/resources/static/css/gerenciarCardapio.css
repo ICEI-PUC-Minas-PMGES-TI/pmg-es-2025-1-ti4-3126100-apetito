@@ -76,13 +76,14 @@ h4 {
 
 .cardapio-content {
   display: flex;
+  flex-direction: column;
   padding: 2rem;
   gap: 2rem;
 }
 
 .form-section {
-  flex: 1;
-  min-width: 350px;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .form-card {
@@ -93,7 +94,7 @@ h4 {
 }
 
 .list-section {
-  flex: 2;
+  width: 100%;
 }
 
 .list-header {

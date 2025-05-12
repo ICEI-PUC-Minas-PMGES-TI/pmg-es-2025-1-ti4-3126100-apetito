@@ -39,6 +39,18 @@ h4 {
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   overflow: hidden;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-header {
@@ -57,9 +69,14 @@ h4 {
 
 .card-body {
   padding: 25px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 30px;
+}
+
+.form-section {
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .section-title {
@@ -88,6 +105,12 @@ h4 {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .btn {
@@ -131,12 +154,23 @@ h4 {
 }
 
 .btn-gray {
-  background-color: var(--danger-color);
+  background-color: var(--gray-color);
   color: white;
 }
 
 .btn-gray:hover {
   background-color: #5a6268;
+}
+
+.list-section {
+  width: 100%;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .despesas-list {

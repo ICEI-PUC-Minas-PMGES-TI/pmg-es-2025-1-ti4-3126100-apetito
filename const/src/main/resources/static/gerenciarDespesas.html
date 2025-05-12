@@ -36,8 +36,7 @@
             <a href="gerenciarCardapio.html" class="navbar-link"><i class="fas fa-book"></i> Cardápio</a>
         </li>
         <li class="navbar-item">
-            <a href="gerenciarDespesas.html" class="navbar-link active"><i class="fas fa-money-bill-wave"></i>
-                Despesas</a>
+            <a href="gerenciarDespesas.html" class="navbar-link active"><i class="fas fa-money-bill-wave"></i> Despesas</a>
         </li>
         <li class="navbar-item">
             <a href="gerenciarEstoque.html" class="navbar-link"><i class="fas fa-boxes"></i> Estoque</a>
@@ -67,33 +66,31 @@
         </div>
 
         <div class="card-body">
-            <div class="form-section">
+            <section class="form-section">
                 <h2 class="section-title"><i class="fas fa-edit"></i> Adicionar/Editar Despesa</h2>
                 <form id="despesa-form">
                     <input type="hidden" id="despesa-id">
                     <div class="form-group">
-                        <input type="text" id="despesa-nome" class="form-control" placeholder="Nome da despesa"
-                            required>
+                        <input type="text" id="despesa-nome" class="form-control" placeholder="Nome da despesa" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" id="despesa-parcelas" class="form-control"
-                            placeholder="Quantidade de parcelas" min="1" required>
+                        <input type="number" id="despesa-parcelas" class="form-control" placeholder="Quantidade de parcelas" min="1" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" id="despesa-preco" class="form-control" placeholder="Preço" step="0.01"
-                            min="0" required>
+                        <input type="number" id="despesa-preco" class="form-control" placeholder="Preço" step="0.01" min="0" required>
                     </div>
                     <div class="form-group">
                         <input type="date" id="despesa-vencimento" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Salvar</button>
-                    <button type="button" id="cancel-btn" class="btn btn-gray"><i class="fas fa-times"></i>
-                        Cancelar</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Salvar</button>
+                        <button type="button" id="cancel-btn" class="btn btn-gray"><i class="fas fa-times"></i> Cancelar</button>
+                    </div>
                 </form>
-            </div>
+            </section>
 
-            <div class="list-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <section class="list-section">
+                <div class="list-header">
                     <h2 class="section-title"><i class="fas fa-list"></i> Lista de Despesas</h2>
                     <button id="refresh-btn" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Atualizar</button>
                 </div>
@@ -101,7 +98,7 @@
                 <ul id="despesas-list" class="despesas-list">
                     <li class="empty-message">Nenhuma despesa cadastrada</li>
                 </ul>
-            </div>
+            </section>
         </div>
     </div>
 
@@ -114,7 +111,6 @@
                     target="_blank">Apetito.restaurante</a>
         </footer>
     </div>
-
 
     <script src="js/gerenciarDespesas.js"></script>
     <script src="js/menuHamburguer.js"></script>

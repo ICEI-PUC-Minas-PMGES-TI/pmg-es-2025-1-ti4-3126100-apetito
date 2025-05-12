@@ -79,50 +79,55 @@
             </div>
         </div>
 
-        <div class="container">
-            <div class="form-section">
-                <h2><i class="fas fa-plus-circle"></i> Adicionar/Editar Produto</h2>
-                <form id="produto-form">
-                    <input type="hidden" id="produto-id">
-                    <div class="form-group">
-                        <label for="produto-nome"><i class="fas fa-tag"></i> Nome do Produto</label>
-                        <input type="text" id="produto-nome" placeholder="Digite o nome do produto" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="produto-preco"><i class="fas fa-tag"></i> Preço de Compra</label>
-                        <div class="input-price">
-                            <span>R$</span>
-                            <input type="number" id="produto-preco" placeholder="0,00" step="0.01" min="0" required>
+        <div class="estoque-content">
+            <section class="form-section">
+                <div class="form-card">
+                    <h2><i class="fas fa-plus-circle"></i> Adicionar/Editar Produto</h2>
+                    <form id="produto-form">
+                        <input type="hidden" id="produto-id">
+                        <div class="form-group">
+                            <label for="produto-nome"><i class="fas fa-tag"></i> Nome do Produto</label>
+                            <input type="text" id="produto-nome" placeholder="Digite o nome do produto" required>
                         </div>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="produto-perecivel">
-                        <label for="produto-perecivel"><i class="fas fa-clock"></i> Produto perecível</label>
-                    </div>
-                    <div class="form-group" id="validade-group">
-                        <label for="produto-validade"><i class="far fa-calendar-alt"></i> Data de Validade</label>
-                        <input type="date" id="produto-validade">
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" id="submit-btn" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                        <button type="button" id="cancel-btn" class="btn btn-outline" style="display: none;">
-                            <i class="fas fa-times"></i> Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <div class="form-group">
+                            <label for="produto-preco"><i class="fas fa-tag"></i> Preço de Compra</label>
+                            <div class="input-price">
+                                <span>R$</span>
+                                <input type="number" id="produto-preco" placeholder="0,00" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="produto-perecivel">
+                            <label for="produto-perecivel"><i class="fas fa-clock"></i> Produto perecível</label>
+                        </div>
+                        <div class="form-group" id="validade-group">
+                            <label for="produto-validade"><i class="far fa-calendar-alt"></i> Data de Validade</label>
+                            <input type="date" id="produto-validade">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="submit-btn" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <button type="button" id="cancel-btn" class="btn btn-outline">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
 
-            <div class="list-section">
+            <section class="list-section">
                 <div class="list-header">
                     <h2><i class="fas fa-list"></i> Lista de Produtos</h2>
-                    <button id="refresh-btn" class="btn btn-secondary">
+                    <button id="refresh-btn" class="btn-refresh">
                         <i class="fas fa-sync-alt"></i> Atualizar
                     </button>
+                    <button id="pdf-btn" class="btn-refresh">
+                    <i class="fas fa-file-pdf"></i> Gerar PDF
+                </button>
                 </div>
-                <ul id="produtos-list"></ul>
-            </div>
+                <ul id="produtos-list" class="produtos-grid"></ul>
+            </section>
         </div>
     </div>
 
@@ -135,7 +140,6 @@
                     target="_blank">Apetito.restaurante</a>
         </footer>
     </div>
-
 
     <script src="js/gerenciarEstoque.js"></script>
     <script src="js/menuHamburguer.js"></script>
