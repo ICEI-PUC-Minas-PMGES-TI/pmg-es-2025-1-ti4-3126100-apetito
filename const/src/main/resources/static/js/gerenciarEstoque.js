@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // Configura estado inicial
   validadeInput.disabled = !perecivelInput.checked;
   document.getElementById("validade-group").style.display = perecivelInput.checked ? "block" : "none";
 });
@@ -332,115 +331,101 @@ notificationCheckInterval = setInterval(checkNotifications, 5 * 60 * 1000);
 const pdfBtn = document.getElementById("pdf-btn");
 
 pdfBtn.addEventListener("click", gerarRelatorioPDF);
-
-
 async function gerarRelatorioPDF() {
     try {
-        // Busca os produtos da API
         const response = await fetch(API_URL);
         const produtos = await response.json();
-        
-        // Cria o documento PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        
-        // Adiciona título
+
+        const colunas = {
+            nome: 15,
+            preco: 70,
+            perecivel: 100,
+            validade: 140,
+            status: 190
+        };
+
         doc.setFontSize(18);
         doc.text("Relatório de Produtos em Estoque", 105, 15, { align: 'center' });
-        
-        // Adiciona data de emissão
+
         doc.setFontSize(10);
         const dataEmissao = new Date().toLocaleDateString('pt-BR');
         doc.text(`Data de emissão: ${dataEmissao}`, 105, 23, { align: 'center' });
-        
-        // Adiciona linhas de cabeçalho
+
         doc.setFontSize(12);
         doc.setDrawColor(0);
         doc.setFillColor(200, 200, 200);
         doc.rect(10, 30, 190, 10, 'F');
-        doc.setTextColor(0, 0, 0); // Preto
-        doc.text("Nome", 15, 37);
-        doc.text("Preço", 80, 37);
-        doc.text("Perecível", 120, 37);
-        doc.text("Validade", 160, 37);
-        doc.text("Status", 190, 37, { align: 'right' });
-        
-        // Adiciona os produtos
+        doc.setTextColor(0, 0, 0);
+        doc.text("Nome", colunas.nome, 37);
+        doc.text("Preço", colunas.preco, 37);
+        doc.text("Perecível", colunas.perecivel, 37);
+        doc.text("Validade", colunas.validade, 37);
+        doc.text("Status", colunas.status, 37, { align: 'right' });
+
         let y = 45;
         const hoje = new Date();
         
-        produtos.forEach((produto, index) => {
-            if (y > 270) { // Verifica se precisa de nova página
+        produtos.forEach((produto) => {
+            if (y > 270) {
                 doc.addPage();
                 y = 20;
-                
-                // Repete o cabeçalho em novas páginas
                 doc.setFontSize(12);
                 doc.setDrawColor(0);
                 doc.setFillColor(200, 200, 200);
                 doc.rect(10, 10, 190, 10, 'F');
                 doc.setTextColor(0, 0, 0);
-                doc.text("Nome", 15, 17);
-                doc.text("Preço", 80, 17);
-                doc.text("Perecível", 120, 17);
-                doc.text("Validade", 160, 17);
-                doc.text("Status", 190, 17, { align: 'right' });
-                
+                doc.text("Nome", colunas.nome, 17);
+                doc.text("Preço", colunas.preco, 17);
+                doc.text("Perecível", colunas.perecivel, 17);
+                doc.text("Validade", colunas.validade, 17);
+                doc.text("Status", colunas.status, 17, { align: 'right' });
                 y = 25;
             }
-            
-            // Calcula status de validade
+
             let status = "";
-            let statusColor = [0, 0, 0]; // Preto
+            let validadeText = "N/A";
+            let statusColor = [0, 0, 0]; 
             
             if (produto.perecivel && produto.dataValidade) {
                 const validade = new Date(produto.dataValidade);
                 const diffTime = validade - hoje;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                validadeText = new Date(produto.dataValidade).toLocaleDateString('pt-BR');
                 
                 if (diffDays < 0) {
                     status = "VENCIDO";
-                    statusColor = [255, 0, 0]; // Vermelho
+                    statusColor = [255, 0, 0];
                 } else if (diffDays <= 7) {
-                    status = `Vence em ${diffDays} dias`;
-                    statusColor = [255, 165, 0]; // Laranja
+                    status = `Vence em ${diffDays} dia(s)`;
+                    statusColor = [255, 165, 0];
                 } else {
                     status = "OK";
-                    statusColor = [0, 128, 0]; // Verde
+                    statusColor = [0, 128, 0];
                 }
             }
-            
-            // Adiciona linha do produto
+
             doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0); // Preto para os dados normais
-            doc.text(produto.nome, 15, y);
-            doc.text(`R$ ${produto.precoCompra.toFixed(2)}`, 80, y);
-            doc.text(produto.perecivel ? "Sim" : "Não", 120, y);
-            
-            if (produto.perecivel && produto.dataValidade) {
-                const dataValidade = new Date(produto.dataValidade).toLocaleDateString('pt-BR');
-                doc.text(dataValidade, 160, y);
-            } else {
-                doc.text("N/A", 160, y);
-            }
-            
-            // Adiciona status com cor - usando RGB separado
+            doc.setTextColor(0, 0, 0);
+            doc.text(produto.nome, colunas.nome, y);
+            doc.text(`R$ ${produto.precoCompra.toFixed(2)}`, colunas.preco, y);
+            doc.text(produto.perecivel ? "Sim" : "Não", colunas.perecivel, y);
+            doc.text(validadeText, colunas.validade, y);
+
             doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-            doc.text(status, 190, y, { align: 'right' });
-            
-            // Adiciona linha divisória
+            doc.text(status, colunas.status, y, { align: 'right' });
+
             doc.setDrawColor(200, 200, 200);
             doc.line(10, y + 5, 200, y + 5);
             
             y += 10;
         });
-        
-        // Adiciona rodapé com total de produtos
+
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
         doc.text(`Total de produtos: ${produtos.length}`, 14, 285);
-        
-        // Salva o PDF
+
         doc.save(`Relatorio_Estoque_${dataEmissao.replace(/\//g, '-')}.pdf`);
         
     } catch (error) {
