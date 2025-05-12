@@ -5,11 +5,533 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roleta de Prêmios - Restaurante</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/pedido.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/roleta.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" href="img/logo-navegador2.0.png" type="image/png">
+    <style>
+        :root {
+            --primary: #e8c547;
+            --secondary: #30323d;
+            --accent: #cd4d4d;
+            --light: #f5f5f5;
+            --dark: #1e1e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .navbar-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-link:hover {
+            color: var(--primary);
+        }
+
+        .navbar-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .user-profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .user-avatar-nav {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary);
+            color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .container {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .roleta-container {
+            position: relative;
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .roleta-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .roleta {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 0 10px var(--primary), 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transform: rotate(0deg);
+        }
+
+        .roleta-gancho {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .roleta-centro {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 5px solid var(--secondary);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .roleta-centro i {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .roleta-setor {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-top-left-radius: 100%;
+        }
+
+        .roleta-setor span {
+            position: absolute;
+            right: 10px;
+            transform: rotate(90deg);
+            transform-origin: right;
+            white-space: nowrap;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-girar {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(232, 197, 71, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-girar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(232, 197, 71, 0.6);
+        }
+
+        .btn-girar:active {
+            transform: translateY(1px);
+        }
+
+        .btn-girar:disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-girar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.3) 50%, transparent 75%);
+            background-size: 200% 100%;
+            animation: shine 2s infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-girar:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .modal-premio {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content-premio {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        .premio-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        #premioDescricao {
+            color: #555;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        #formResgate {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.2);
+            outline: none;
+        }
+
+        .btn-primary {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #e0b83a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(232, 197, 71, 0.4);
+        }
+
+        #cupomContainer {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .cupom-efeito {
+            background: linear-gradient(135deg, #f5f5f5 0%, #fff 100%);
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cupom-efeito::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23e8c547' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .cupom-efeito i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        #cupomCodigo {
+            display: block;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            letter-spacing: 2px;
+            margin: 1rem 0;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 9999;
+            animation: confettiFall 5s ease-in-out;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .footer-config {
+            margin-top: auto;
+        }
+
+        .footer-07 {
+            background: var(--secondary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Cores dos setores - sem branco */
+        .setor-1 {
+            background: linear-gradient(135deg, #e8c547 0%, #f3d77b 100%);
+        }
+        .setor-2 {
+            background: linear-gradient(135deg, #30323d 0%, #4d5061 100%);
+        }
+        .setor-3 {
+            background: linear-gradient(135deg, #cd4d4d 0%, #e67e7e 100%);
+        }
+        .setor-4 {
+            background: linear-gradient(135deg, #5c6bc0 0%, #8e99f3 100%);
+        }
+        .setor-5 {
+            background: linear-gradient(135deg, #66bb6a 0%, #9ccc65 100%);
+        }
+        .setor-6 {
+            background: linear-gradient(135deg, #ffa726 0%, #ffcc80 100%);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .navbar-menu {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .roleta-container {
+                padding: 1rem;
+            }
+
+            .modal-content-premio {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -36,13 +558,18 @@
     <div class="container">
         <header class="header">
             <h1><i class="fas fa-gift"></i> Roleta de Prêmios</h1>
-            <p>Gire a roleta e ganhe descontos ou prêmios especiais!</p>
+            <p>Gire a roleta e ganhe descontos ou prêmios especiais no nosso restaurante!</p>
         </header>
 
         <div class="roleta-container">
-            <div class="roleta">
-                <div class="roleta-gancho"></div>
-                <!-- Setores serão gerados pelo JavaScript -->
+            <div class="roleta-wrapper">
+                <div class="roleta" id="roleta">
+                    <div class="roleta-gancho"></div>
+                    <!-- Setores serão gerados pelo JavaScript -->
+                </div>
+                <div class="roleta-centro">
+                    <i class="fas fa-gift"></i>
+                </div>
             </div>
             <button id="btnGirar" class="btn-girar" onclick="girarRoleta()">
                 <i class="fas fa-sync-alt"></i> Girar Roleta
@@ -52,7 +579,10 @@
 
     <div id="modalPremio" class="modal-premio">
         <div class="modal-content-premio">
-            <h2 class="premio-titulo" id="premioTitulo">Parabéns!</h2>
+            <button class="modal-close" onclick="fecharModalPremio()">&times;</button>
+            <h2 class="premio-titulo" id="premioTitulo">
+                <i class="fas" id="premioIcone"></i> Parabéns!
+            </h2>
             <p id="premioDescricao">Você ganhou um desconto de 10% no seu próximo pedido!</p>
             
             <div id="formResgate" style="display: none;">
@@ -76,30 +606,13 @@
                     <i class="fas fa-check"></i> Resgatar Prêmio
                 </button>
             </div>
-
-            <div class="modal-content-premio">
-    <h2 class="premio-titulo" id="premioTitulo">
-        <i class="fas" id="premioIcone"></i> Parabéns!
-    </h2>
-    <p id="premioDescricao">Você ganhou um desconto de 10% no seu próximo pedido!</p>
-    
-    <div id="formResgate" style="display: none;">
-        <!-- ... (mantenha o conteúdo existente) ... -->
-    </div>
-    
-    <div id="cupomContainer" style="display: none;">
-        <div class="cupom-efeito">
-            <i class="fas fa-ticket-alt"></i>
-            <span id="cupomCodigo"></span>
-        </div>
-        <button class="btn-primary" onclick="fecharModalPremio()">
-            <i class="fas fa-times"></i> Fechar
-        </button>
-    </div>
-</div>
             
             <div id="cupomContainer" style="display: none;">
-                <p>Seu cupom foi aplicado automaticamente no seu próximo pedido!</p>
+                <div class="cupom-efeito">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span id="cupomCodigo"></span>
+                    <p id="cupomDescricao"></p>
+                </div>
                 <button class="btn-primary" onclick="fecharModalPremio()">
                     <i class="fas fa-times"></i> Fechar
                 </button>
@@ -117,7 +630,250 @@
         </footer>
     </div>
 
-    <script src="js/roleta.js"></script>
-    <script src="js/menuHamburguer.js"></script>
+    <script>
+        const premios = [
+            { 
+                tipo: "desconto", 
+                valor: 10, 
+                descricao: "10% de desconto no seu próximo pedido!",
+                probabilidade: 25,
+                icone: "fa-tag",
+                cor: "setor-1"
+            },
+            { 
+                tipo: "desconto", 
+                valor: 20, 
+                texto: "20% DESCONTO", 
+                descricao: "20% de desconto no seu próximo pedido!",
+                probabilidade: 15,
+                icone: "fa-percentage",
+                cor: "setor-2"
+            },
+            { 
+                tipo: "brinde", 
+                texto: "SOBREMESA", 
+                descricao: "Uma sobremesa grátis no seu próximo pedido!",
+                probabilidade: 20,
+                icone: "fa-ice-cream",
+                cor: "setor-3"
+            },
+            { 
+                tipo: "brinde", 
+                texto: "BEBIDA", 
+                descricao: "Uma bebida grátis no seu próximo pedido!",
+                probabilidade: 20,
+                icone: "fa-glass-cheers",
+                cor: "setor-4"
+            },
+            { 
+                tipo: "prato", 
+                texto: "PRATO EXECUTIVO", 
+                descricao: "Um prato executivo grátis no seu próximo pedido!",
+                probabilidade: 10,
+                icone: "fa-utensils",
+                cor: "setor-5"
+            },
+            { 
+                tipo: "nada", 
+                descricao: "Não foi desta vez. Tente novamente mais tarde!",
+                probabilidade: 10,
+                icone: "fa-redo",
+                cor: "setor-6"
+            }
+        ];
+
+        // Variáveis de controle
+        let podeGirar = true;
+        let premioAtual = null;
+        const ROULETTE_STORAGE_KEY = 'roleta_premios';
+
+        function inicializarRoleta() {
+            const roleta = document.getElementById('roleta');
+            roleta.innerHTML = '<div class="roleta-gancho"></div>';
+            
+            let anguloAtual = 0;
+            const totalProbabilidade = premios.reduce((sum, p) => sum + p.probabilidade, 0);
+            
+            premios.forEach((premio, index) => {
+                const anguloSetor = (premio.probabilidade / totalProbabilidade) * 360;
+                const setor = document.createElement('div');
+                setor.className = `roleta-setor ${premio.cor}`;
+                setor.style.transform = `rotate(${anguloAtual}deg)`;
+                
+                const span = document.createElement('span');
+                span.textContent = premio.texto;
+                setor.appendChild(span);
+                
+                roleta.appendChild(setor);
+                anguloAtual += anguloSetor;
+            });
+        }
+
+        function criarConfetti() {
+            const colors = ['#e8c547', '#cd4d4d', '#5c6bc0', '#66bb6a', '#ffa726'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        function girarRoleta() {
+            if (!podeGirar) return;
+            
+            podeGirar = false;
+            document.getElementById('btnGirar').disabled = true;
+            
+            // Seleciona um prêmio aleatório considerando a probabilidade
+            const random = Math.random() * 100;
+            let acumulado = 0;
+            
+            for (const premio of premios) {
+                acumulado += premio.probabilidade;
+                if (random <= acumulado) {
+                    premioAtual = premio;
+                    break;
+                }
+            }
+            
+            // Calcula o ângulo de parada
+            const setores = Array.from(document.querySelectorAll('.roleta-setor'));
+            const indexPremio = premios.findIndex(p => p === premioAtual);
+            const anguloPorSetor = 360 / premios.length;
+            const anguloParada = 360 * 5 + (indexPremio * anguloPorSetor) + (Math.random() * anguloPorSetor);
+            
+            // Animação
+            const roleta = document.getElementById('roleta');
+            roleta.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+            roleta.style.transform = `rotate(${-anguloParada}deg)`;
+            
+            // Mostra o prêmio após a animação
+            setTimeout(() => {
+                mostrarPremio();
+                if (premioAtual.tipo !== 'nada') {
+                    criarConfetti();
+                }
+            }, 4000);
+        }
+
+        function mostrarPremio() {
+            const modal = document.getElementById('modalPremio');
+            const titulo = document.getElementById('premioTitulo');
+            const descricao = document.getElementById('premioDescricao');
+            const icone = document.getElementById('premioIcone');
+            const formResgate = document.getElementById('formResgate');
+            const cupomContainer = document.getElementById('cupomContainer');
+            const cupomCodigo = document.getElementById('cupomCodigo');
+            const cupomDescricao = document.getElementById('cupomDescricao');
+            
+            icone.className = `fas ${premioAtual.icone}`;
+            titulo.textContent = premioAtual.tipo === 'nada' ? 'Que pena!' : 'Parabéns!';
+            descricao.textContent = premioAtual.descricao;
+            
+            if (premioAtual.tipo === 'nada') {
+                formResgate.style.display = 'none';
+                cupomContainer.style.display = 'none';
+                
+                setTimeout(() => {
+                    fecharModalPremio();
+                }, 2000);
+            } 
+            else if (premioAtual.tipo === 'desconto') {
+                formResgate.style.display = 'none';
+                cupomContainer.style.display = 'block';
+                
+                const cupom = `APETITO-${Math.floor(Math.random() * 10000)}`;
+                cupomCodigo.textContent = cupom;
+                cupomDescricao.textContent = `Use este código no checkout para obter ${premioAtual.valor}% de desconto`;
+
+                // Salva o cupom no localStorage
+                const cupons = JSON.parse(localStorage.getItem(ROULETTE_STORAGE_KEY) || []);
+                cupons.push({
+                    codigo: cupom,
+                    desconto: premioAtual.valor,
+                    data: new Date().toISOString(),
+                    usado: false
+                });
+                localStorage.setItem(ROULETTE_STORAGE_KEY, JSON.stringify(cupons));
+            } else {
+                descricao.textContent = premioAtual.descricao + " Por favor, informe seus dados para resgate.";
+                formResgate.style.display = 'block';
+                cupomContainer.style.display = 'none';
+                
+                // Mostra campos apropriados
+                document.getElementById('enderecoResgateGroup').style.display = 'block';
+                document.getElementById('mesaResgateGroup').style.display = 'none';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function resgatarPremio() {
+            const nome = document.getElementById('nomeResgate').value;
+            const contato = document.getElementById('contatoResgate').value;
+            const endereco = document.getElementById('enderecoResgate').value;
+            const mesa = document.getElementById('mesaResgate').value;
+            
+            if (!nome || !contato) {
+                alert('Por favor, preencha pelo menos nome e telefone');
+                return;
+            }
+            
+            // Salva o resgate no localStorage
+            const resgates = JSON.parse(localStorage.getItem('roleta_resgates')) || [];
+            resgates.push({
+                premio: premioAtual.texto,
+                nome,
+                contato,
+                endereco,
+                mesa,
+                data: new Date().toISOString(),
+                resgatado: false
+            });
+            localStorage.setItem('roleta_resgates', JSON.stringify(resgates));
+            
+            alert('Prêmio registrado com sucesso! Entraremos em contato para a entrega.');
+            fecharModalPremio();
+        }
+
+        function fecharModalPremio() {
+            document.getElementById('modalPremio').style.display = 'none';
+            document.getElementById('btnGirar').disabled = false;
+            podeGirar = true;
+            
+            // Limpa formulário
+            document.getElementById('nomeResgate').value = '';
+            document.getElementById('contatoResgate').value = '';
+            document.getElementById('enderecoResgate').value = '';
+            document.getElementById('mesaResgate').value = '';
+            
+            // Remove todos os confettis restantes
+            document.querySelectorAll('.confetti').forEach(el => el.remove());
+        }
+
+        // Inicializa a roleta quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarRoleta();
+            
+            // Verifica se já girou hoje (pode implementar lógica para limitar giros por dia)
+            const hoje = new Date().toLocaleDateString();
+            const ultimoGiro = localStorage.getItem('ultimo_giro');
+            
+            if (ultimoGiro === hoje) {
+                document.getElementById('btnGirar').disabled = true;
+                document.getElementById('btnGirar').innerHTML = '<i class="fas fa-clock"></i> Volte amanhã para girar novamente!';
+            }
+        });
+    </script>
 </body>
 </html>
