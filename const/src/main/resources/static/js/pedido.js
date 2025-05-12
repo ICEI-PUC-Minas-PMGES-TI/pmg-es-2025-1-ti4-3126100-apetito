@@ -329,3 +329,75 @@ document.addEventListener("DOMContentLoaded", () => {
   carregarCardapio();
   atualizarTipoPedido();
 });
+
+
+const CLIENTE_SESSION_KEY = 'cliente_session_pedidos';
+
+function getSessionId() {
+  let sessionId = localStorage.getItem('current_session_id');
+  if (!sessionId) {
+    sessionId = 'sessao_' + Date.now();
+    localStorage.setItem('current_session_id', sessionId);
+  }
+  return sessionId;
+}
+
+async function enviarAvaliacao() {
+  const notaAmbiente = document.getElementById("ambiente").dataset.nota || 0;
+  const notaComida = document.getElementById("comida").dataset.nota || 0;
+  const notaAtendimento = document.getElementById("atendimento").dataset.nota || 0;
+  const comentario = document.getElementById("comentario").value;
+
+  const avaliacao = {
+    ambiente: notaAmbiente,
+    comida: notaComida,
+    atendimento: notaAtendimento,
+    comentario: comentario,
+    data: new Date().toISOString(),
+  };
+
+  localStorage.setItem(`avaliacao_${pedidoId}`, JSON.stringify(avaliacao));
+  
+  const sessionId = getSessionId();
+  const historico = JSON.parse(localStorage.getItem(CLIENTE_SESSION_KEY) || '{}');
+  
+  if (!historico[sessionId]) {
+    historico[sessionId] = [];
+  }
+  
+  try {
+    const response = await fetch(`http://localhost:8080/api/pedidos/${pedidoId}`);
+    if (response.ok) {
+      const pedido = await response.json();
+      historico[sessionId].push({
+        id: pedidoId,
+        data: new Date().toISOString(),
+        tipo: pedido.tipoPedido,
+        itens: pedido.itens,
+        total: pedido.total,
+        status: 'Finalizado',
+        avaliacao: avaliacao
+      });
+      localStorage.setItem(CLIENTE_SESSION_KEY, JSON.stringify(historico));
+    }
+  } catch (error) {
+    console.error("Erro ao buscar detalhes do pedido:", error);
+  }
+
+  alert("Obrigado pela sua avaliação!");
+  document.getElementById("modalAvaliacao").style.display = "none";
+
+  pedidoId = null;
+  carregarCarrinho();
+}
+
+function limparSessao() {
+  const sessionId = localStorage.getItem('current_session_id');
+  if (sessionId) {
+    const historico = JSON.parse(localStorage.getItem(CLIENTE_SESSION_KEY) || '{}');
+    delete historico[sessionId];
+    localStorage.setItem(CLIENTE_SESSION_KEY, JSON.stringify(historico));
+  }
+  localStorage.removeItem('current_session_id');
+  window.location.href = 'cliente.html';
+}
