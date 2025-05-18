@@ -1,4 +1,5 @@
 let pedidoId = null;
+let itensCardapio = [];
 
 async function criarPedido() {
   const tipoPedido = document.getElementById("tipoPedido").value;
@@ -47,8 +48,6 @@ async function criarPedido() {
       pedidoId = pedido.id;
       alert("Pedido criado com sucesso!");
       await carregarCarrinho();
-
-      console.log("Pedido criado:", pedido);
     } else {
       const error = await response.text();
       alert(`Erro ao criar pedido: ${error}`);
@@ -63,30 +62,53 @@ async function carregarCardapio() {
   try {
     const response = await fetch("http://localhost:8080/api/cardapio");
     if (!response.ok) throw new Error("Erro ao carregar cardápio");
-
-    const itens = await response.json();
-    const cardapioDiv = document.getElementById("cardapio");
-    cardapioDiv.innerHTML = "";
-
-    itens.forEach((item) => {
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "item-cardapio";
-      itemDiv.innerHTML = ` 
-            <strong>${item.nome}</strong> - R$${item.preco.toFixed(2)}<br>
-            <em>${item.descricao}</em><br>
-            <input type="number" id="qtd-${
-              item.id
-            }" value="1" min="1" style="width: 50px;">
-            <button class="btn-primary" onclick="adicionarItem(${
-              item.id
-            })">Adicionar</button>
-        `;
-      cardapioDiv.appendChild(itemDiv);
-    });
+    itensCardapio = await response.json();
+    exibirItensCardapio(itensCardapio);
   } catch (error) {
     console.error("Erro ao carregar cardápio:", error);
     alert("Erro ao carregar cardápio. Tente recarregar a página.");
   }
+}
+
+function exibirItensCardapio(itens) {
+  const cardapioDiv = document.getElementById("cardapio");
+  cardapioDiv.innerHTML = "";
+
+  itens.forEach((item) => {
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "item-cardapio";
+    itemDiv.innerHTML = ` 
+      <strong>${item.nome}</strong> - R$${item.preco.toFixed(2)}<br>
+      <em>${item.descricao}</em><br>
+      <input type="number" id="qtd-${item.id}" value="1" min="1" style="width: 50px;">
+      <button class="btn-primary" onclick="adicionarItem(${item.id})">Adicionar</button>
+    `;
+    cardapioDiv.appendChild(itemDiv);
+  });
+}
+
+function filtrarCardapio() {
+  const termo = document.getElementById("filtroCardapio").value.toLowerCase();
+  
+  if (!termo) {
+    exibirItensCardapio(itensCardapio);
+    return;
+  }
+
+  const itensFiltrados = itensCardapio.filter(item => 
+    item.nome.toLowerCase().includes(termo)
+  );
+
+  itensFiltrados.sort((a, b) => {
+    const aComeca = a.nome.toLowerCase().startsWith(termo);
+    const bComeca = b.nome.toLowerCase().startsWith(termo);
+    
+    if (aComeca && !bComeca) return -1;
+    if (!aComeca && bComeca) return 1;
+    return 0;
+  });
+
+  exibirItensCardapio(itensFiltrados);
 }
 
 async function carregarCarrinho() {
@@ -116,9 +138,9 @@ async function carregarCarrinho() {
       const itemDiv = document.createElement("div");
       itemDiv.className = "item-carrinho";
       itemDiv.innerHTML = ` 
-            <strong>${itemPedido.itemCardapio.nome}</strong> - Qtd: ${itemPedido.quantidade}<br>
-            <button class="btn-primary" onclick="removerItem(${itemPedido.id})">Remover</button>
-        `;
+        <strong>${itemPedido.itemCardapio.nome}</strong> - Qtd: ${itemPedido.quantidade}<br>
+        <button class="btn-primary" onclick="removerItem(${itemPedido.id})">Remover</button>
+      `;
       carrinhoDiv.appendChild(itemDiv);
     });
 
@@ -137,9 +159,7 @@ async function atualizarTotal() {
     );
     if (response.ok) {
       const total = await response.json();
-      document.getElementById(
-        "totalCarrinho"
-      ).innerText = `Total: R$ ${total.toFixed(2)}`;
+      document.getElementById("totalCarrinho").innerText = `Total: R$ ${total.toFixed(2)}`;
     }
   } catch (error) {
     console.error("Erro ao atualizar total:", error);
@@ -257,80 +277,6 @@ function selecionarEstrelas(id, valor) {
   document.getElementById(id).dataset.nota = valor;
 }
 
-function enviarAvaliacao() {
-  const notaAmbiente = document.getElementById("ambiente").dataset.nota || 0;
-  const notaComida = document.getElementById("comida").dataset.nota || 0;
-  const notaAtendimento =
-    document.getElementById("atendimento").dataset.nota || 0;
-  const comentario = document.getElementById("comentario").value;
-
-  const avaliacao = {
-    ambiente: notaAmbiente,
-    comida: notaComida,
-    atendimento: notaAtendimento,
-    comentario: comentario,
-    data: new Date().toISOString(),
-  };
-
-  localStorage.setItem(`avaliacao_${pedidoId}`, JSON.stringify(avaliacao));
-  alert("Obrigado pela sua avaliação!");
-  document.getElementById("modalAvaliacao").style.display = "none";
-
-  pedidoId = null;
-  carregarCarrinho();
-}
-
-function atualizarTipoPedido() {
-  const tipoPedido = document.getElementById("tipoPedido").value;
-  const mesaSelecionada = document.getElementById("mesaSelecionada");
-  const dadosCliente = document.getElementById("dadosCliente");
-
-  if (tipoPedido === "mesa") {
-    mesaSelecionada.style.display = "block";
-    dadosCliente.style.display = "none";
-    carregarMesas();
-  } else {
-    mesaSelecionada.style.display = "none";
-    dadosCliente.style.display = "block";
-  }
-}
-
-async function carregarMesas() {
-  try {
-    const response = await fetch("http://localhost:8080/mesas");
-    const mesas = await response.json();
-
-    const todasOcupadas = mesas.every((mesa) => mesa.status === "ocupado");
-
-    if (todasOcupadas) {
-      alert(
-        "Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera."
-      );
-      return;
-    }
-
-    const mesaSelect = document.getElementById("mesaSelect");
-    mesaSelect.innerHTML = `<option value="null">Selecione uma mesa</option>`;
-
-    mesas.forEach((mesa) => {
-      if (mesa.status !== "ocupado") {
-        const option = document.createElement("option");
-        option.value = mesa.id;
-        option.textContent = `Mesa ${mesa.id}`;
-        mesaSelect.appendChild(option);
-      }
-    });
-  } catch (error) {
-    console.error("Erro ao carregar mesas:", error);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  carregarCardapio();
-  atualizarTipoPedido();
-});
-
-
 const CLIENTE_SESSION_KEY = 'cliente_session_pedidos';
 
 function getSessionId() {
@@ -402,30 +348,233 @@ function limparSessao() {
   window.location.href = 'cliente.html';
 }
 
-// Verifica e aplica cupons da roleta automaticamente
-function aplicarCuponsAutomaticos() {
-    const cupomRoleta = verificarCuponsRoleta();
-    if (cupomRoleta) {
-        cupomAplicado = {
-            codigo: cupomRoleta.codigo,
-            desconto: cupomRoleta.desconto / 100
-        };
+function atualizarTipoPedido() {
+  const tipoPedido = document.getElementById("tipoPedido").value;
+  const mesaSelecionada = document.getElementById("mesaSelecionada");
+  const dadosCliente = document.getElementById("dadosCliente");
+
+  if (tipoPedido === "mesa") {
+    mesaSelecionada.style.display = "block";
+    dadosCliente.style.display = "none";
+    carregarMesas();
+  } else {
+    mesaSelecionada.style.display = "none";
+    dadosCliente.style.display = "block";
+  }
+}
+
+async function carregarMesas() {
+  try {
+    const response = await fetch("http://localhost:8080/mesas");
+    const mesas = await response.json();
+
+    const todasOcupadas = mesas.every((mesa) => mesa.status === "ocupado");
+
+    if (todasOcupadas) {
+      alert("Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera.");
+      return;
+    }
+
+    const mesaSelect = document.getElementById("mesaSelect");
+    mesaSelect.innerHTML = `<option value="null">Selecione uma mesa</option>`;
+
+    mesas.forEach((mesa) => {
+      if (mesa.status !== "ocupado") {
+        const option = document.createElement("option");
+        option.value = mesa.id;
+        option.textContent = `Mesa ${mesa.id}`;
+        mesaSelect.appendChild(option);
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao carregar mesas:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  carregarCardapio();
+  atualizarTipoPedido();
+  inicializarRoleta();
+});
+
+// Variáveis da Roleta
+let podeGirar = true;
+let premioAtual = null;
+
+// Inicializar Roleta
+function inicializarRoleta() {
+    const roletaBtn = document.getElementById("roletaBtn");
+    const modal = document.getElementById("roletaModal");
+    const closeBtn = document.querySelector(".roleta-close-btn");
+    const girarBtn = document.getElementById("girarRoletaBtn");
+    const resgateOnlineBtn = document.getElementById("resgateOnlineBtn");
+    const resgatePresencialBtn = document.getElementById("resgatePresencialBtn");
+    const confirmarOnlineBtn = document.getElementById("confirmarOnlineBtn");
+
+    // Abrir modal
+    roletaBtn.addEventListener("click", function() {
+        modal.style.display = "block";
+        resetarRoleta();
+    });
+
+    // Fechar modal
+    closeBtn.addEventListener("click", function() {
+        modal.style.display = "none";
+    });
+
+    // Clicar fora do modal para fechar
+    window.addEventListener("click", function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Girar roleta
+    girarBtn.addEventListener("click", function() {
+        if (podeGirar) {
+            girarRoleta();
+        }
+    });
+
+    // Opções de resgate
+    resgateOnlineBtn.addEventListener("click", function() {
+        document.getElementById("opcoesResgate").classList.add("hidden");
+        document.getElementById("formularioOnline").classList.remove("hidden");
+    });
+
+    resgatePresencialBtn.addEventListener("click", function() {
+        document.getElementById("opcoesResgate").classList.add("hidden");
+        const codigo = gerarCodigo();
+        document.getElementById("roletaCodigo").textContent = codigo;
+        document.getElementById("codigoPresencial").classList.remove("hidden");
+        salvarPremio(codigo);
+    });
+
+    // Confirmar resgate online
+    confirmarOnlineBtn.addEventListener("click", function() {
+        const nome = document.getElementById("roletaNome").value;
+        const telefone = document.getElementById("roletaTelefone").value;
+        const endereco = document.getElementById("roletaEndereco").value;
+
+        if (!nome || !telefone || !endereco) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        const codigo = gerarCodigo();
+        salvarPremio(codigo, { nome, telefone, endereco: endereco });
         
-        // Marca como usado
-        const cupons = JSON.parse(localStorage.getItem(ROULETTE_STORAGE_KEY)) || [];
-        const cupomIndex = cupons.findIndex(c => c.codigo === cupomRoleta.codigo);
-        if (cupomIndex !== -1) {
-            cupons[cupomIndex].usado = true;
-            localStorage.setItem(ROULETTE_STORAGE_KEY, JSON.stringify(cupons));
+        alert(`Prêmio confirmado! Seu código de resgate é: ${codigo}`);
+        modal.style.display = "none";
+    });
+}
+
+// Girar a roleta
+function girarRoleta() {
+    podeGirar = false;
+    const roleta = document.getElementById("roleta");
+    const resultado = document.getElementById("resultadoRoleta");
+    const textoResultado = document.getElementById("textoResultado");
+    const opcoesResgate = document.getElementById("opcoesResgate");
+    const formularioOnline = document.getElementById("formularioOnline");
+    const codigoPresencial = document.getElementById("codigoPresencial");
+
+    // Resetar elementos de resultado
+    resultado.classList.remove("hidden");
+    opcoesResgate.classList.add("hidden");
+    formularioOnline.classList.add("hidden");
+    codigoPresencial.classList.add("hidden");
+
+    // Número aleatório de voltas (5-10) + posição do prêmio
+    const voltas = 5 + Math.floor(Math.random() * 5);
+    const anguloPorPremio = 45; // 360° / 8 setores
+    const premios = ["sobremesa", "bebida", "prato-feito", "nada", "desconto", "nada", "sobremesa", "nada"];
+    const premioIndex = Math.floor(Math.random() * premios.length);
+    const anguloFinal = voltas * 360 + (premioIndex * anguloPorPremio);
+    
+    // Girar a roleta
+    roleta.style.transform = `rotate(${-anguloFinal}deg)`;
+    
+    // Determinar o prêmio
+    setTimeout(() => {
+        premioAtual = premios[premioIndex];
+        
+        // Exibir resultado
+        switch(premioAtual) {
+            case "sobremesa":
+                textoResultado.textContent = "Parabéns! Você ganhou uma sobremesa grátis!";
+                textoResultado.style.color = "#FF9AA2";
+                break;
+            case "bebida":
+                textoResultado.textContent = "Parabéns! Você ganhou uma bebida grátis!";
+                textoResultado.style.color = "#FFB7B2";
+                break;
+            case "prato-feito":
+                textoResultado.textContent = "Parabéns! Você ganhou um prato feito grátis!";
+                textoResultado.style.color = "#FFDAC1";
+                break;
+            case "desconto":
+                textoResultado.textContent = "Parabéns! Você ganhou 10% de desconto no seu próximo pedido!";
+                textoResultado.style.color = "#B5EAD7";
+                break;
+            case "nada":
+                textoResultado.textContent = "Não foi dessa vez! Tente novamente mais tarde.";
+                textoResultado.style.color = "#888";
+                break;
         }
         
-        // Atualiza a exibição
-        const cupomDiv = document.getElementById("cupomAplicado");
-        cupomDiv.innerHTML = `
-            Cupom da Roleta: ${cupomRoleta.codigo} (${cupomRoleta.desconto}% off)
-        `;
-        cupomDiv.classList.remove("hidden");
+        // Mostrar opções de resgate se ganhou algo
+        if (premioAtual !== "nada") {
+            opcoesResgate.classList.remove("hidden");
+        }
         
-        calcularDesconto();
+        podeGirar = true;
+    }, 5000); // Tempo da animação
+}
+
+// Resetar roleta
+function resetarRoleta() {
+    const roleta = document.getElementById("roleta");
+    roleta.style.transform = "rotate(0deg)";
+    premioAtual = null;
+    
+    document.getElementById("resultadoRoleta").classList.add("hidden");
+    document.getElementById("roletaNome").value = "";
+    document.getElementById("roletaTelefone").value = "";
+    document.getElementById("roletaEndereco").value = "";
+}
+
+// Gerar código aleatório
+function gerarCodigo() {
+    const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+    const numeros = "23456789";
+    let codigo = "";
+    
+    for (let i = 0; i < 2; i++) {
+        codigo += letras.charAt(Math.floor(Math.random() * letras.length));
     }
+    
+    for (let i = 0; i < 4; i++) {
+        codigo += numeros.charAt(Math.floor(Math.random() * numeros.length));
+    }
+    
+    return codigo;
+}
+
+// Salvar prêmio no localStorage
+function salvarPremio(codigo, dadosCliente = null) {
+    if (premioAtual === "nada") return;
+    
+    const premios = JSON.parse(localStorage.getItem("premiosCliente") || []);
+    const novoPremio = {
+        id: Date.now(),
+        codigo: codigo,
+        tipo: premioAtual,
+        data: new Date().toISOString(),
+        resgatado: false,
+        dadosCliente: dadosCliente
+    };
+    
+    premios.push(novoPremio);
+    localStorage.setItem("premiosCliente", JSON.stringify(premios));
 }

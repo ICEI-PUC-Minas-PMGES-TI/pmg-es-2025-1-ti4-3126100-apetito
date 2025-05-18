@@ -93,6 +93,33 @@ async function deleteDespesa(id) {
     }
 }
 
+async function markAsPaid(id) {
+    if (confirm("Marcar esta despesa como paga?")) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`);
+            const despesa = await response.json();
+            
+            const updatedDespesa = {
+                ...despesa,
+                status: "pago",
+                dataPagamento: new Date().toISOString().split('T')[0]
+            };
+            
+            await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedDespesa),
+            });
+            
+            fetchDespesas();
+        } catch (error) {
+            console.error("Erro ao marcar despesa como paga:", error);
+        }
+    }
+}
+
 function displayDespesas(despesas) {
     despesasList.innerHTML = "";
 
@@ -101,7 +128,13 @@ function displayDespesas(despesas) {
         return;
     }
 
-    despesas.forEach((despesa) => {
+    const sortedDespesas = [...despesas].sort((a, b) => {
+        if (a.status === "pago" && b.status !== "pago") return 1;
+        if (a.status !== "pago" && b.status === "pago") return -1;
+        return new Date(a.dataVencimento) - new Date(b.dataVencimento);
+    });
+
+    sortedDespesas.forEach((despesa) => {
         const li = document.createElement("li");
         li.className = "despesa-item";
 
@@ -112,18 +145,24 @@ function displayDespesas(despesas) {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         let statusClass = "";
-        if (diffDays < 0) {
+        let statusText = "";
+        
+        if (despesa.status === "pago") {
+            statusClass = "pago";
+            statusText = "PAGO";
+        } else if (diffDays < 0) {
             statusClass = "vencida";
+            statusText = `Vencida há ${Math.abs(diffDays)} dia(s)`;
         } else if (diffDays <= 7) {
             statusClass = "proxima";
+            statusText = `Vence em ${diffDays} dia(s)`;
         }
 
         li.innerHTML = `
             <div class="despesa-info">
                 <h3>${despesa.nome}</h3>
                 <p>${despesa.parcelas} parcela(s) · Vence em ${dataFormatada}</p>
-                ${diffDays < 0 ? `<span class="status-badge ${statusClass}">Vencida há ${Math.abs(diffDays)} dia(s)</span>` : 
-                 diffDays <= 7 ? `<span class="status-badge ${statusClass}">Vence em ${diffDays} dia(s)</span>` : ''}
+                ${statusText ? `<span class="status-badge ${statusClass}">${statusText}</span>` : ''}
             </div>
             <div class="despesa-valor">
                 R$ ${despesa.preco.toFixed(2)}
@@ -135,6 +174,10 @@ function displayDespesas(despesas) {
                 <button class="btn btn-danger delete-btn" data-id="${despesa.id}">
                     <i class="fas fa-trash-alt"></i> Excluir
                 </button>
+                ${despesa.status !== "pago" ? 
+                  `<button class="btn btn-success pay-btn" data-id="${despesa.id}">
+                      <i class="fas fa-check"></i> Pago
+                  </button>` : ''}
             </div>
         `;
 
@@ -147,6 +190,10 @@ function displayDespesas(despesas) {
 
     document.querySelectorAll(".delete-btn").forEach((btn) => {
         btn.addEventListener("click", () => deleteDespesa(btn.dataset.id));
+    });
+
+    document.querySelectorAll(".pay-btn").forEach((btn) => {
+        btn.addEventListener("click", () => markAsPaid(btn.dataset.id));
     });
 }
 
@@ -182,6 +229,25 @@ function resetForm() {
     vencimentoInput.value = hoje;
 }
 
+async function markAsPaid(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}/pagar`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        
+        if (response.ok) {
+            fetchDespesas();
+        } else {
+            console.error("Erro ao marcar como pago");
+        }
+    } catch (error) {
+        console.error("Erro ao marcar despesa como paga:", error);
+    }
+}
+
 async function gerarRelatorioPDF() {
     try {
         const response = await fetch(API_URL);
@@ -189,7 +255,6 @@ async function gerarRelatorioPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Configurações do relatório
         const colunas = {
             nome: 15,
             parcelas: 60,
@@ -198,7 +263,6 @@ async function gerarRelatorioPDF() {
             status: 190
         };
 
-        // Cabeçalho do relatório
         doc.setFontSize(18);
         doc.text("Relatório de Despesas", 105, 15, { align: 'center' });
 
@@ -206,7 +270,6 @@ async function gerarRelatorioPDF() {
         const dataEmissao = new Date().toLocaleDateString('pt-BR');
         doc.text(`Data de emissão: ${dataEmissao}`, 105, 23, { align: 'center' });
 
-        // Cabeçalho da tabela
         doc.setFontSize(12);
         doc.setDrawColor(0);
         doc.setFillColor(200, 200, 200);
@@ -218,15 +281,19 @@ async function gerarRelatorioPDF() {
         doc.text("Vencimento", colunas.vencimento, 37);
         doc.text("Status", colunas.status, 37, { align: 'right' });
 
-        let y = 45; // Posição Y inicial para os itens
+        let y = 45;
         const hoje = new Date();
         
-        // Adicionar cada despesa ao PDF
-        despesas.forEach((despesa) => {
-            if (y > 270) { // Verifica se precisa de nova página
+        const sortedDespesas = [...despesas].sort((a, b) => {
+            if (a.status === "pago" && b.status !== "pago") return 1;
+            if (a.status !== "pago" && b.status === "pago") return -1;
+            return 0;
+        });
+
+        sortedDespesas.forEach((despesa) => {
+            if (y > 270) {
                 doc.addPage();
                 y = 20;
-                // Cabeçalho da tabela na nova página
                 doc.setFontSize(12);
                 doc.setDrawColor(0);
                 doc.setFillColor(200, 200, 200);
@@ -240,28 +307,31 @@ async function gerarRelatorioPDF() {
                 y = 25;
             }
 
-            // Formatar dados da despesa
             const dataVencimento = new Date(despesa.dataVencimento);
-            const diffTime = dataVencimento - hoje;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             const dataFormatada = dataVencimento.toLocaleDateString('pt-BR');
             
-            // Determinar status e cor
             let status = "";
-            let statusColor = [0, 0, 0]; // Preto padrão
+            let statusColor = [0, 0, 0];
             
-            if (diffDays < 0) {
-                status = "VENCIDA";
-                statusColor = [255, 0, 0]; // Vermelho
-            } else if (diffDays <= 7) {
-                status = `Vence em ${diffDays} dia(s)`;
-                statusColor = [255, 165, 0]; // Laranja
+            if (despesa.status === "pago") {
+                status = "PAGO";
+                statusColor = [0, 128, 0];
             } else {
-                status = "PENDENTE";
-                statusColor = [0, 0, 0]; // Preto
+                const diffTime = dataVencimento - hoje;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays < 0) {
+                    status = "VENCIDA";
+                    statusColor = [255, 0, 0];
+                } else if (diffDays <= 7) {
+                    status = `Vence em ${diffDays} dia(s)`;
+                    statusColor = [255, 165, 0];
+                } else {
+                    status = "PENDENTE";
+                    statusColor = [0, 0, 0];
+                }
             }
 
-            // Adicionar linha da despesa
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
             doc.text(despesa.nome, colunas.nome, y);
@@ -269,31 +339,25 @@ async function gerarRelatorioPDF() {
             doc.text(`R$ ${despesa.preco.toFixed(2)}`, colunas.preco, y);
             doc.text(dataFormatada, colunas.vencimento, y);
 
-            // Status com cor condicional
             doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
             doc.text(status, colunas.status, y, { align: 'right' });
 
-            // Linha divisória
             doc.setDrawColor(200, 200, 200);
             doc.line(10, y + 5, 200, y + 5);
             
-            y += 10; // Próxima linha
+            y += 10;
         });
 
-        // Rodapé com total
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
         doc.text(`Total de despesas: ${despesas.length}`, 14, 285);
         doc.text(`Valor total: R$ ${despesas.reduce((sum, d) => sum + d.preco, 0).toFixed(2)}`, 14, 290);
 
-        // Salvar o PDF
         doc.save(`Relatorio_Despesas_${dataEmissao.replace(/\//g, '-')}.pdf`);
-        
     } catch (error) {
         console.error("Erro ao gerar relatório PDF:", error);
         alert("Erro ao gerar relatório. Verifique o console para mais detalhes.");
     }
 }
 
-// Inicialização
 fetchDespesas();

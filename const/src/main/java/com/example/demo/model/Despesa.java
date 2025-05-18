@@ -18,6 +18,12 @@ public class Despesa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "status")
+    private String status = "nao_pago"; // Valor padrão
+
+    @Column(name = "data_pagamento")
+    private LocalDate dataPagamento;
+
     private String nome;
     private int parcelas;
     private double preco;
@@ -26,6 +32,22 @@ public class Despesa {
     private LocalDate dataVencimento;
 
     public Despesa() {
+    }
+
+     public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDate getDataPagamento() {
+        return dataPagamento;
+    }
+
+    public void setDataPagamento(LocalDate dataPagamento) {
+        this.dataPagamento = dataPagamento;
     }
 
     public Long getId() {

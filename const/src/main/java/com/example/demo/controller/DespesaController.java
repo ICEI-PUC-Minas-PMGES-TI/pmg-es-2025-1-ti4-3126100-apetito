@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +60,18 @@ public class DespesaController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    
+    @PutMapping("/{id}/pagar")
+    public ResponseEntity<Despesa> marcarComoPago(@PathVariable Long id) {
+        return service.buscarPorId(id)
+                .map(despesa -> {
+                    despesa.setStatus("pago");
+                    despesa.setDataPagamento(LocalDate.now());
+                    Despesa atualizada = service.salvar(despesa);
+                    return ResponseEntity.ok(atualizada);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

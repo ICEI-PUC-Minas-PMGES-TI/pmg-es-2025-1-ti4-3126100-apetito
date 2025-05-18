@@ -10,6 +10,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/pedido.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/roleta.css">
     <link rel="icon" href="img/logo-navegador2.0.png" type="image/png">
 </head>
 <nav class="navbar">
@@ -72,11 +73,14 @@
 
         <section class="section">
             <h2><i class="fas fa-book"></i> Cardápio</h2>
+            <div class="form-group">
+                <input type="text" id="filtroCardapio" class="form-control" placeholder="Buscar item no cardápio..."
+                    oninput="filtrarCardapio()">
+            </div>
             <div id="cardapio" class="cardapio-grid"></div>
         </section>
 
 
-        
         <section class="section">
             <h2><i class="fas fa-shopping-cart"></i> Carrinho</h2>
             <div id="carrinho" class="carrinho-list"></div>
@@ -124,14 +128,81 @@
         <footer class="footer-07">
             <p class="copyright">
                 Copyright &copy;
-                <script>document.write(new Date().getFullYear());</script> Todos os direitos reservados | Esse software foi
+                <script>document.write(new Date().getFullYear());</script> Todos os direitos reservados | Esse software
+                foi
                 desenvolvido <i class="ion-ios-heart" aria-hidden="true"></i> por <a href=""
                     target="_blank">Apetito.restaurante</a>
         </footer>
     </div>
-    
+
+
+    <!-- Botão da Roleta -->
+<div class="roleta-btn-container">
+    <button id="roletaBtn" class="roleta-btn">
+        <i class="fas fa-gift"></i> Roleta de Prêmios
+    </button>
+</div>
+
+<!-- Modal da Roleta -->
+<div id="roletaModal" class="roleta-modal">
+    <div class="roleta-modal-content">
+        <span class="roleta-close-btn">&times;</span>
+        <h2><i class="fas fa-gift"></i> Roleta de Prêmios</h2>
+        <p>Tente sua sorte e ganhe prêmios incríveis!</p>
+        
+        <div class="roleta-container">
+            <div class="roleta" id="roleta">
+                <div class="roleta-setor" data-premio="sobremesa"><span>Sobremesa Grátis</span></div>
+                <div class="roleta-setor" data-premio="bebida"><span>Bebida Grátis</span></div>
+                <div class="roleta-setor" data-premio="prato-feito"><span>Prato Feito</span></div>
+                <div class="roleta-setor" data-premio="nada"><span>Tente Novamente</span></div>
+                <div class="roleta-setor" data-premio="desconto"><span>10% de Desconto</span></div>
+                <div class="roleta-setor" data-premio="nada"><span>Não foi dessa vez</span></div>
+                <div class="roleta-setor" data-premio="sobremesa"><span>Sobremesa</span></div>
+                <div class="roleta-setor" data-premio="nada"><span>Mais sorte na próxima</span></div>
+            </div>
+            <div class="roleta-ponto"></div>
+        </div>
+        
+        <button id="girarRoletaBtn" class="roleta-girar-btn">Girar Roleta</button>
+        
+        <div id="resultadoRoleta" class="roleta-resultado hidden">
+            <h3 id="textoResultado"></h3>
+            <div id="opcoesResgate" class="roleta-opcoes hidden">
+                <p>Como deseja resgatar seu prêmio?</p>
+                <button id="resgateOnlineBtn" class="roleta-resgate-btn">Resgate Online</button>
+                <button id="resgatePresencialBtn" class="roleta-resgate-btn">Resgate Presencial</button>
+            </div>
+            
+            <div id="formularioOnline" class="hidden">
+                <h4>Informe seus dados para entrega</h4>
+                <div class="form-group">
+                    <label for="roletaNome">Nome:</label>
+                    <input type="text" id="roletaNome" class="form-control" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="roletaTelefone">Telefone:</label>
+                    <input type="tel" id="roletaTelefone" class="form-control" placeholder="Seu telefone">
+                </div>
+                <div class="form-group">
+                    <label for="roletaEndereco">Endereço:</label>
+                    <input type="text" id="roletaEndereco" class="form-control" placeholder="Seu endereço completo">
+                </div>
+                <button id="confirmarOnlineBtn" class="roleta-confirmar-btn">Confirmar Resgate</button>
+            </div>
+            
+            <div id="codigoPresencial" class="hidden">
+                <h4>Apresente este código no balcão:</h4>
+                <div class="roleta-codigo" id="roletaCodigo"></div>
+                <p>O código é válido por 24 horas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="js/pedido.js"></script>
     <script src="js/menuHamburguer.js"></script>
+    <script src="js/roleta.js"></script>
 </body>
 
 </html>
