@@ -397,11 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarRoleta();
 });
 
-// Variáveis da Roleta
 let podeGirar = true;
 let premioAtual = null;
 
-// Inicializar Roleta
 function inicializarRoleta() {
     const roletaBtn = document.getElementById("roletaBtn");
     const modal = document.getElementById("roletaModal");
@@ -411,32 +409,41 @@ function inicializarRoleta() {
     const resgatePresencialBtn = document.getElementById("resgatePresencialBtn");
     const confirmarOnlineBtn = document.getElementById("confirmarOnlineBtn");
 
-    // Abrir modal
     roletaBtn.addEventListener("click", function() {
+        /*const ultimaRodada = localStorage.getItem("ultimaRodadaRoleta");
+        if (ultimaRodada) {
+            const agora = new Date();
+            const ultimaVez = new Date(ultimaRodada);
+            const diferencaHoras = (agora - ultimaVez) / (1000 * 60 * 60);
+            
+            if (diferencaHoras < 24) {
+                const horasRestantes = Math.ceil(24 - diferencaHoras);
+                alert(`Você já girou a roleta hoje. Tente novamente em ${horasRestantes} horas.`);
+                return;
+            }
+        }*/
         modal.style.display = "block";
         resetarRoleta();
     });
 
-    // Fechar modal
     closeBtn.addEventListener("click", function() {
         modal.style.display = "none";
+        const confettiContainer = document.querySelector(".confetti-container");
+        if (confettiContainer) confettiContainer.remove();
     });
 
-    // Clicar fora do modal para fechar
     window.addEventListener("click", function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
+            const confettiContainer = document.querySelector(".confetti-container");
+            if (confettiContainer) confettiContainer.remove();
         }
     });
 
-    // Girar roleta
     girarBtn.addEventListener("click", function() {
-        if (podeGirar) {
-            girarRoleta();
-        }
+        if (podeGirar) girarRoleta();
     });
 
-    // Opções de resgate
     resgateOnlineBtn.addEventListener("click", function() {
         document.getElementById("opcoesResgate").classList.add("hidden");
         document.getElementById("formularioOnline").classList.remove("hidden");
@@ -450,7 +457,6 @@ function inicializarRoleta() {
         salvarPremio(codigo);
     });
 
-    // Confirmar resgate online
     confirmarOnlineBtn.addEventListener("click", function() {
         const nome = document.getElementById("roletaNome").value;
         const telefone = document.getElementById("roletaTelefone").value;
@@ -463,59 +469,64 @@ function inicializarRoleta() {
 
         const codigo = gerarCodigo();
         salvarPremio(codigo, { nome, telefone, endereco: endereco });
-        
         alert(`Prêmio confirmado! Seu código de resgate é: ${codigo}`);
         modal.style.display = "none";
+        const confettiContainer = document.querySelector(".confetti-container");
+        if (confettiContainer) confettiContainer.remove();
     });
 }
 
-// Girar a roleta
 function girarRoleta() {
     podeGirar = false;
     const roleta = document.getElementById("roleta");
+    const girarBtn = document.getElementById("girarRoletaBtn");
     const resultado = document.getElementById("resultadoRoleta");
     const textoResultado = document.getElementById("textoResultado");
     const opcoesResgate = document.getElementById("opcoesResgate");
     const formularioOnline = document.getElementById("formularioOnline");
     const codigoPresencial = document.getElementById("codigoPresencial");
 
-    // Resetar elementos de resultado
+    girarBtn.disabled = true;
+    girarBtn.textContent = "Girando...";
+
     resultado.classList.remove("hidden");
     opcoesResgate.classList.add("hidden");
     formularioOnline.classList.add("hidden");
     codigoPresencial.classList.add("hidden");
+    textoResultado.classList.remove("vitoria");
 
-    // Número aleatório de voltas (5-10) + posição do prêmio
+    const confettiContainer = document.querySelector(".confetti-container");
+    if (confettiContainer) confettiContainer.remove();
+
     const voltas = 5 + Math.floor(Math.random() * 5);
-    const anguloPorPremio = 45; // 360° / 8 setores
-    const premios = ["sobremesa", "bebida", "prato-feito", "nada", "desconto", "nada", "sobremesa", "nada"];
+    const anguloPorPremio = 45;
+    const premios = ["sobremesa", "nada", "bebida", "nada", "prato-feito", "nada"];
     const premioIndex = Math.floor(Math.random() * premios.length);
     const anguloFinal = voltas * 360 + (premioIndex * anguloPorPremio);
     
-    // Girar a roleta
     roleta.style.transform = `rotate(${-anguloFinal}deg)`;
     
-    // Determinar o prêmio
     setTimeout(() => {
         premioAtual = premios[premioIndex];
         
-        // Exibir resultado
         switch(premioAtual) {
             case "sobremesa":
                 textoResultado.textContent = "Parabéns! Você ganhou uma sobremesa grátis!";
-                textoResultado.style.color = "#FF9AA2";
+                textoResultado.style.color = "#FF9E80";
+                criarConfetes();
+                textoResultado.classList.add("vitoria");
                 break;
             case "bebida":
                 textoResultado.textContent = "Parabéns! Você ganhou uma bebida grátis!";
-                textoResultado.style.color = "#FFB7B2";
+                textoResultado.style.color = "#80DEEA";
+                criarConfetes();
+                textoResultado.classList.add("vitoria");
                 break;
             case "prato-feito":
                 textoResultado.textContent = "Parabéns! Você ganhou um prato feito grátis!";
-                textoResultado.style.color = "#FFDAC1";
-                break;
-            case "desconto":
-                textoResultado.textContent = "Parabéns! Você ganhou 10% de desconto no seu próximo pedido!";
-                textoResultado.style.color = "#B5EAD7";
+                textoResultado.style.color = "#CE93D8";
+                criarConfetes();
+                textoResultado.classList.add("vitoria");
                 break;
             case "nada":
                 textoResultado.textContent = "Não foi dessa vez! Tente novamente mais tarde.";
@@ -523,49 +534,61 @@ function girarRoleta() {
                 break;
         }
         
-        // Mostrar opções de resgate se ganhou algo
-        if (premioAtual !== "nada") {
-            opcoesResgate.classList.remove("hidden");
-        }
+        if (premioAtual !== "nada") opcoesResgate.classList.remove("hidden");
         
+        girarBtn.disabled = false;
+        girarBtn.textContent = "Girar Novamente";
         podeGirar = true;
-    }, 5000); // Tempo da animação
+        
+        localStorage.setItem("ultimaRodadaRoleta", new Date().toISOString());
+    }, 5000);
 }
 
-// Resetar roleta
+function criarConfetes() {
+    const colors = ['#FF9E80', '#80DEEA', '#CE93D8', '#C5E1A5', '#FFE082', '#EF9A9A', '#90CAF9', '#A5D6A7', '#FFC107', '#FFA000'];
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+    
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = Math.random() * 10 + 5 + 'px';
+        container.appendChild(confetti);
+    }
+    
+    setTimeout(() => container.remove(), 3000);
+}
+
 function resetarRoleta() {
     const roleta = document.getElementById("roleta");
     roleta.style.transform = "rotate(0deg)";
     premioAtual = null;
-    
     document.getElementById("resultadoRoleta").classList.add("hidden");
     document.getElementById("roletaNome").value = "";
     document.getElementById("roletaTelefone").value = "";
     document.getElementById("roletaEndereco").value = "";
+    const girarBtn = document.getElementById("girarRoletaBtn");
+    girarBtn.disabled = false;
+    girarBtn.textContent = "Girar Roleta";
 }
 
-// Gerar código aleatório
 function gerarCodigo() {
     const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ";
     const numeros = "23456789";
     let codigo = "";
-    
-    for (let i = 0; i < 2; i++) {
-        codigo += letras.charAt(Math.floor(Math.random() * letras.length));
-    }
-    
-    for (let i = 0; i < 4; i++) {
-        codigo += numeros.charAt(Math.floor(Math.random() * numeros.length));
-    }
-    
+    for (let i = 0; i < 2; i++) codigo += letras.charAt(Math.floor(Math.random() * letras.length));
+    for (let i = 0; i < 4; i++) codigo += numeros.charAt(Math.floor(Math.random() * numeros.length));
     return codigo;
 }
 
-// Salvar prêmio no localStorage
 function salvarPremio(codigo, dadosCliente = null) {
     if (premioAtual === "nada") return;
-    
-    const premios = JSON.parse(localStorage.getItem("premiosCliente") || []);
+    const premios = JSON.parse(localStorage.getItem("premiosCliente") || "[]");
     const novoPremio = {
         id: Date.now(),
         codigo: codigo,
@@ -574,7 +597,10 @@ function salvarPremio(codigo, dadosCliente = null) {
         resgatado: false,
         dadosCliente: dadosCliente
     };
-    
     premios.push(novoPremio);
     localStorage.setItem("premiosCliente", JSON.stringify(premios));
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    inicializarRoleta();
+});

@@ -152,14 +152,12 @@
         
         <div class="roleta-container">
             <div class="roleta" id="roleta">
-                <div class="roleta-setor" data-premio="sobremesa"><span>Sobremesa Grátis</span></div>
-                <div class="roleta-setor" data-premio="bebida"><span>Bebida Grátis</span></div>
-                <div class="roleta-setor" data-premio="prato-feito"><span>Prato Feito</span></div>
-                <div class="roleta-setor" data-premio="nada"><span>Tente Novamente</span></div>
-                <div class="roleta-setor" data-premio="desconto"><span>10% de Desconto</span></div>
-                <div class="roleta-setor" data-premio="nada"><span>Não foi dessa vez</span></div>
-                <div class="roleta-setor" data-premio="sobremesa"><span>Sobremesa</span></div>
-                <div class="roleta-setor" data-premio="nada"><span>Mais sorte na próxima</span></div>
+                <div class="roleta-setor" data-premio="sobremesa"><span></span></div>
+                <div class="roleta-setor" data-premio="nada"><span></span></div>
+                <div class="roleta-setor" data-premio="bebida"><span></span></div>
+                <div class="roleta-setor" data-premio="nada"><span></span></div>
+                <div class="roleta-setor" data-premio="prato-feito"><span></span></div>
+                <div class="roleta-setor" data-premio="nada"><span></span></div>
             </div>
             <div class="roleta-ponto"></div>
         </div>
@@ -202,7 +200,64 @@
 
     <script src="js/pedido.js"></script>
     <script src="js/menuHamburguer.js"></script>
-    <script src="js/roleta.js"></script>
+
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+    <script>
+        // Configuração do Mercado Pago
+const mp = new MercadoPago('TEST-b31155f2-b0b4-46ac-a704-b533a5cff288', {
+    locale: 'pt-BR'
+});
+
+async function finalizarPedido() {
+    if (!pedidoId) {
+        alert("Crie um pedido primeiro!");
+        return;
+    }
+
+    // Obter o valor total do carrinho
+    const totalText = document.getElementById("totalCarrinho").textContent;
+    const totalValue = parseFloat(totalText.replace("Total: R$ ", "").trim());
+    
+    if (totalValue <= 0) {
+        alert("Adicione itens ao pedido antes de finalizar!");
+        return;
+    }
+
+    try {
+        // Criar a preferência de pagamento
+        const response = await fetch("http://localhost:8080/api/pedidos/criar-pagamento", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                pedidoId: pedidoId,
+                valor: totalValue,
+                descricao: "Pedido no Restaurante Apetito"
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao criar pagamento");
+        }
+
+        const { id } = await response.json();
+
+        // Abrir o checkout do Mercado Pago
+        const checkout = mp.checkout({
+            preference: {
+                id: id
+            },
+            autoOpen: true // Abre o modal automaticamente
+        });
+
+    } catch (error) {
+        console.error("Erro ao finalizar pedido:", error);
+        alert("Erro ao processar pagamento. Tente novamente.");
+    }
+}
+    </script>
 </body>
 
 </html>

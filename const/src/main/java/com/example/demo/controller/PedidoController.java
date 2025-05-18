@@ -4,12 +4,30 @@ import com.example.demo.dto.PedidoCozinhaDTO;
 import com.example.demo.dto.PedidoMotoboyDTO;
 import com.example.demo.model.Pedido;
 import com.example.demo.service.PedidoService;
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferenceRequest;
+import com.mercadopago.resources.preference.Preference;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.resources.preference.Preference;
+import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferenceRequest;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -85,5 +103,46 @@ public class PedidoController {
         pedidoService.marcarComoEntregue(pedidoId);
         return ResponseEntity.ok().build();
     }
-
+    
+   @PostMapping("/criar-pagamento")
+public ResponseEntity<Map<String, String>> criarPagamento(
+        @RequestBody Map<String, Object> request) {
+    
+    try {
+        // Configurar credenciais
+       MercadoPagoConfig.setAccessToken("TEST-1880828437433904-051813-16c0b6d25c3715ae9ad1c48305d8d945-1711917813");
+        
+        // Criar cliente de preferência
+        PreferenceClient client = new PreferenceClient();
+        
+        // Criar item da preferência
+        PreferenceItemRequest item =
+            PreferenceItemRequest.builder()
+                .title("Pedido no Restaurante Apetito")
+                .description(request.get("descricao").toString())
+                .quantity(1)
+                .currencyId("BRL")
+                .unitPrice(new BigDecimal(request.get("valor").toString()))
+                .build();
+        
+        // Criar request da preferência
+        PreferenceRequest preferenceRequest =
+            PreferenceRequest.builder()
+                .externalReference(request.get("pedidoId").toString())
+                .items(List.of(item))
+                .build();
+        
+        // Criar preferência
+        Preference preference = client.create(preferenceRequest);
+        
+        // Retornar ID da preferência
+        Map<String, String> response = new HashMap<>();
+        response.put("id", preference.getId());
+        return ResponseEntity.ok(response);
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).build();
+    }
+}
 }
