@@ -43,6 +43,10 @@ async function carregarPedidosCozinha() {
         const statusIcon =
           pedido.status === "FINALIZADO" ? "fa-check-circle" : "fa-clock";
 
+        // Recupera o email do localStorage se existir
+        const clienteEmail = localStorage.getItem(`pedido_${pedido.id}_email`) || '';
+        const emailDisplay = clienteEmail ? `<div class="cliente-email"><i class="fas fa-envelope"></i> ${clienteEmail}</div>` : '';
+
         pedidoDiv.innerHTML = `
                     <div class="pedido-header">
                         <span class="pedido-id"><i class="fas fa-receipt"></i> Pedido #${
@@ -54,6 +58,8 @@ async function carregarPedidosCozinha() {
                             }"></i> ${tipoPedido}
                         </span>
                     </div>
+                    
+                    ${emailDisplay}
                     
                     <div class="item-list">
                         ${pedido.itens

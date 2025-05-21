@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/pedido.css">
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/roleta.css">
+     <link rel="stylesheet" href="css/alert.css">
     <link rel="icon" href="img/logo-navegador2.0.png" type="image/png">
 </head>
 <nav class="navbar">
@@ -64,6 +65,10 @@
                     <label for="nomeCliente">Nome:</label>
                     <input type="text" id="nomeCliente" class="form-control" placeholder="Seu nome completo">
                 </div>
+                <div class="form-group">
+    <label for="emailCliente">E-mail:</label>
+    <input type="email" id="emailCliente" class="form-control" placeholder="Seu e-mail">
+</div>
                 <div class="form-group">
                     <label for="enderecoCliente">Endereço:</label>
                     <input type="text" id="enderecoCliente" class="form-control" placeholder="Seu endereço completo">
@@ -137,127 +142,73 @@
 
 
     <!-- Botão da Roleta -->
-<div class="roleta-btn-container">
-    <button id="roletaBtn" class="roleta-btn">
-        <i class="fas fa-gift"></i> Roleta de Prêmios
-    </button>
-</div>
+    <div class="roleta-btn-container">
+        <button id="roletaBtn" class="roleta-btn">
+            <i class="fas fa-gift"></i> Roleta de Prêmios
+        </button>
+    </div>
 
-<!-- Modal da Roleta -->
-<div id="roletaModal" class="roleta-modal">
-    <div class="roleta-modal-content">
-        <span class="roleta-close-btn">&times;</span>
-        <h2><i class="fas fa-gift"></i> Roleta de Prêmios</h2>
-        <p>Tente sua sorte e ganhe prêmios incríveis!</p>
-        
-        <div class="roleta-container">
-            <div class="roleta" id="roleta">
-                <div class="roleta-setor" data-premio="sobremesa"><span></span></div>
-                <div class="roleta-setor" data-premio="nada"><span></span></div>
-                <div class="roleta-setor" data-premio="bebida"><span></span></div>
-                <div class="roleta-setor" data-premio="nada"><span></span></div>
-                <div class="roleta-setor" data-premio="prato-feito"><span></span></div>
-                <div class="roleta-setor" data-premio="nada"><span></span></div>
-            </div>
-            <div class="roleta-ponto"></div>
-        </div>
-        
-        <button id="girarRoletaBtn" class="roleta-girar-btn">Girar Roleta</button>
-        
-        <div id="resultadoRoleta" class="roleta-resultado hidden">
-            <h3 id="textoResultado"></h3>
-            <div id="opcoesResgate" class="roleta-opcoes hidden">
-                <p>Como deseja resgatar seu prêmio?</p>
-                <button id="resgateOnlineBtn" class="roleta-resgate-btn">Resgate Online</button>
-                <button id="resgatePresencialBtn" class="roleta-resgate-btn">Resgate Presencial</button>
-            </div>
-            
-            <div id="formularioOnline" class="hidden">
-                <h4>Informe seus dados para entrega</h4>
-                <div class="form-group">
-                    <label for="roletaNome">Nome:</label>
-                    <input type="text" id="roletaNome" class="form-control" placeholder="Seu nome completo">
+    <!-- Modal da Roleta -->
+    <div id="roletaModal" class="roleta-modal">
+        <div class="roleta-modal-content">
+            <span class="roleta-close-btn">&times;</span>
+            <h2><i class="fas fa-gift"></i> Roleta de Prêmios</h2>
+            <p>Tente sua sorte e ganhe prêmios incríveis!</p>
+
+            <div class="roleta-container">
+                <div class="roleta" id="roleta">
+                    <div class="roleta-setor" data-premio="sobremesa"><span></span></div>
+                    <div class="roleta-setor" data-premio="nada"><span></span></div>
+                    <div class="roleta-setor" data-premio="bebida"><span></span></div>
+                    <div class="roleta-setor" data-premio="nada"><span></span></div>
+                    <div class="roleta-setor" data-premio="prato-feito"><span></span></div>
+                    <div class="roleta-setor" data-premio="nada"><span></span></div>
                 </div>
-                <div class="form-group">
-                    <label for="roletaTelefone">Telefone:</label>
-                    <input type="tel" id="roletaTelefone" class="form-control" placeholder="Seu telefone">
-                </div>
-                <div class="form-group">
-                    <label for="roletaEndereco">Endereço:</label>
-                    <input type="text" id="roletaEndereco" class="form-control" placeholder="Seu endereço completo">
-                </div>
-                <button id="confirmarOnlineBtn" class="roleta-confirmar-btn">Confirmar Resgate</button>
+                <div class="roleta-ponto"></div>
             </div>
-            
-            <div id="codigoPresencial" class="hidden">
-                <h4>Apresente este código no balcão:</h4>
-                <div class="roleta-codigo" id="roletaCodigo"></div>
-                <p>O código é válido por 24 horas</p>
+
+            <button id="girarRoletaBtn" class="roleta-girar-btn">Girar Roleta</button>
+
+            <div id="resultadoRoleta" class="roleta-resultado hidden">
+                <h3 id="textoResultado"></h3>
+                <div id="opcoesResgate" class="roleta-opcoes hidden">
+                    <p>Como deseja resgatar seu prêmio?</p>
+                    <button id="resgateOnlineBtn" class="roleta-resgate-btn">Resgate Online</button>
+                    <button id="resgatePresencialBtn" class="roleta-resgate-btn">Resgate Presencial</button>
+                </div>
+
+                <div id="formularioOnline" class="hidden">
+                    <h4>Informe seus dados para entrega</h4>
+                    <div class="form-group">
+                        <label for="roletaNome">Nome:</label>
+                        <input type="text" id="roletaNome" class="form-control" placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="roletaTelefone">Telefone:</label>
+                        <input type="tel" id="roletaTelefone" class="form-control" placeholder="Seu telefone">
+                    </div>
+                    <div class="form-group">
+                        <label for="roletaEndereco">Endereço:</label>
+                        <input type="text" id="roletaEndereco" class="form-control" placeholder="Seu endereço completo">
+                    </div>
+                    <button id="confirmarOnlineBtn" class="roleta-confirmar-btn">Confirmar Resgate</button>
+                </div>
+
+                <div id="codigoPresencial" class="hidden">
+                    <h4>Apresente este código no balcão:</h4>
+                    <div class="roleta-codigo" id="roletaCodigo"></div>
+                    <p>O código é válido por 24 horas</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="js/pedido.js"></script>
     <script src="js/menuHamburguer.js"></script>
 
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-    <script>
-        // Configuração do Mercado Pago
-const mp = new MercadoPago('TEST-b31155f2-b0b4-46ac-a704-b533a5cff288', {
-    locale: 'pt-BR'
-});
-
-async function finalizarPedido() {
-    if (!pedidoId) {
-        alert("Crie um pedido primeiro!");
-        return;
-    }
-
-    // Obter o valor total do carrinho
-    const totalText = document.getElementById("totalCarrinho").textContent;
-    const totalValue = parseFloat(totalText.replace("Total: R$ ", "").trim());
-    
-    if (totalValue <= 0) {
-        alert("Adicione itens ao pedido antes de finalizar!");
-        return;
-    }
-
-    try {
-        // Criar a preferência de pagamento
-        const response = await fetch("http://localhost:8080/api/pedidos/criar-pagamento", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                pedidoId: pedidoId,
-                valor: totalValue,
-                descricao: "Pedido no Restaurante Apetito"
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Erro ao criar pagamento");
-        }
-
-        const { id } = await response.json();
-
-        // Abrir o checkout do Mercado Pago
-        const checkout = mp.checkout({
-            preference: {
-                id: id
-            },
-            autoOpen: true // Abre o modal automaticamente
-        });
-
-    } catch (error) {
-        console.error("Erro ao finalizar pedido:", error);
-        alert("Erro ao processar pagamento. Tente novamente.");
-    }
-}
-    </script>
+    <script src="js/mercadoPago.js"></script>
 </body>
 
 </html>

@@ -5,6 +5,7 @@ async function criarPedido() {
   const tipoPedido = document.getElementById("tipoPedido").value;
   const mesaId = document.getElementById("mesaSelect").value;
   const nomeCliente = document.getElementById("nomeCliente").value;
+  const emailCliente = document.getElementById("emailCliente").value;
   const enderecoCliente = document.getElementById("enderecoCliente").value;
 
   if (!tipoPedido) {
@@ -17,8 +18,8 @@ async function criarPedido() {
     return;
   }
 
-  if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente)) {
-    alert("Para pedidos online, preencha nome e endereço.");
+  if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailCliente)) {
+    alert("Para pedidos online, preencha nome, e-mail e endereço.");
     return;
   }
 
@@ -29,6 +30,7 @@ async function criarPedido() {
     params.append("mesaId", mesaId);
   } else {
     params.append("nomeCliente", nomeCliente);
+    params.append("emailCliente", emailCliente);
     params.append("enderecoCliente", enderecoCliente);
   }
 
@@ -46,6 +48,10 @@ async function criarPedido() {
     if (response.ok) {
       const pedido = await response.json();
       pedidoId = pedido.id;
+      // Salva o email no localStorage associado ao pedidoId
+      if (emailCliente) {
+        localStorage.setItem(`pedido_${pedidoId}_email`, emailCliente);
+      }
       alert("Pedido criado com sucesso!");
       await carregarCarrinho();
     } else {
