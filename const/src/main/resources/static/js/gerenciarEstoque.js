@@ -67,7 +67,7 @@ form.addEventListener("submit", async (e) => {
     checkNotifications();
   } catch (error) {
     console.error("Erro:", error);
-    alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+    showAlert("Erro", "Ocorreu um erro. Verifique o console para mais detalhes.", "error");
   }
 });
 
@@ -126,7 +126,21 @@ async function updateProduto(id, produtoData) {
 }
 
 async function deleteProduto(id) {
-  if (confirm("Tem certeza que deseja excluir este produto?")) {
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir este produto?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    }
+  });
+
+  if (result.isConfirmed) {
     try {
       await fetch(`${API_URL}/${id}`, {
         method: "DELETE",
@@ -135,9 +149,11 @@ async function deleteProduto(id) {
       checkNotifications();
     } catch (error) {
       console.error("Erro ao deletar produto:", error);
+      showAlert("Erro", "Erro ao deletar produto.", "error");
     }
   }
 }
+
 
 async function checkNotifications() {
   try {
@@ -152,7 +168,7 @@ async function checkNotifications() {
         !notificationAlreadyShown &&
         (!modal.style.display || modal.style.display === "none")
       ) {
-        alert(`Você tem ${count} produto(s) próximo(s) do vencimento!`);
+        showAlert("Atenção", `Você tem ${count} produto(s) próximo(s) do vencimento!`, "warning");
         notificationAlreadyShown = true;
       }
     } else {
@@ -430,6 +446,6 @@ async function gerarRelatorioPDF() {
         
     } catch (error) {
         console.error("Erro ao gerar relatório PDF:", error);
-        alert("Erro ao gerar relatório. Verifique o console para mais detalhes.");
+        showAlert("Erro", "Erro ao gerar relatório. Verifique o console para mais detalhes.", "error");
     }
 }

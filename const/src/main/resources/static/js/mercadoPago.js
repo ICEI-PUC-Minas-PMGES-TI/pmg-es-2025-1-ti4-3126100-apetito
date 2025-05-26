@@ -4,7 +4,7 @@
 
         async function finalizarPedido() {
             if (!pedidoId) {
-                alert("Crie um pedido primeiro!");
+               showAlert("Aviso", "Crie um pedido primeiro!", "warning");
                 return;
             }
 
@@ -13,7 +13,7 @@
             const totalValue = parseFloat(totalText.replace("Total: R$ ", "").trim());
 
             if (totalValue <= 0) {
-                alert("Adicione itens ao pedido antes de finalizar!");
+                showAlert("Aviso", "Adicione itens ao pedido antes de finalizar!", "warning");
                 return;
             }
 
@@ -46,6 +46,7 @@
 
             } catch (error) {
                 console.error("Erro ao finalizar pedido:", error);
-                alert("Erro ao processar pagamento. Tente novamente.");
+                showAlert("Erro", "Erro ao processar pagamento. Tente novamente.", "error");
+
             }
         }

@@ -40,7 +40,7 @@ form.addEventListener("submit", async (e) => {
         fetchDespesas();
     } catch (error) {
         console.error("Erro:", error);
-        alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+        showAlert("Erro", "Ocorreu um erro. Verifique o console para mais detalhes.", "error");
     }
 });
 
@@ -81,44 +81,33 @@ async function updateDespesa(id, despesaData) {
 }
 
 async function deleteDespesa(id) {
-    if (confirm("Tem certeza que deseja excluir esta despesa?")) {
-        try {
-            await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-            });
-            fetchDespesas();
-        } catch (error) {
-            console.error("Erro ao deletar despesa:", error);
-        }
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir esta despesa?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
     }
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      fetchDespesas();
+    } catch (error) {
+      console.error("Erro ao deletar despesa:", error);
+      showAlert("Erro", "Erro ao deletar despesa.", "error");
+    }
+  }
 }
 
-async function markAsPaid(id) {
-    if (confirm("Marcar esta despesa como paga?")) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`);
-            const despesa = await response.json();
-            
-            const updatedDespesa = {
-                ...despesa,
-                status: "pago",
-                dataPagamento: new Date().toISOString().split('T')[0]
-            };
-            
-            await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedDespesa),
-            });
-            
-            fetchDespesas();
-        } catch (error) {
-            console.error("Erro ao marcar despesa como paga:", error);
-        }
-    }
-}
 
 function displayDespesas(despesas) {
     despesasList.innerHTML = "";
@@ -356,7 +345,7 @@ async function gerarRelatorioPDF() {
         doc.save(`Relatorio_Despesas_${dataEmissao.replace(/\//g, '-')}.pdf`);
     } catch (error) {
         console.error("Erro ao gerar relatório PDF:", error);
-        alert("Erro ao gerar relatório. Verifique o console para mais detalhes.");
+        showAlert("Erro", "Erro ao gerar relatório. Verifique o console para mais detalhes.", "error");
     }
 }
 

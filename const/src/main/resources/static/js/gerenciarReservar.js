@@ -86,12 +86,27 @@ function aceitarReserva(index) {
   renderizarReservas();
 }
 
-function recusarReserva(index) {
-  if (confirm("Tem certeza que deseja recusar esta reserva?")) {
+async function recusarReserva(index) {
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja recusar esta reserva?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    }
+  });
+
+  if (result.isConfirmed) {
     reservas.splice(index, 1);
     salvarLocalStorage();
     renderizarReservas();
   }
 }
+
 
 renderizarReservas();

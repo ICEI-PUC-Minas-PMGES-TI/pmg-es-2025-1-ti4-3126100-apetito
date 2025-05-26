@@ -9,19 +9,20 @@ async function criarPedido() {
   const enderecoCliente = document.getElementById("enderecoCliente").value;
 
   if (!tipoPedido) {
-    alert("Por favor, selecione um tipo de pedido.");
-    return;
-  }
+  showAlert("Aviso", "Por favor, selecione um tipo de pedido.", "warning");
+  return;
+}
 
-  if (tipoPedido === "mesa" && (!mesaId || mesaId === "null")) {
-    alert("Por favor, selecione uma mesa válida.");
-    return;
-  }
+if (tipoPedido === "mesa" && (!mesaId || mesaId === "null")) {
+  showAlert("Aviso", "Por favor, selecione uma mesa válida.", "warning");
+  return;
+}
 
-  if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailCliente)) {
-    alert("Para pedidos online, preencha nome, e-mail e endereço.");
-    return;
-  }
+if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailCliente)) {
+  showAlert("Aviso", "Para pedidos online, preencha nome, e-mail e endereço.", "warning");
+  return;
+}
+
 
   const params = new URLSearchParams();
   params.append("tipoPedido", tipoPedido);
@@ -52,16 +53,17 @@ async function criarPedido() {
       if (emailCliente) {
         localStorage.setItem(`pedido_${pedidoId}_email`, emailCliente);
       }
-      alert("Pedido criado com sucesso!");
-      await carregarCarrinho();
-    } else {
-      const error = await response.text();
-      alert(`Erro ao criar pedido: ${error}`);
-    }
-  } catch (error) {
-    console.error("Erro na requisição:", error);
-    alert("Erro ao conectar com o servidor");
-  }
+    showAlert("Sucesso", "Pedido criado com sucesso!", "success");
+await carregarCarrinho();
+} else {
+  const error = await response.text();
+  showAlert("Erro", `Erro ao criar pedido: ${error}`, "error");
+}
+} catch (error) {
+  console.error("Erro na requisição:", error);
+  showAlert("Erro", "Erro ao conectar com o servidor", "error");
+}
+
 }
 
 async function carregarCardapio() {
@@ -72,7 +74,8 @@ async function carregarCardapio() {
     exibirItensCardapio(itensCardapio);
   } catch (error) {
     console.error("Erro ao carregar cardápio:", error);
-    alert("Erro ao carregar cardápio. Tente recarregar a página.");
+    showAlert("Erro", "Erro ao carregar cardápio. Tente recarregar a página.", "error");
+
   }
 }
 
@@ -174,7 +177,8 @@ async function atualizarTotal() {
 
 async function adicionarItem(itemCardapioId) {
   if (!pedidoId) {
-    alert("Crie um pedido primeiro!");
+   showAlert("Aviso", "Crie um pedido primeiro!", "warning");
+
     return;
   }
 
@@ -192,19 +196,20 @@ async function adicionarItem(itemCardapioId) {
       await carregarCarrinho();
     } else {
       const error = await response.text();
-      alert(`Erro ao adicionar item: ${error}`);
-    }
-  } catch (error) {
-    console.error("Erro ao adicionar item:", error);
-    alert("Erro ao conectar com o servidor");
-  }
+      showAlert("Erro", `Erro ao adicionar item: ${error}`, "error");
+}
+} catch (error) {
+  console.error("Erro ao adicionar item:", error);
+  showAlert("Erro", "Erro ao conectar com o servidor", "error");
+}
 }
 
 async function removerItem(itemPedidoId) {
   if (!pedidoId) {
-    alert("Crie um pedido primeiro!");
+    showAlert("Aviso", "Crie um pedido primeiro!", "warning");
     return;
   }
+
 
   try {
     const response = await fetch(
@@ -218,19 +223,20 @@ async function removerItem(itemPedidoId) {
       await carregarCarrinho();
     } else {
       const error = await response.text();
-      alert(`Erro ao remover item: ${error}`);
-    }
-  } catch (error) {
-    console.error("Erro ao remover item:", error);
-    alert("Erro ao conectar com o servidor");
-  }
+      showAlert("Erro", `Erro ao remover item: ${error}`, "error");
+}
+} catch (error) {
+  console.error("Erro ao remover item:", error);
+  showAlert("Erro", "Erro ao conectar com o servidor", "error");
+}
 }
 
 async function finalizarPedido() {
   if (!pedidoId) {
-    alert("Crie um pedido primeiro!");
+    showAlert("Aviso", "Crie um pedido primeiro!", "warning");
     return;
   }
+
 
   try {
     const response = await fetch(
@@ -244,12 +250,13 @@ async function finalizarPedido() {
       abrirModalAvaliacao();
     } else {
       const error = await response.text();
-      alert(`Erro ao finalizar pedido: ${error}`);
-    }
-  } catch (error) {
-    console.error("Erro ao finalizar pedido:", error);
-    alert("Erro ao conectar com o servidor");
-  }
+      showAlert("Erro", `Erro ao finalizar pedido: ${error}`, "error");
+}
+} catch (error) {
+  console.error("Erro ao finalizar pedido:", error);
+  showAlert("Erro", "Erro ao conectar com o servidor", "error");
+}
+
 }
 
 function abrirModalAvaliacao() {
@@ -336,7 +343,8 @@ async function enviarAvaliacao() {
     console.error("Erro ao buscar detalhes do pedido:", error);
   }
 
-  alert("Obrigado pela sua avaliação!");
+showAlert("Sucesso", "Obrigado pela sua avaliação!", "success");
+
   document.getElementById("modalAvaliacao").style.display = "none";
 
   pedidoId = null;
@@ -377,7 +385,8 @@ async function carregarMesas() {
     const todasOcupadas = mesas.every((mesa) => mesa.status === "ocupado");
 
     if (todasOcupadas) {
-      alert("Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera.");
+     showAlert("Aviso", "Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera.", "warning");
+
       return;
     }
 
@@ -469,13 +478,14 @@ function inicializarRoleta() {
         const endereco = document.getElementById("roletaEndereco").value;
 
         if (!nome || !telefone || !endereco) {
-            alert("Por favor, preencha todos os campos!");
-            return;
-        }
+            showAlert("Aviso", "Por favor, preencha todos os campos!", "warning");
+return;
+}
 
-        const codigo = gerarCodigo();
-        salvarPremio(codigo, { nome, telefone, endereco: endereco });
-        alert(`Prêmio confirmado! Seu código de resgate é: ${codigo}`);
+const codigo = gerarCodigo();
+salvarPremio(codigo, { nome, telefone, endereco: endereco });
+showAlert("Sucesso", `Prêmio confirmado! Seu código de resgate é: ${codigo}`, "success");
+
         modal.style.display = "none";
         const confettiContainer = document.querySelector(".confetti-container");
         if (confettiContainer) confettiContainer.remove();

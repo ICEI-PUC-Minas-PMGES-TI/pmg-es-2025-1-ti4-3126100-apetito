@@ -76,11 +76,35 @@ function concluirItem(index) {
     renderizarLista();
 }
 
-function excluirItem(index) {
-    if (confirm("Deseja excluir este item?")) {
+// Função async agora para usar Swal
+async function excluirItem(index) {
+    const result = await Swal.fire({
+        title: 'Confirmação',
+        text: 'Deseja excluir este item?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            popup: 'custom-alert',
+            confirmButton: 'custom-button',
+            cancelButton: 'custom-button'
+        }
+    });
+    if (result.isConfirmed) {
         itens.splice(index, 1);
         salvarLocalStorage();
         renderizarLista();
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Item excluído!',
+            timer: 1000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'custom-alert'
+            }
+        });
     }
 }
 
@@ -90,11 +114,34 @@ function fixarItem(index) {
     renderizarLista();
 }
 
-clearCompletedBtn.addEventListener("click", function () {
-    if (confirm("Deseja limpar todos os itens concluídos?")) {
+clearCompletedBtn.addEventListener("click", async function () {
+    const result = await Swal.fire({
+        title: 'Confirmação',
+        text: 'Deseja limpar todos os itens concluídos?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            popup: 'custom-alert',
+            confirmButton: 'custom-button',
+            cancelButton: 'custom-button'
+        }
+    });
+    if (result.isConfirmed) {
         itens = itens.filter((item) => !item.concluido);
         salvarLocalStorage();
         renderizarLista();
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Itens concluídos limpos!',
+            timer: 1000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'custom-alert'
+            }
+        });
     }
 });
 

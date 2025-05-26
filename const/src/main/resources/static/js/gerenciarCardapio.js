@@ -33,7 +33,8 @@ form.addEventListener("submit", async (e) => {
     fetchItems();
   } catch (error) {
     console.error("Erro:", error);
-    alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+    showAlert("Erro", "Ocorreu um erro. Verifique o console para mais detalhes.", "error");
+
   }
 });
 
@@ -76,7 +77,21 @@ async function updateItem(id, itemData) {
 }
 
 async function deleteItem(id) {
-  if (confirm("Tem certeza que deseja excluir este item?")) {
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir este item?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    }
+  });
+
+  if (result.isConfirmed) {
     try {
       await fetch(`${API_URL}/${id}`, {
         method: "DELETE",
@@ -84,9 +99,11 @@ async function deleteItem(id) {
       fetchItems();
     } catch (error) {
       console.error("Erro ao deletar item:", error);
+      showAlert("Erro", "Erro ao deletar item.", "error");
     }
   }
 }
+
 
 function displayItems(items) {
   itemsList.innerHTML = "";

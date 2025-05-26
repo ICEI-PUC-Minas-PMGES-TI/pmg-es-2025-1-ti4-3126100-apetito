@@ -17,14 +17,16 @@ document
     })
       .then((response) => {
         if (response.ok) {
-          alert("Cadastro realizado com sucesso! Redirecionando para login.");
+         showAlert("Sucesso", "Cadastro realizado com sucesso! Redirecionando para login.", "success");
+
           window.location.href = "login.html";
         } else {
-          alert("Erro ao cadastrar. Tente novamente.");
+         showAlert("Erro", "Erro ao cadastrar. Tente novamente.", "error");
+
         }
       })
       .catch((err) => {
         console.error(err);
-        alert("Ocorreu um erro. Tente novamente.");
+       showAlert("Erro", "Ocorreu um erro. Tente novamente.", "error");
       });
   });

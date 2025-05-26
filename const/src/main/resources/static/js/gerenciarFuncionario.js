@@ -43,7 +43,7 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!validarEmail(emailInput.value)) {
-        alert("Por favor, insira um e-mail válido (com @ e .com/.br/etc)");
+        showAlert("Aviso", "Por favor, insira um e-mail válido (com @ e .com/.br/etc)", "warning");
         emailInput.focus();
         return;
     }
@@ -71,7 +71,8 @@ form.addEventListener("submit", async (e) => {
         fetchFuncionarios();
     } catch (error) {
         console.error("Erro:", error);
-        alert("Ocorreu um erro. Verifique o console para mais detalhes.");
+        
+showAlert("Erro", "Ocorreu um erro. Verifique o console para mais detalhes.", "error");
     }
 });
 
@@ -132,17 +133,33 @@ async function updateFuncionario(id, funcionarioData) {
 }
 
 async function deleteFuncionario(id) {
-    if (confirm("Tem certeza que deseja excluir este funcionário?")) {
-        try {
-            await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-            });
-            fetchFuncionarios();
-        } catch (error) {
-            console.error("Erro ao deletar funcionário:", error);
-        }
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir este funcionário?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
     }
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      fetchFuncionarios();
+    } catch (error) {
+      console.error("Erro ao deletar funcionário:", error);
+      showAlert("Erro", "Erro ao deletar funcionário.", "error");
+    }
+  }
 }
+
 
 function displayFuncionarios(funcionarios) {
     funcionariosList.innerHTML = "";
@@ -350,9 +367,13 @@ async function gerarRelatorioPDF() {
         
     } catch (error) {
         console.error("Erro ao gerar relatório PDF:", error);
-        alert("Erro ao gerar relatório. Verifique o console para mais detalhes.");
+        showAlert("Erro", "Erro ao gerar relatório. Verifique o console para mais detalhes.", "error");
     }
 }
 
 // Inicialização
 fetchFuncionarios();
+
+
+
+

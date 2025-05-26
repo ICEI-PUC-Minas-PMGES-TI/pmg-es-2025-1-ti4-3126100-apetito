@@ -25,7 +25,7 @@ form.addEventListener("submit", function (event) {
   event.preventDefault();
 
   if (!mesaSelecionada) {
-    alert("Por favor, selecione uma mesa.");
+    showAlert("Aviso", "Por favor, selecione uma mesa.", "warning");
     return;
   }
 
@@ -49,7 +49,8 @@ form.addEventListener("submit", function (event) {
 
   localStorage.setItem("reservas", JSON.stringify(reservas));
 
-  alert("Reserva criada com sucesso!");
+ showAlert("Sucesso", "Reserva criada com sucesso!", "success");
+
   form.reset();
   document
     .querySelectorAll(".mesa")

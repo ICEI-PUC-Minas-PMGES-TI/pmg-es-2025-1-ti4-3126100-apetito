@@ -16,11 +16,12 @@ document
         if (response.redirected) {
           window.location.href = response.url;
         } else {
-          alert("Credenciais inválidas");
+          showAlert("Erro", "Credenciais inválidas", "error");
         }
       })
       .catch((err) => {
         console.error(err);
-        alert("Ocorreu um erro. Tente novamente.");
+        showAlert("Erro", "Ocorreu um erro. Tente novamente.", "error");
+
       });
   });

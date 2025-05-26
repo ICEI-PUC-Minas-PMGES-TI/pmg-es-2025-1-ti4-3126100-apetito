@@ -166,7 +166,21 @@ async function marcarEmRota(pedidoId) {
 }
 
 async function confirmarEntrega(pedidoId) {
-  if (!confirm(`Confirmar entrega do Pedido #${pedidoId}?`)) return;
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: `Confirmar entrega do Pedido #${pedidoId}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    }
+  });
+
+  if (!result.isConfirmed) return;
 
   try {
     const response = await fetch(
@@ -206,6 +220,7 @@ async function confirmarEntrega(pedidoId) {
     showNotification("Erro ao conectar com o servidor", "error");
   }
 }
+
 
 function verificarListaVazia() {
   if (document.querySelectorAll(".pedido-card").length === 0) {

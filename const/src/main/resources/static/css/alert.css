@@ -61,3 +61,31 @@
   color: inherit;
   cursor: pointer;
 }
+
+/* SweetAlert2 customização */
+
+.custom-alert {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-family: 'Courier New', monospace;
+  border: 2px solid #facc15 !important; /* Amarelo */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.custom-button {
+  background-color: #facc15 !important; /* Amarelo */
+  color: #000000 !important;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button:hover {
+  background-color: #eab308 !important;
+}
+

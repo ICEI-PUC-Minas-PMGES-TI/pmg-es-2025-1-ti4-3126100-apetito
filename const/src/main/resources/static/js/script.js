@@ -268,10 +268,11 @@ document.addEventListener("DOMContentLoaded", function () {
               .classList.remove("has-file");
           }
         } else {
-          alert("Erro: " + (data.message || "Tente novamente"));
+         showAlert("Erro", "Erro: " + (data.message || "Tente novamente"), "error");
+
         }
       } catch (error) {
-        alert("Erro de conexão. Tente novamente mais tarde.");
+        showAlert("Erro de Conexão", "Erro de conexão. Tente novamente mais tarde.", "error");
       } finally {
         btnText.style.display = "inline-block";
         spinner.style.display = "none";

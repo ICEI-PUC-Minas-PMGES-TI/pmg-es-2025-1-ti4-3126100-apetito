@@ -121,11 +121,30 @@ function criarColuna(titulo, cartoes, indexColuna) {
   const botaoAdicionarCartao = document.createElement("button");
   botaoAdicionarCartao.className = "adicionarCartaoBtn";
   botaoAdicionarCartao.textContent = "+ Adicionar Cartão";
-  botaoAdicionarCartao.addEventListener("click", () => {
-    const titulo = prompt("Digite o título do novo cartão:");
+
+  botaoAdicionarCartao.addEventListener("click", async () => {
+    const { value: titulo } = await Swal.fire({
+      title: 'Digite o título do novo cartão',
+      input: 'text',
+      inputPlaceholder: 'Título do cartão',
+      showCancelButton: true,
+      confirmButtonText: 'Adicionar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'custom-alert',
+        confirmButton: 'custom-button',
+        cancelButton: 'custom-button'
+      },
+      inputValidator: (value) => {
+        if (!value.trim()) {
+          return 'O título não pode ficar vazio!'
+        }
+      }
+    });
+
     if (titulo) {
       dados[indexColuna].cartoes.push({
-        titulo: titulo,
+        titulo: titulo.trim(),
         descricao: "",
         comentarios: [],
       });
@@ -141,6 +160,7 @@ function criarColuna(titulo, cartoes, indexColuna) {
   return coluna;
 }
 
+
 function atualizarTela() {
   kanban.innerHTML = "";
   dados.forEach((coluna, index) => {
@@ -148,14 +168,33 @@ function atualizarTela() {
   });
 }
 
-adicionarColunaBtn.addEventListener("click", () => {
-  const titulo = prompt("Digite o título da nova coluna:");
+adicionarColunaBtn.addEventListener("click", async () => {
+  const { value: titulo } = await Swal.fire({
+    title: 'Digite o título da nova coluna',
+    input: 'text',
+    inputPlaceholder: 'Título da coluna',
+    showCancelButton: true,
+    confirmButtonText: 'Adicionar',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    },
+    inputValidator: (value) => {
+      if (!value.trim()) {
+        return 'O título não pode ficar vazio!'
+      }
+    }
+  });
+
   if (titulo) {
-    dados.push({ titulo: titulo, cartoes: [] });
+    dados.push({ titulo: titulo.trim(), cartoes: [] });
     salvarDados();
     atualizarTela();
   }
 });
+
 
 function criarColuna(titulo, cartoes, indexColuna) {
   const coluna = document.createElement("div");
@@ -170,13 +209,23 @@ function criarColuna(titulo, cartoes, indexColuna) {
   const btnExcluirColuna = document.createElement("button");
   btnExcluirColuna.className = "btn-excluir-coluna";
   btnExcluirColuna.innerHTML = "&times;";
-  btnExcluirColuna.onclick = (e) => {
+  btnExcluirColuna.onclick = async (e) => {
     e.stopPropagation();
-    if (
-      confirm(
-        `Tem certeza que deseja excluir a coluna "${titulo}" e todos os seus cartões?`
-      )
-    ) {
+    const result = await Swal.fire({
+      title: 'Confirmação',
+      text: `Tem certeza que deseja excluir a coluna "${titulo}" e todos os seus cartões?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'custom-alert',
+        confirmButton: 'custom-button',
+        cancelButton: 'custom-button'
+      }
+    });
+
+    if (result.isConfirmed) {
       excluirColuna(indexColuna);
     }
   };
@@ -205,20 +254,40 @@ function criarColuna(titulo, cartoes, indexColuna) {
   });
 
   const botaoAdicionarCartao = document.createElement("button");
-  botaoAdicionarCartao.className = "adicionarCartaoBtn";
-  botaoAdicionarCartao.textContent = "+ Adicionar Cartão";
-  botaoAdicionarCartao.addEventListener("click", () => {
-    const titulo = prompt("Digite o título do novo cartão:");
-    if (titulo) {
-      dados[indexColuna].cartoes.push({
-        titulo: titulo,
-        descricao: "",
-        comentarios: [],
-      });
-      salvarDados();
-      atualizarTela();
+botaoAdicionarCartao.className = "adicionarCartaoBtn";
+botaoAdicionarCartao.textContent = "+ Adicionar Cartão";
+
+botaoAdicionarCartao.addEventListener("click", async () => {
+  const { value: titulo } = await Swal.fire({
+    title: 'Digite o título do novo cartão',
+    input: 'text',
+    inputPlaceholder: 'Título do cartão',
+    showCancelButton: true,
+    confirmButtonText: 'Adicionar',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    },
+    inputValidator: (value) => {
+      if (!value.trim()) {
+        return 'O título não pode ficar vazio!';
+      }
     }
   });
+
+  if (titulo) {
+    dados[indexColuna].cartoes.push({
+      titulo: titulo.trim(),
+      descricao: "",
+      comentarios: [],
+    });
+    salvarDados();
+    atualizarTela();
+  }
+});
+
 
   coluna.appendChild(containerCartoes);
   coluna.appendChild(botaoAdicionarCartao);
@@ -274,18 +343,32 @@ function criarCartao(cartao, colunaIndex, cartaoIndex) {
   };
 
   const btnExcluir = document.createElement("button");
-  btnExcluir.innerHTML = '<i class="fas fa-trash"></i>';
-  btnExcluir.title = "Excluir cartão";
-  btnExcluir.onclick = (e) => {
-    e.stopPropagation();
-    if (
-      confirm(`Tem certeza que deseja excluir o cartão "${cartao.titulo}"?`)
-    ) {
-      dados[colunaIndex].cartoes.splice(cartaoIndex, 1);
-      salvarDados();
-      atualizarTela();
+btnExcluir.innerHTML = '<i class="fas fa-trash"></i>';
+btnExcluir.title = "Excluir cartão";
+btnExcluir.onclick = async (e) => {
+  e.stopPropagation();
+
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: `Tem certeza que deseja excluir o cartão "${cartao.titulo}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
     }
-  };
+  });
+
+  if (result.isConfirmed) {
+    dados[colunaIndex].cartoes.splice(cartaoIndex, 1);
+    salvarDados();
+    atualizarTela();
+  }
+};
+
 
   acoes.appendChild(btnFixar);
   acoes.appendChild(btnEditar);
@@ -306,23 +389,44 @@ function criarColuna(titulo, cartoes, indexColuna) {
   tituloEl.textContent = titulo;
 
   const btnExcluirColuna = document.createElement("button");
-  btnExcluirColuna.className = "btn-excluir-coluna";
-  btnExcluirColuna.innerHTML = '<i class="fas fa-times"></i>';
-  btnExcluirColuna.title = "Excluir coluna";
-  btnExcluirColuna.onclick = (e) => {
-    e.stopPropagation();
-    if (dados.length <= 1) {
-      alert("Você não pode excluir a última coluna!");
-      return;
+btnExcluirColuna.className = "btn-excluir-coluna";
+btnExcluirColuna.innerHTML = '<i class="fas fa-times"></i>';
+btnExcluirColuna.title = "Excluir coluna";
+btnExcluirColuna.onclick = async (e) => {
+  e.stopPropagation();
+
+  if (dados.length <= 1) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Atenção',
+      text: 'Você não pode excluir a última coluna!',
+      customClass: {
+        popup: 'custom-alert',
+        confirmButton: 'custom-button'
+      }
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: `Tem certeza que deseja excluir a coluna "${titulo}" e todos os seus cartões?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
     }
-    if (
-      confirm(
-        `Tem certeza que deseja excluir a coluna "${titulo}" e todos os seus cartões?`
-      )
-    ) {
-      excluirColuna(indexColuna);
-    }
-  };
+  });
+
+  if (result.isConfirmed) {
+    excluirColuna(indexColuna);
+  }
+};
+
 
   cabecalho.appendChild(tituloEl);
   cabecalho.appendChild(btnExcluirColuna);
@@ -348,21 +452,40 @@ function criarColuna(titulo, cartoes, indexColuna) {
   });
 
   const botaoAdicionarCartao = document.createElement("button");
-  botaoAdicionarCartao.className = "adicionarCartaoBtn";
-  botaoAdicionarCartao.innerHTML =
-    '<i class="fas fa-plus"></i> Adicionar Cartão';
-  botaoAdicionarCartao.addEventListener("click", () => {
-    const titulo = prompt("Digite o título do novo cartão:");
-    if (titulo) {
-      dados[indexColuna].cartoes.push({
-        titulo: titulo,
-        descricao: "",
-        comentarios: [],
-      });
-      salvarDados();
-      atualizarTela();
+botaoAdicionarCartao.className = "adicionarCartaoBtn";
+botaoAdicionarCartao.innerHTML = '<i class="fas fa-plus"></i> Adicionar Cartão';
+
+botaoAdicionarCartao.addEventListener("click", async () => {
+  const { value: titulo } = await Swal.fire({
+    title: 'Digite o título do novo cartão',
+    input: 'text',
+    inputPlaceholder: 'Título do cartão',
+    showCancelButton: true,
+    confirmButtonText: 'Adicionar',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-alert',
+      confirmButton: 'custom-button',
+      cancelButton: 'custom-button'
+    },
+    inputValidator: (value) => {
+      if (!value.trim()) {
+        return 'O título não pode ficar vazio!';
+      }
     }
   });
+
+  if (titulo) {
+    dados[indexColuna].cartoes.push({
+      titulo: titulo.trim(),
+      descricao: "",
+      comentarios: [],
+    });
+    salvarDados();
+    atualizarTela();
+  }
+});
+
 
   coluna.appendChild(containerCartoes);
   coluna.appendChild(botaoAdicionarCartao);
