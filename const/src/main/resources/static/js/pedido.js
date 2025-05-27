@@ -5,24 +5,23 @@ async function criarPedido() {
   const tipoPedido = document.getElementById("tipoPedido").value;
   const mesaId = document.getElementById("mesaSelect").value;
   const nomeCliente = document.getElementById("nomeCliente").value;
-  const emailCliente = document.getElementById("emailCliente").value;
+  const telefoneCliente = document.getElementById("telefoneCliente").value;
   const enderecoCliente = document.getElementById("enderecoCliente").value;
 
   if (!tipoPedido) {
-  showAlert("Aviso", "Por favor, selecione um tipo de pedido.", "warning");
-  return;
-}
+    showAlert("Aviso", "Por favor, selecione um tipo de pedido.", "warning");
+    return;
+  }
 
-if (tipoPedido === "mesa" && (!mesaId || mesaId === "null")) {
-  showAlert("Aviso", "Por favor, selecione uma mesa válida.", "warning");
-  return;
-}
+  if (tipoPedido === "mesa" && (!mesaId || mesaId === "null")) {
+    showAlert("Aviso", "Por favor, selecione uma mesa válida.", "warning");
+    return;
+  }
 
-if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailCliente)) {
-  showAlert("Aviso", "Para pedidos online, preencha nome, e-mail e endereço.", "warning");
-  return;
-}
-
+  if (tipoPedido === "online" && (!nomeCliente || !telefoneCliente || !enderecoCliente)) {
+    showAlert("Aviso", "Para pedidos online, preencha nome, WhatsApp e endereço.", "warning");
+    return;
+  }
 
   const params = new URLSearchParams();
   params.append("tipoPedido", tipoPedido);
@@ -31,7 +30,7 @@ if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailClient
     params.append("mesaId", mesaId);
   } else {
     params.append("nomeCliente", nomeCliente);
-    params.append("emailCliente", emailCliente);
+    params.append("telefoneCliente", telefoneCliente);
     params.append("enderecoCliente", enderecoCliente);
   }
 
@@ -49,21 +48,20 @@ if (tipoPedido === "online" && (!nomeCliente || !enderecoCliente || !emailClient
     if (response.ok) {
       const pedido = await response.json();
       pedidoId = pedido.id;
-      // Salva o email no localStorage associado ao pedidoId
-      if (emailCliente) {
-        localStorage.setItem(`pedido_${pedidoId}_email`, emailCliente);
+      // Salva o telefone no localStorage associado ao pedidoId
+      if (telefoneCliente) {
+        localStorage.setItem(`pedido_${pedidoId}_telefone`, telefoneCliente);
       }
-    showAlert("Sucesso", "Pedido criado com sucesso!", "success");
-await carregarCarrinho();
-} else {
-  const error = await response.text();
-  showAlert("Erro", `Erro ao criar pedido: ${error}`, "error");
-}
-} catch (error) {
-  console.error("Erro na requisição:", error);
-  showAlert("Erro", "Erro ao conectar com o servidor", "error");
-}
-
+      showAlert("Sucesso", "Pedido criado com sucesso!", "success");
+      await carregarCarrinho();
+    } else {
+      const error = await response.text();
+      showAlert("Erro", `Erro ao criar pedido: ${error}`, "error");
+    }
+  } catch (error) {
+    console.error("Erro na requisição:", error);
+    showAlert("Erro", "Erro ao conectar com o servidor", "error");
+  }
 }
 
 async function carregarCardapio() {
@@ -75,7 +73,6 @@ async function carregarCardapio() {
   } catch (error) {
     console.error("Erro ao carregar cardápio:", error);
     showAlert("Erro", "Erro ao carregar cardápio. Tente recarregar a página.", "error");
-
   }
 }
 
@@ -177,8 +174,7 @@ async function atualizarTotal() {
 
 async function adicionarItem(itemCardapioId) {
   if (!pedidoId) {
-   showAlert("Aviso", "Crie um pedido primeiro!", "warning");
-
+    showAlert("Aviso", "Crie um pedido primeiro!", "warning");
     return;
   }
 
@@ -197,11 +193,11 @@ async function adicionarItem(itemCardapioId) {
     } else {
       const error = await response.text();
       showAlert("Erro", `Erro ao adicionar item: ${error}`, "error");
-}
-} catch (error) {
-  console.error("Erro ao adicionar item:", error);
-  showAlert("Erro", "Erro ao conectar com o servidor", "error");
-}
+    }
+  } catch (error) {
+    console.error("Erro ao adicionar item:", error);
+    showAlert("Erro", "Erro ao conectar com o servidor", "error");
+  }
 }
 
 async function removerItem(itemPedidoId) {
@@ -209,7 +205,6 @@ async function removerItem(itemPedidoId) {
     showAlert("Aviso", "Crie um pedido primeiro!", "warning");
     return;
   }
-
 
   try {
     const response = await fetch(
@@ -224,11 +219,11 @@ async function removerItem(itemPedidoId) {
     } else {
       const error = await response.text();
       showAlert("Erro", `Erro ao remover item: ${error}`, "error");
-}
-} catch (error) {
-  console.error("Erro ao remover item:", error);
-  showAlert("Erro", "Erro ao conectar com o servidor", "error");
-}
+    }
+  } catch (error) {
+    console.error("Erro ao remover item:", error);
+    showAlert("Erro", "Erro ao conectar com o servidor", "error");
+  }
 }
 
 async function finalizarPedido() {
@@ -236,7 +231,6 @@ async function finalizarPedido() {
     showAlert("Aviso", "Crie um pedido primeiro!", "warning");
     return;
   }
-
 
   try {
     const response = await fetch(
@@ -251,12 +245,11 @@ async function finalizarPedido() {
     } else {
       const error = await response.text();
       showAlert("Erro", `Erro ao finalizar pedido: ${error}`, "error");
-}
-} catch (error) {
-  console.error("Erro ao finalizar pedido:", error);
-  showAlert("Erro", "Erro ao conectar com o servidor", "error");
-}
-
+    }
+  } catch (error) {
+    console.error("Erro ao finalizar pedido:", error);
+    showAlert("Erro", "Erro ao conectar com o servidor", "error");
+  }
 }
 
 function abrirModalAvaliacao() {
@@ -343,7 +336,7 @@ async function enviarAvaliacao() {
     console.error("Erro ao buscar detalhes do pedido:", error);
   }
 
-showAlert("Sucesso", "Obrigado pela sua avaliação!", "success");
+  showAlert("Sucesso", "Obrigado pela sua avaliação!", "success");
 
   document.getElementById("modalAvaliacao").style.display = "none";
 
@@ -385,8 +378,7 @@ async function carregarMesas() {
     const todasOcupadas = mesas.every((mesa) => mesa.status === "ocupado");
 
     if (todasOcupadas) {
-     showAlert("Aviso", "Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera.", "warning");
-
+      showAlert("Aviso", "Todas as mesas estão ocupadas no momento. Por favor, aguarde na fila de espera.", "warning");
       return;
     }
 
@@ -425,18 +417,6 @@ function inicializarRoleta() {
     const confirmarOnlineBtn = document.getElementById("confirmarOnlineBtn");
 
     roletaBtn.addEventListener("click", function() {
-        /*const ultimaRodada = localStorage.getItem("ultimaRodadaRoleta");
-        if (ultimaRodada) {
-            const agora = new Date();
-            const ultimaVez = new Date(ultimaRodada);
-            const diferencaHoras = (agora - ultimaVez) / (1000 * 60 * 60);
-            
-            if (diferencaHoras < 24) {
-                const horasRestantes = Math.ceil(24 - diferencaHoras);
-                alert(`Você já girou a roleta hoje. Tente novamente em ${horasRestantes} horas.`);
-                return;
-            }
-        }*/
         modal.style.display = "block";
         resetarRoleta();
     });
@@ -479,12 +459,12 @@ function inicializarRoleta() {
 
         if (!nome || !telefone || !endereco) {
             showAlert("Aviso", "Por favor, preencha todos os campos!", "warning");
-return;
-}
+            return;
+        }
 
-const codigo = gerarCodigo();
-salvarPremio(codigo, { nome, telefone, endereco: endereco });
-showAlert("Sucesso", `Prêmio confirmado! Seu código de resgate é: ${codigo}`, "success");
+        const codigo = gerarCodigo();
+        salvarPremio(codigo, { nome, telefone, endereco: endereco });
+        showAlert("Sucesso", `Prêmio confirmado! Seu código de resgate é: ${codigo}`, "success");
 
         modal.style.display = "none";
         const confettiContainer = document.querySelector(".confetti-container");
@@ -616,7 +596,3 @@ function salvarPremio(codigo, dadosCliente = null) {
     premios.push(novoPremio);
     localStorage.setItem("premiosCliente", JSON.stringify(premios));
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarRoleta();
-});

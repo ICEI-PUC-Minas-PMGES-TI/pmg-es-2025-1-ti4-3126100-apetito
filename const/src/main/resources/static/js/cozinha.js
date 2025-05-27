@@ -68,7 +68,7 @@ function criarHTMLPedido(pedido) {
   const statusClass = pedido.status === "FINALIZADO" ? "status-finalizado" : "status-andamento";
   const statusText = pedido.status === "FINALIZADO" ? "PRONTO" : "EM PREPARO";
   const statusIcon = pedido.status === "FINALIZADO" ? "fa-check-circle" : "fa-clock";
-  const clienteEmail = localStorage.getItem(`pedido_${pedido.id}_email`) || '';
+  const clienteTelefone = localStorage.getItem(`pedido_${pedido.id}_telefone`) || '';
 
   return `
     <div class="pedido-header">
@@ -78,9 +78,11 @@ function criarHTMLPedido(pedido) {
       </span>
     </div>
     
-    ${clienteEmail ? `
-      <div class="cliente-email" onclick="abrirModalEmail('${clienteEmail}')">
-        <i class="fas fa-envelope"></i> ${clienteEmail}
+    ${clienteTelefone ? `
+      <div class="whatsapp-container">
+        <button class="cliente-telefone" onclick="abrirModalWhatsApp('${clienteTelefone}')" data-phone="${clienteTelefone}">
+          <i class="fab fa-whatsapp"></i>
+        </button>
       </div>
     ` : ''}
     
@@ -120,64 +122,37 @@ function mostrarErroCarregamento() {
 }
 
 // Funções para o modal de email
-function abrirModalEmail(email) {
-  const modal = document.getElementById('emailModal');
-  document.getElementById('clienteEmail').value = email;
-  document.getElementById('emailSubject').value = `Sobre seu pedido no Apetito`;
+function abrirModalWhatsApp(telefone) {
+  const modal = document.getElementById('whatsappModal');
+  document.getElementById('clienteTelefone').value = telefone;
+  document.getElementById('whatsappSubject').value = `Sobre seu pedido no Apetito`;
   modal.style.display = 'block';
 }
 
-function fecharModalEmail() {
-  document.getElementById('emailModal').style.display = 'none';
+function fecharModalWhatsApp() {
+  document.getElementById('whatsappModal').style.display = 'none';
 }
 
 // Função para enviar email
-async function enviarEmail(event) {
-  event.preventDefault();
+function enviarWhatsApp() {
+  const telefone = document.getElementById('clienteTelefone').value;
+  const assunto = document.getElementById('whatsappSubject').value;
+  const mensagem = document.getElementById('whatsappMessage').value;
   
-  const form = event.target;
-  const btn = form.querySelector('button[type="submit"]');
-  const btnText = btn.querySelector('.btn-text');
-  const spinner = btn.querySelector('.loading-spinner');
+  // Formata o telefone (remove tudo que não for número)
+  const numeroFormatado = telefone.replace(/\D/g, '');
   
-  // Mostrar estado de carregamento
-  btnText.style.display = 'none';
-  spinner.style.display = 'inline-block';
-  btn.disabled = true;
-
-  try {
-    const formData = new FormData(form);
-    formData.append('_subject', 'Mensagem do Restaurante Apetito');
-    formData.append('_template', 'table');
-    formData.append('_autoresponse', 'Recebemos sua mensagem! Em breve retornaremos.');
-
-    const response = await fetch('https://formsubmit.co/ajax/contatoapetito@gmail.com', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || 'Erro ao enviar e-mail');
-    }
-
-    mostrarModalSucesso();
-    form.reset();
-    fecharModalEmail();
-
-  } catch (error) {
-    console.error('Erro ao enviar e-mail:', error);
-    alert(`Erro ao enviar e-mail: ${error.message}`);
-  } finally {
-    btnText.style.display = 'inline-block';
-    spinner.style.display = 'none';
-    btn.disabled = false;
-  }
+  // Cria a mensagem pré-formatada
+  const texto = `*${assunto}*\n\n${mensagem}`;
+  
+  // Codifica a mensagem para URL
+  const textoCodificado = encodeURIComponent(texto);
+  
+  // Abre o WhatsApp com a mensagem pronta
+  window.open(`https://wa.me/${numeroFormatado}?text=${textoCodificado}`, '_blank');
+  
+  // Fecha o modal
+  fecharModalWhatsApp();
 }
 
 // Função para mostrar modal de sucesso
@@ -223,14 +198,13 @@ document.addEventListener("DOMContentLoaded", function() {
   carregarPedidosCozinha();
   
   // Configurar listeners
-  document.querySelector('.close-modal').addEventListener('click', fecharModalEmail);
-  document.getElementById('emailForm').addEventListener('submit', enviarEmail);
+  document.querySelector('#whatsappModal .close-modal').addEventListener('click', fecharModalWhatsApp);
   
   // Fechar modal ao clicar fora
   window.addEventListener('click', function(event) {
-    const modal = document.getElementById('emailModal');
+    const modal = document.getElementById('whatsappModal');
     if (event.target === modal) {
-      fecharModalEmail();
+      fecharModalWhatsApp();
     }
   });
   

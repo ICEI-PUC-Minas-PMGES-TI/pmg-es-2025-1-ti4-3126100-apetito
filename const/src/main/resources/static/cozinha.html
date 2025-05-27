@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozinha - Visualização de Pedidos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/cozinha.css">
@@ -59,31 +60,28 @@
         </footer>
     </div>
 
-   <div id="emailModal" class="modal">
+   <div id="whatsappModal" class="modal">
   <div class="modal-content">
     <span class="close-modal">&times;</span>
-    <h3><i class="fas fa-envelope"></i> Enviar Mensagem para o Cliente</h3>
-    <form id="emailForm">
-      <input type="hidden" id="clienteEmail" name="email">
+    <h3><i class="fab fa-whatsapp"></i> Enviar Mensagem</h3>
+    <form id="whatsappForm">
+      <input type="hidden" id="clienteTelefone" name="telefone">
       <div class="form-group">
-        <label for="emailSubject">Assunto:</label>
-        <input type="text" id="emailSubject" name="subject" class="form-control" required>
+        <label for="whatsappSubject">Assunto:</label>
+        <input type="text" id="whatsappSubject" name="subject" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="emailMessage">Mensagem:</label>
-        <textarea id="emailMessage" name="message" class="form-control" rows="5" required></textarea>
+        <label for="whatsappMessage">Mensagem:</label>
+        <textarea id="whatsappMessage" name="message" class="form-control" rows="5" required></textarea>
       </div>
-      <button type="submit" class="btn-primary">
-        <i class="fas fa-paper-plane"></i> 
-        <span class="btn-text">Enviar Email</span>
-        <span class="loading-spinner email-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
-        </span>
+      <button type="button" class="btn-whatsapp" onclick="enviarWhatsApp()">
+        <i class="fab fa-whatsapp"></i> Abrir WhatsApp
       </button>
     </form>
   </div>
 </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="js/cozinha.js"></script>
 </body>
