@@ -39,6 +39,7 @@ function renderizarLista() {
         if (item.fixado) div.classList.add("fixado");
 
         div.innerHTML = `
+            <span class="item-quantity">${item.quantidade}x</span>
             <span class="item-name">${item.nome}</span>
             <div class="item-actions">
                 <button class="item-btn btn-complete" onclick="concluirItem(${index})">
@@ -62,12 +63,20 @@ function renderizarLista() {
 form.addEventListener("submit", function (event) {
     event.preventDefault();
     const nome = document.getElementById("nomeItem").value.trim();
+    const quantidade = parseInt(document.getElementById("quantidadeItem").value) || 1;
+    
     if (nome === "") return;
 
-    itens.unshift({ nome, concluido: false, fixado: false });
+    itens.unshift({ 
+        nome, 
+        quantidade,
+        concluido: false, 
+        fixado: false 
+    });
     salvarLocalStorage();
     renderizarLista();
     form.reset();
+    document.getElementById("quantidadeItem").value = 1;
 });
 
 function concluirItem(index) {
@@ -164,7 +173,8 @@ function gerarRelatorioPDF() {
     
     // Configurações do relatório
     const colunas = {
-        item: 20,
+        quantidade: 20,
+        item: 40,
         status: 180
     };
 
@@ -188,7 +198,8 @@ function gerarRelatorioPDF() {
     doc.setFillColor(200, 200, 200);
     doc.rect(10, 50, 190, 10, 'F');
     doc.setTextColor(0, 0, 0);
-    doc.text("Itens", colunas.item, 57);
+    doc.text("Qtd", colunas.quantidade, 57);
+    doc.text("Item", colunas.item, 57);
     doc.text("Status", colunas.status, 57, { align: 'right' });
 
     let y = 65;
@@ -205,13 +216,15 @@ function gerarRelatorioPDF() {
             doc.setFillColor(200, 200, 200);
             doc.rect(10, 10, 190, 10, 'F');
             doc.setTextColor(0, 0, 0);
-            doc.text("Itens", colunas.item, 17);
+            doc.text("Qtd", colunas.quantidade, 17);
+            doc.text("Item", colunas.item, 17);
             doc.text("Status", colunas.status, 17, { align: 'right' });
             y = 25;
         }
 
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
+        doc.text(item.quantidade.toString(), colunas.quantidade, y);
         doc.text(item.nome, colunas.item, y);
         
         if (item.concluido) {

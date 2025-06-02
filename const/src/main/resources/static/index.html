@@ -13,37 +13,38 @@
     <link rel="icon" href="img/logo-navegador2.0.png" type="image/png">
 
     <link rel="stylesheet" href="css/alert.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/alert.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/alert.js"></script>
 </head>
 
 <style>
-        .language-selector {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            z-index: 1000;
-        }
-        .language-selector select {
-            padding: 5px;
-            border: 1px solid #d4af37;
-            border-radius: 50%;
-            padding: 12px 2px;
-            background-color: #fff;
-            color: black;
-        }
-        
-       
-        .no-translate {
-            translate: none !important;
-        }
-    </style>
+    .language-selector {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .language-selector select {
+        padding: 5px;
+        border: 1px solid #d4af37;
+        border-radius: 50%;
+        padding: 12px 2px;
+        background-color: #fff;
+        color: black;
+    }
+
+
+    .no-translate {
+        translate: none !important;
+    }
+</style>
 
 <body>
 
-   
-   <div class="language-selector">
+
+    <div class="language-selector">
         <select id="language-selector">
             <option value="pt">Pt</option>
             <option value="en">En</option>
@@ -306,12 +307,12 @@
             <div id="map"></div>
             <div class="map-overlay">
                 <h3>Nosso Endereço</h3>
-                <p>Av. Dom José Gaspar, 500</p>
-                <p>Coração Eucarístico, BH</p>
+                <p>BR-262, KM 375</p>
+                <p>Boa Vista da Serra, Juatuba</p>
             </div>
         </div>
         <div class="map-actions">
-            <a href="https://www.openstreetmap.org/#map=17/-19.9227/-43.9911" target="_blank" class="btn">
+            <a href="https://www.openstreetmap.org/#map=17/-19.9444/-44.3429" target="_blank" class="btn">
                 <i class="fas fa-map-marked-alt"></i> Ver mapa completo
             </a>
         </div>
@@ -515,15 +516,15 @@
 <script>
     // Cache para armazenar traduções já feitas
     const translationCache = {};
-    
+
     async function translateTextSafely(text, targetLang) {
         if (!text.trim()) return text;
-        
+
         const cacheKey = `${targetLang}:${text}`;
         if (translationCache[cacheKey]) {
             return translationCache[cacheKey];
         }
-        
+
         try {
             const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
             const data = await response.json();
@@ -550,15 +551,15 @@
             ...document.querySelectorAll('div:not(.no-translate)')
         ].filter(el => {
             const text = el.textContent || el.getAttribute('placeholder') || '';
-            return text.trim() !== '' && 
-                   !el.classList.contains('no-translate') && 
-                   !el.hasAttribute('data-no-translate');
+            return text.trim() !== '' &&
+                !el.classList.contains('no-translate') &&
+                !el.hasAttribute('data-no-translate');
         });
 
         const batchSize = 3;
         for (let i = 0; i < textContainers.length; i += batchSize) {
             const batch = textContainers.slice(i, i + batchSize);
-            
+
             // Correção aplicada aqui - parênteses corretamente fechados
             await Promise.all(batch.map(async element => {
                 try {
@@ -579,7 +580,7 @@
                     } else {
                         const originalHTML = element.innerHTML;
                         const translated = await translateTextSafely(element.textContent, targetLang);
-                        
+
                         element.innerHTML = originalHTML.replace(/>(.*?)</g, (match, p1) => {
                             return '>' + p1.replace(p1.trim(), translated.trim()) + '<';
                         });
@@ -609,7 +610,7 @@
     });
 
     // Detecção inicial de idioma opcional
-    const userLang = navigator.language || navigator.userLanguage; 
+    const userLang = navigator.language || navigator.userLanguage;
     if (!window.location.href.includes('lang=')) {
         if (userLang.startsWith('en')) {
             document.getElementById('language-selector').value = 'en';
@@ -620,4 +621,5 @@
         }
     }
 </script>
+
 </html>

@@ -90,16 +90,9 @@ h4 {
   flex: 1;
   padding: 0.75rem 1rem;
   border: 1px solid #ddd;
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
   transition: var(--transition);
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
 .btn-add {
@@ -233,6 +226,30 @@ h4 {
   justify-content: center;
   cursor: pointer;
   transition: var(--transition);
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 0.75rem 0.5rem;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-right: none;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+    -moz-appearance: textfield;
+}
+
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.item-quantity {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: 10px;
 }
 
 .btn-complete {

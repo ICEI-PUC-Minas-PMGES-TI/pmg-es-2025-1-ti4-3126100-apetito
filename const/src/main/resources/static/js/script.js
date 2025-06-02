@@ -160,12 +160,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (document.getElementById("map")) {
+    const juatubaLat = -19.9444;
+    const juatubaLng = -44.3429;
+
     const map = L.map("map", {
       scrollWheelZoom: false,
       dragging: false,
       tap: false,
       zoomControl: false,
-    }).setView([-19.9227, -43.9911], 17);
+    }).setView([juatubaLat, juatubaLng], 15);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -182,11 +185,11 @@ document.addEventListener("DOMContentLoaded", function () {
       popupAnchor: [1, -34],
     });
 
-    L.marker([-19.9227, -43.9911], { icon: restaurantIcon }).addTo(map)
+    L.marker([juatubaLat, juatubaLng], { icon: restaurantIcon }).addTo(map)
       .bindPopup(`
                 <div style="text-align:center">
                     <h3 style="margin:5px 0;color:var(--secondary)">Apetito</h3>
-                    <p style="margin:0">PUC Minas</p>
+                    <p style="margin:0">BR-262, KM 375<br>Boa Vista da Serra, Juatuba</p>
                 </div>
             `);
 
@@ -200,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
       map.scrollWheelZoom.disable();
       map.dragging.disable();
     });
-  }
+}
 
   document.querySelectorAll(".tab-button").forEach((button) => {
     button.addEventListener("click", () => {
@@ -407,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
         lowerInput.includes("endereço") ||
         lowerInput.includes("local")
       ) {
-        return "Estamos localizados na:\n\nAv. Dom José Gaspar, 500\nCoração Eucarístico, Belo Horizonte\n\nVeja no mapa como chegar!";
+        return "Estamos localizados na:\n\nBR-262, KM 375\nBoa Vista da Serra, Juatuba\n\nVeja no mapa como chegar!";
       } else if (
         lowerInput.includes("evento") ||
         lowerInput.includes("festa")

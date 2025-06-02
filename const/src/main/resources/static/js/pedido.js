@@ -473,7 +473,6 @@ function inicializarRoleta() {
 }
 
 function girarRoleta() {
-    podeGirar = false;
     const roleta = document.getElementById("roleta");
     const girarBtn = document.getElementById("girarRoletaBtn");
     const resultado = document.getElementById("resultadoRoleta");
@@ -530,11 +529,11 @@ function girarRoleta() {
                 break;
         }
         
-        if (premioAtual !== "nada") opcoesResgate.classList.remove("hidden");
-        
-        girarBtn.disabled = false;
-        girarBtn.textContent = "Girar Novamente";
-        podeGirar = true;
+        if (premioAtual !== "nada") {
+            opcoesResgate.classList.remove("hidden");
+        }
+
+        girarBtn.style.display = "none";
         
         localStorage.setItem("ultimaRodadaRoleta", new Date().toISOString());
     }, 5000);
@@ -571,6 +570,7 @@ function resetarRoleta() {
     const girarBtn = document.getElementById("girarRoletaBtn");
     girarBtn.disabled = false;
     girarBtn.textContent = "Girar Roleta";
+    girarBtn.style.display = "block";
 }
 
 function gerarCodigo() {
