@@ -19,12 +19,15 @@ Este trabalho foi desenvolvido a fim de contemplar a disciplina de Trabalho Inte
 
 ## Instruções de utilização
 
-Dependências:
+* Dependências
+
 É necessário possuir Java, Maven e PostgreSQL instalados na máquina em que se deseja utilizar o sistema.
 
-Configuração do banco de dados:
+* Configuração do banco de dados
+
 Será necessário criar um banco de dados com as credenciais encontradas em application.propperties.
 
-Execução da aplicação:
-Com tudo pronto, basta rodar o projeto pelo Maven por meio de um comando de terminal mvn spring-boot:run 
+* Execução da aplicação
+
+Com tudo pronto, basta rodar o projeto pelo Maven por meio de um comando de terminal mvn spring-boot:run.
 As dependências serão baixadas automaticamente e a aplicação vai será iniciada por meio do localhost na porta padrão.
